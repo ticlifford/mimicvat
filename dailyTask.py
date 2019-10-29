@@ -1,5 +1,11 @@
 #!/usr/bin/python3
-
+"""
+This is a process that runs every day to collect
+card data. It is run with a cron task on an ubuntu server at 6AM.
+It collects the data by running a series of scrapers, and saves
+the values into my database file.
+It also updates the daily watchlist trends.
+"""
 import os 
 import project_flask
 import datetime
@@ -7,8 +13,6 @@ import time
 
 print('running dailytask')
 fPath = '/home/timc/flask_project/flask_app/daily.txt'
-#fPath = 'daily.txt'
-
 # get the date
 
 ts = time.time()
@@ -20,12 +24,7 @@ with open(fPath, 'a') as f:
     f.write("\n" 'edited on: ' + dailyTime)
 
 
-# runs price scraper, then buylist scraper
-
-
-
 # set price scraper
-
 try:
     os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/setPriceScraper.py')
     with open(fPath, 'a') as f:
@@ -35,10 +34,7 @@ except:
     with open(fPath, 'a') as f:
         f.write("\n" 'setpricescraper didnt run')
 
-
-
 # buylist scraper
-
 try:
     os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/buylistsetscraper.py')
     with open(fPath, 'a') as f:
@@ -56,10 +52,7 @@ except:
     with open(fPath, 'a') as f:
         f.write("\n" 'could not access getwatchlist')
 
-
-
 # refreshes the watchlist trends
-
 print("updating watchlist")
 try:
     for row in rows:

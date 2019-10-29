@@ -1,29 +1,18 @@
-import urllib.request
-import json
-import requests
-from requests.auth import HTTPBasicAuth, HTTPDigestAuth
-import csv
 import sqlite3
-
-#makes the three databases:
-
 
 cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
 
+#cards: ID, NAME, CMC, COLOR, SET, PICTURE 
+#prices: ID, PRICE, FOILPRICE, DATE
+#edhpop: ID, EDHNUM
+#watchlist:
+#cardset:
+#buylist:
 
-#edh database: ID, EDHNUM
+# my databases link with the unique key called ID, which represents each unique card
+# these are generated/provided by the scryfall API which I scrape
 
-#card information database: ID, NAME, CMC, COLOR, SET, PICTURE 
-
-#price info database: ID, PRICE, FOILPRICE, DATE
-
-
-#my databases link with the unique key called ID, which represents each unique card.
-#These are generated/provided by the scryfall API which I scrape.
-
-
-#creates the table with fields
 try:
     c.execute('''CREATE TABLE IF NOT EXISTS EDHPOP
                 (NAME text,
@@ -69,12 +58,7 @@ try:
                 NONFOIL text,
                 ONLINEONLY text,
                 RARITY text,
-                
                 UNIQUE(ID))''')
-
-
-
-
 
     print('database was created')
 except:
