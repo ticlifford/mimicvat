@@ -1,2 +1,3 @@
-# mimicvat
-an application to scrape and track card prices
+# Mimicvat
+This is an application to scrape and track Magic the Gathering card prices.
+## Features
