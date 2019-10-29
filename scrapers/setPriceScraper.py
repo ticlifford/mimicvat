@@ -8,10 +8,6 @@ import datetime
 import sqlite3
 import sys
 
-
-
-#functions:
-
 def dataParse():
     for obj in data['data']:
         print(obj['name'])
@@ -21,10 +17,7 @@ def dataParse():
 def checkPage(data):
     try:
         if data['has_more'] == True:
-            #print(obj['has_more'])
                 print('I found another page of cards')
-                #do an addCards with obj['next_page']
-                #print('the next page url:',data['next_page'])
                 jason_obj = urllib.request.urlopen(data['next_page'])
                 data = json.load(jason_obj)
                 dailyPrice(data)
@@ -44,7 +37,6 @@ def setGeneration(set):
     except:
         print('something went wrong with set',set)
 
-#gets the datetime
 def getTime():
         try:
                 ts = time.time()
@@ -63,10 +55,10 @@ def foilRatio():
 
 def dailyPrice(data):
     for obj in data['data']:
-        #print('obj name:',obj['name'])
         foilCalc = None
         usd = None
         foilUsd = None
+
         if obj['prices']['usd_foil'] == None:
                 None
         else:
@@ -75,10 +67,7 @@ def dailyPrice(data):
                 foilCalc = None
         else:
                 foilCalc = float(obj['prices']['usd_foil'])/float(obj['prices']['usd'])
-        #print('foil:',obj['prices']['usd_foil'])
-        #print('usd:',obj['prices']['usd'])
 
-        #print(float(obj['prices']['usd_foil'])/float(obj['prices']['usd']))
         try:
                 c.execute('insert into PRICES values (?,?,?,?,?)',(
                 obj['id'],
@@ -92,32 +81,21 @@ def dailyPrice(data):
                 print( 'id:', obj['id'],'usd:' ,obj['prices']['usd'], 'foil:', obj['prices']['usd_foil'])
                 sys.exit()
     checkPage(data)
+
 def printDb():
         print('im printing the db here:')
         for row in c.execute('SELECT * FROM PRICES'):
                 print(row)
 
-
-
-
-#connecting to db (this should probably be inside the dailyPrice loop to allow the commit and close functions)
 cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
 
-
-#this opens the set names, and adds the values to the database for all cards found in all sets
 with open('setNames.csv', 'r') as csv_file:
     csv_reader = csv.reader(csv_file)
     for line in csv_reader:
         print('set scraping:',line[0])
         setGeneration(line[0])
-        
-        #return line[0]             can't return outside of a function
-
-
-
 
 cardsDb.commit()
-#printDb()
 print('im closing the db')
 cardsDb.close()

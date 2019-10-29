@@ -11,11 +11,6 @@ import sqlite3
 #I scrape the html of the page and grab two values: the name of the card, and a number which says how many people have used that card. This indicates how popular and thus important it is
 #I'm going to use this data later on to make judgements and analysis, but for now this is a demo to learn how to use beautifulsoup (which was very helpful)
 
-
-#i'm going to swap out 'c18' for each set, there are about 30 of them
-
-
-#functions: 
 def edhChecker(nameV,numV):
         try:
                 c.execute('insert into EDHPOP values (?,?)',(
@@ -31,15 +26,9 @@ html = urllib.request.urlopen(url).read()
 
 cardName = []
 cardLabel = []
-
-#print(html)
 soup = b(html, 'html.parser')
-
 s=soup.find('script')
-#print(s)
 
-#there are a handful of script tags, and I want a certain one
-#then I cut out some of the string to get it in dic format
 scripts = soup.find_all('script')
 dic = scripts[-3]
 dic = str(dic)
@@ -48,17 +37,12 @@ cardDic = dic[26:-10]
 cardDic = json.loads(cardDic)
 oGdic = cardDic
 cardDic = cardDic['cardlists']
-#print('the len of cardDic cardlists:',len(cardDic))
-
 
 
 cardDic = cardDic[0]
 
 cardDic = cardDic['cardviews']
-#print(type(cardDic))
-#print(len(cardDic))
 
-#access db
 cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
 
@@ -80,12 +64,6 @@ for x in oGdic['cardlists']:
         edhChecker(nameV,numV)
 
 
-<<<<<<< HEAD:final/scrapers/edhrecScraper.py
-#close db
-cardsDb.commit()
-print('im closing the db')
-cardsDb.close()
-=======
 def EdhChecker(data):
         try:
                 c.execute('insert into EDHPOP values (?,?)',(
@@ -96,16 +74,6 @@ def EdhChecker(data):
                 print('could not add to db')
 
 
->>>>>>> 99a6458680a33e5a511415f21ff5dc8b1917cf21:final/edhrecScraper.py
 
-"""
-#there's probably an easier way to do this
-with open('edh.csv','w') as csvfile:
-    for x in range(0,len(cardName)-1):
-        csvfile.write(cardName[x])
-        csvfile.write(',')
-        csvfile.write(cardLabel[x])
-        csvfile.write('\n')
-"""
 
 

@@ -20,18 +20,3 @@ soup = b(html, 'html.parser')
 
 s=soup.find('script')
 print(soup)
-
-
-"""
-#there are a handful of script tags, and I want a certain one
-#then I cut out some of the string to get it in dic format
-scripts = soup.find_all('script')
-dic = scripts[-3]
-dic = str(dic)
-cardDic = dic[26:-10]
-
-cardDic = json.loads(cardDic)
-oGdic = cardDic
-cardDic = cardDic['cardlists']
-
-"""

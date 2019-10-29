@@ -4,17 +4,6 @@ import urllib.request
 from bs4 import BeautifulSoup as b
 
 
-# this gets all mythics from som and creates a list of them
-
-# sqlite query all mythics
-# for line in query, add to list
-# for object in list, pop to another list up to 500
-# for object in another list, 
-
-
-
-
-
 html = urllib.request.urlopen(url).read()
 soup = b(html, 'html.parser')
 cardsDb = sqlite3.connect('CARDINFO.db')
@@ -34,12 +23,8 @@ except:
 #    print(x)
 cardsDb.close()
 
-# pasteVal is the string that gets inserted to the browser with 500 values of cards
-
-
-# converts cList into 500 long chunks, then returns that chunk as popList and passes it to pasteHtml
-#
 def selectRows(cList):
+    # converts cList into 500 long chunks, then returns that chunk as popList and passes it to pasteHtml
     while len(cList) != 0:
         print('clist is not zero')
         popList = []
@@ -61,15 +46,12 @@ def selectRows(cList):
         #return pasteVal
     print('clist is at zero')
 
-# cList = selectRows(cList)
-# starts the chrome environment, creates the pasteVal with popList, passes it to the browser and submits
 def pasteHtml(popList):
+    # starts the chrome environment, creates the pasteVal with popList, passes it to the browser and submits
 
     executable_path = {'executable_path' :r'C:\Users\Tim\Desktop\chrome\chromedriver'}
-
     browser = Browser('chrome', **executable_path, headless = False)
     browser.visit(r"https://www.cardkingdom.com/static/csvImport")
-
     pasteVal = ''
 
     for x in popList:
@@ -83,32 +65,5 @@ def pasteHtml(popList):
 
     submitId = r"convertPastedCsv"
     submit = browser.find_by_id(submitId).first.click()
-
-# selectRows(cList)
-#"""
-# google test
-
-"""
-with Browser() as browser:
-    # Visit URL
-    url = "http://www.google.com"
-    browser.visit(url)
-"""
-"""
-# scrape function
-def ck_scrape():
-
-    for line in csv:
-        # append a list of lists
-        None
-
-    pasteBox = browser.find_by_id(htmlId)
-    pasteBox.fill(pasteVal)
-
-    submitId = "convertPastedCsv"
-    submit = browser.find_by_id(submitId).first.click()
-"""
-
-# print('this should do nothing')
 
 selectRows(cList)

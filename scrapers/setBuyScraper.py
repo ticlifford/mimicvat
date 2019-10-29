@@ -10,10 +10,6 @@ import sqlite3
 import sys
 
 
-
-
-#functions:
-
 def getTime():
         try:
                 ts = time.time()
@@ -29,9 +25,8 @@ def setNameActivator():
             print('set scraping:',line[0])
             scrape(line[0])
 
-#setName = "urzas-legacy"
+
 def scrape(setName):
-    #print('the set is',set)
     url = "https://shop.tcgplayer.com/price-guide/magic/" + setName
 
     try:
@@ -66,23 +61,17 @@ def scrape(setName):
                 cardBuyPrices.append(float(0))
             else:
                 cardBuyPrices.append(float(buyPrice[1:]))
-            #buyp = x.find('td', {'class' : 'buylistMarketPrice'}).get_text()
-            #print('scraping')
     except:
         print('something went wrong with scrap URL')
 
 
 def dbPush():
     for i in range(0,len(cardNames)):
-        #print(cardNames[i])
-        #print(cardBuyPrices[i])
         try:
             c.execute('insert into BUYLIST values (?,?,?)',(
             cardNames[i],
             time,
             cardBuyPrices[i]
-            #date getTime(),
-            #buy price
             ))
         except:
             print('could not add to db')
@@ -105,7 +94,6 @@ print(cardBuyPrices)
 
 
 cardsDb.commit()
-#printDb()
 print('im closing the db')
 cardsDb.close()
 

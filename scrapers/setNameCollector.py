@@ -14,7 +14,6 @@ url = 'https://api.scryfall.com/sets'
 jason_obj = urllib.request.urlopen(url)
 data = json.load(jason_obj)
 
-# connect to db
 cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
 
@@ -27,10 +26,8 @@ with open ('setNames.csv', 'w', newline='') as csv_file:
         print(obj['code'])
         print(obj['name'])
         print(obj['released_at'])
-        # write to csv
         csv_writer.writerow([obj['code']])
 
-        # add to sqlite db
         try:
             c.execute('insert or replace into CARDSET values (?,?,?)',(
                 #values
@@ -45,13 +42,10 @@ with open ('setFullNames.csv', 'w', newline='') as csv_file:
     csv_writer = csv.writer(csv_file)
 
     for obj in data['data']:
-        # print(obj['name'].replace(" ", "-"))
         csv_writer.writerow([obj['name'].replace(" ", "-")])
 
 print('set names collected')
 
-
-# commit and close db
 cardsDb.commit()
 print('im closing the db')
 cardsDb.close()
