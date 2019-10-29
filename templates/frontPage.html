@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block navbar_brand %}Mimicvat{% endblock %}
+{% block heading %}Tim's coding project {% endblock %}
+{% block head %}<meta name="viewport" content = "width=device-width, initial-scale=1.0">{% endblock %}
+{% block paragraph %}
+This application scrapes scryfall for Magic the Gathering card information and prices. It uses Flask, sqlite, highcarts, and bootstrap to display charts and tables of that data.</p>
+<p>The objective of this application is to track price information and alert the user when a card spikes in value. Also, the application informs them of associated cards that may also increase in value.
+I gather pricing data daily of both the normal and foil version, I gather popularity from edhrec.com, and I plan to scrape ebay for daily average supply of cards to monitor the supply/demand. I also
+calculate the average weekly price and standard deviation of cards to tell if they are increasing or decreasing in value over time. The user is informed to buy a card that is climbing (or plateaued)
+in value, as well as sell if the price is dropping.</p> <p>The languages I used for this application include: python, html, javascript, and sql.
+{% endblock %}
+
+{% block graph %}
+<div div class="container">
+<div class="jumbotron width=70%">
+    <h1 class="display-4">Here's an example</h1>
+    <p class="lead">This is one of my favorite cards. On the right is a highcart that shows how the price is trending.</p>
+    <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+        <p><img src={{imageUrl}}  alt="card image goes here" width="250"></p>
+            </div>
+
+        <div class="col-md-auto">
+            <div id={{ chartID|safe }} class="chart" style="height: 500px; width: 500px;"></div>
+
+                <script>
+                    var chart_id = {{ chartID|safe }}
+                    var series = {{ series|safe }}
+                    var title = {{ title|safe }}
+                    var xAxis = {{ xAxis|safe }}
+                    var yAxis = {{ yAxis|safe }}
+                    var chart = {{ chart|safe }}
+                </script>
+                    
+        
+        </div>
+
+    </div>
+</div>
+</div>
+
+
+
+{% endblock %}
+
+{% block bodyText %}
+<script src="http://code.highcharts.com/highcharts.js"></script>
+                       <script src="../static/graph.js"></script>
+{% endblock %}

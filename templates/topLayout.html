@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block paragraph %}
+<p>This is a feature that I'm going to add to in the future where I actually sift through the data with tensorflow/keras to figure out what my data can tell
+    me, so more should be coming soon.
+</p>
+{% endblock %}
+
+{% block container %}
+<p>
+    This is an table of cards with the highest foil price to normal price ratio. As you can see, right now the top 10 cards
+    are all from the same set. This is because Urza's Legacy was the first set to contain foils and their ratios were lower than today. 
+</p>
+<table border = 1>
+    <thread>
+        <td>
+            name
+        </td>
+        <td>
+            set
+        </td>
+        <td>
+            foil ratio
+        </td>
+    </thread>
+    {% for card in rows %}
+<tr>
+  <!--<td></td>-->
+   <td>{{card[0]}}</td>
+   <td>{{card[1]}}</td>
+   <td>{{card[2]}}</td>
+   
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

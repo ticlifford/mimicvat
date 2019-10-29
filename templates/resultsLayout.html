@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block viewport2 %}{% endblock %}
+
+{% block head %}<meta name="viewport" content = "width=device-width, initial-scale=1.0">{% endblock %}
+
+
+
+
+
+
+{% block graph %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-6">
+<p><img src={{imageUrl}}  alt="card image goes here" width="250"></p>
+<p>ID: {{cardId}}</p>
+
+<form action="/search/{{cardId}}" method="POST">
+    <input class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" name="addCard" value="remove this ID">
+  <button class="btn btn-primary mb-2" type="submit">add this card to the watchlist</button>
+</form>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Other Sets</th>
+
+        
+      </tr>
+    </thead>
+    <tbody>
+        {% if sameCardsCombo|length > 1 %}
+      {% for card in sameCardsCombo %}
+      <tr>
+        <!--<td></td>-->
+         <td>{{card[0]}}</td>
+         <td>{{card[1]}}</td>
+         <td><a href="/search/{{card[0]}}">Click here for link</a></td>
+      </tr>
+   {% endfor %}
+      {% endif %}
+      <p>cmc: {{cardInfo['cmc']}}</p>
+      <p>power: {{cardInfo['power']}}</p>
+      <p>toughness: {{cardInfo['toughness']}}</p>
+      <p>type: {{cardInfo['type']}}</p>
+      <p>rarity: {{cardInfo['rarity']}}</p>
+      <p>buylist price: {{cardInfo['buylist']}}</p>
+
+    </tbody>
+  </table>
+
+
+<a href = "/">Go back to home page</a>
+</div>
+    <div class="col-sm-6 col-md-6">
+         <div id={{ chartID|safe }} class="chart" style="height: 500px; width: 500px;"></div>
+
+                   <script>
+                       var chart_id = {{ chartID|safe }}
+                       var series = {{ series|safe }}
+                       var title = {{ title|safe }}
+                       var xAxis = {{ xAxis|safe }}
+                       var yAxis = {{ yAxis|safe }}
+                       var chart = {{ chart|safe }}
+                   </script>
+                       
+         
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block bodyText %}
+<script src="http://code.highcharts.com/highcharts.js"></script>
+                       <script src="../static/graph.js"></script>
+{% endblock %}

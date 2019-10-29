@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block paragraph %}
+
+<p>This is a selection of cards on the application so you can get a gist for what the data looks like. 
+   You can use this list to test the search function in the top right corner,
+   and you can also use it to test the watchlist option by adding and removing cards from this list.
+</p>
+
+
+<table border = 1>
+        <thead>
+           <td>ID</td>
+           <td>NAME</td>
+           <td>CMC</td>
+           <td>MANACOST</td>
+           <td>POWER</td>
+           <td>TOUGHNESS</td>
+           <td>COLOR</td>
+           <td>CARDSET</td>
+           <td>TYPE</td>
+           <td>PICURL</td>
+        </thead>
+        
+        {% for row in rows %}
+           <tr>
+              <td>{{row["ID"]}}</td>
+              <td><a href="search/{{row["ID"]}}">{{row["NAME"]}}</a></td>
+              <td> {{ row["CMC"]}}</td>
+              <td> {{ row["MANACOST"]}}</td>
+              <td> {{ row["POWER"]}}</td>
+              <td> {{ row["TOUGHNESS"]}}</td>
+              <td> {{ row["COLOR"]}}</td>
+              <td> {{ row["CARDSET"]}}</td>
+              <td>{{row['TYPE']}}</td>
+              <td> {{ row["PICURL"]}}</td>
+
+
+           </tr>
+        {% endfor %}
+     </table>
+
+{% endblock %}

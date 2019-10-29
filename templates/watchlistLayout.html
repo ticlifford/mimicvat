@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block container %}
+<div class="row">
+        <div class="col-sm-6 col-md-6">
+
+
+                <form class="form-inline mt-2 mt-md-0" method="POST" action="/watchlist">
+                    <input class="form-control mr-sm-2" type="text" placeholder="watchlist" aria-label="watchlist" name="watchlist">
+                    <button class="btn btn-primary mb-2" type="submit">add card</button>
+                  </form>
+                  <p>This is where you enter cards for your watchlist. Every day, price data is scraped from the internet.
+                    A trend for the past 30 days is created, and then compared to the past week's trend. If the direction of
+                    the trend changes (for instance, if a card that has been decreasing in value increases in value) Then this 
+                    is an important 
+                  </p>
+
+
+
+        </div>
+        <div class="col-sm-6 col-md-6">
+            <!-- place the table element here-->
+
+
+
+
+            <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Card watchlist</th>
+
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                      {% for card in rows %}
+                      <tr>
+                        <!--<td></td>-->
+                         <td>{{card["NAME"]}}</td>
+                         <td>{{card["PRICEDIRECTION"]}}</td>
+                         <td>
+                           <form action="/watchlist" method="POST">
+                              <input class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" name="removeCard" value="{{card["ID"]}}">
+                            <button class="btn btn-primary mb-2" type="submit">Remove</button>
+                          </form>
+                         </td>
+                      </tr>
+                   {% endfor %}
+
+
+
+                    </tbody>
+                  </table>
+        </div>
+</div>
+
+
+{% endblock %}
