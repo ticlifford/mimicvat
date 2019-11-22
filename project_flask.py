@@ -414,21 +414,25 @@ def searchGet():
 
 @app.route('/topCards')
 def topCards():
+
+    # this is too slow to run on every page load.
+    # I need to do this daily and just import the json.
+    """
     con = sql.connect(dbLoc)
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("SELECT cards.NAME, cards.CARDSET, prices.FOILRATIO from prices, CARDS where NORMPRICE is not null and foilprice is not NULL and cards.ID = prices.ID order by datetime desc, FOILRATIO DESC limit 10")
-# make this run in a daily startup file because it takes too long.
-
 
     rows = cur.fetchall()
     for x in rows:
         print(x[0])
     con.close()
+    """
 
     # tensorflow/keras processing could go here in the future
-
-    return render_template("topLayout.html", rows = rows)
+    
+    # return render_template("topLayout.html", rows = rows)
+    return render_template("topLayout.html")
 
 
 
