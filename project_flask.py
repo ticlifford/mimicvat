@@ -283,7 +283,7 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
     sameCardsCombo = []
     # for the result of the name search, get the ID and put it in cardId
     try:
-        print('checking for more cards with the same name as ',r)
+        print('checking for more cards with the same name as',r)
         searchResult = cur.execute("select id, cardset from cards where name = (select name from cards where upper(name) = \"" + r.upper() + "\") and cards.ONLINEONLY != 'TRUE'")
         print('looking at:',searchResult)
         if not searchResult:
@@ -430,7 +430,7 @@ def topCards():
     """
 
     # tensorflow/keras processing could go here in the future
-    
+
     # return render_template("topLayout.html", rows = rows)
     return render_template("topLayout.html")
 
