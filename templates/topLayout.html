@@ -1,20 +1,22 @@
 {% extends "layout.html" %}
 
 {% block paragraph %}
-<p>This is a feature that I'm going to add to in the future where I actually sift through the data with tensorflow/keras to figure out what my data can tell
-    me, so more should be coming soon.
-</p>
 {% endblock %}
 
 {% block container %}
 <p>
-    This is an table of cards with the highest foil price to normal price ratio. As you can see, right now the top 10 cards
-    are all from the same set. This is because Urza's Legacy was the first set to contain foils and their ratios were lower than today. 
-</p>
+    These are pandas renderings of the cmc vs power of each color in the game. Generally, the lower the cmc and greater the power, the more efficient the color is.
 
+</p>
+<p><img src="/static/images/green.png" alt="green cmc"><img src="/static/images/red.png" alt="red cmc"></p>
+<p><img src="/static/images/white.png" alt="white cmc"><img src="/static/images/black.png" alt="black cmc"></p>
+<p><img src="/static/images/blue.png" alt="blue cmc"></p>
+
+<p> Here I have the normal price, foil price, and ratio of a card graphed out.</p>
+<p><img src="/static/images/0_norm.png" alt="norm"><img src="/static/images/0_foil.png" alt="foil"></p>
+<p><img src="/static/images/0_ratio.png" alt="ratio"></p>
 <p>
 Check out my jupyter notebook file on <a href="https://github.com/ticlifford/mimicvat-data-analysis/blob/master/mimicvat%20visual.ipynb">github here.</a>
-
 </p>
 <table border = 1>
     <thread>
