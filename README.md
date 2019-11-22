@@ -5,10 +5,12 @@ see it in action:
 www.mimicvat.com
 
 ## Features
+* bootstrap front-end
+* SQL database back-end
 * python web scrapers
 * highcharts (javascript) price charts
-* hosted online with a flask microframework
-* bootstrap front-end
+* hosted online with a flask microframework on an Ubuntu server
+
 
 ## code breakdown
 The main application file is project_flask.py. This contains the functions that control all interactions with the website like searching for cards, editing the watchlist, and displaying pages.
