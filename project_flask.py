@@ -418,6 +418,8 @@ def topCards():
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("SELECT cards.NAME, cards.CARDSET, prices.FOILRATIO from prices, CARDS where NORMPRICE is not null and foilprice is not NULL and cards.ID = prices.ID order by datetime desc, FOILRATIO DESC limit 10")
+# make this run in a daily startup file because it takes too long.
+
 
     rows = cur.fetchall()
     for x in rows:
