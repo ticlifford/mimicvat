@@ -192,19 +192,9 @@ def searchID(cardId, chartID = 'chart_ID2', chart_type = 'line', chart_height = 
             cardInfo['power'] = fetchInfo[2]
             cardInfo['toughness'] = fetchInfo[3]
             cardInfo['rarity'] = fetchInfo[4]
+            cardInfo['buylist'] = 'N/A'
         except:
             print('could not add values to cardInfo dictionary')
-
-        try:
-            cur.execute("select buylist.BUYPRICE, buylist.DATETIME from buylist, cards, CARDSET where cards.id == ((?))  and cards.CARDSET = CARDSET.CODE  and upper(cardset.name) = upper(replace (buylist.SETNAME,'-',' ')) and upper(cards.name) = upper(buylist.NAME) order by datetime desc",(cardId, ))
-        except:
-            print('could not select buylist price, probably no buylist value')
-
-        try:
-            fetchInfo = cur.fetchone()
-            cardInfo['buylist'] = fetchInfo[0]
-        except:
-            print('could not add buylist to dictionary, probaby no buylist value')
 
         print('the card cmc value:', cardInfo['cmc'])
         print('search value:', cardInfo['type'])
@@ -342,19 +332,11 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
         cardInfo['power'] = fetchInfo[2]
         cardInfo['toughness'] = fetchInfo[3]
         cardInfo['rarity'] = fetchInfo[4]
+        cardInfo['buylist'] = 'N/A'
     except:
         print('could not add values to cardInfo dictionary here')
+# cur.execute("select buylist.BUYPRICE, buylist.DATETIME from buylist, cards, CARDSET where cards.id == ((?))  and cards.CARDSET = CARDSET.CODE  and upper(cardset.name) = upper(replace (buylist.SETNAME,'-',' ')) and upper(cards.name) = upper(buylist.NAME) order by datetime desc",(cardId, ))
 
-    try:
-        cur.execute("select buylist.BUYPRICE, buylist.DATETIME from buylist, cards, CARDSET where cards.id == ((?))  and cards.CARDSET = CARDSET.CODE  and upper(cardset.name) = upper(replace (buylist.SETNAME,'-',' ')) and upper(cards.name) = upper(buylist.NAME) order by datetime desc",(cardId, ))
-    except:
-        print('could not select buylist price, probably no buylist value')
-
-    try:
-        fetchInfo = cur.fetchone()
-        cardInfo['buylist'] = fetchInfo[0]
-    except:
-        print('could not add buylist to dictionary, probaby no buylist value')
 
 
     print('the card cmc value:', cardInfo['cmc'])

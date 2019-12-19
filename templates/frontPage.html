@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block navbar_brand %}Mimicvat{% endblock %}
-{% block heading %}Tim's coding project {% endblock %}
+{% block heading %}Mimicvat card analysis {% endblock %}
 {% block head %}<meta name="viewport" content = "width=device-width, initial-scale=1.0">{% endblock %}
 {% block paragraph %}
 This application scrapes scryfall for Magic the Gathering card information and prices. It uses Flask, sqlite, highcarts, and bootstrap to display charts and tables of that data.</p>
@@ -15,9 +15,10 @@ in value, as well as sell if the price is dropping.</p> <p>The languages I used 
 <div class="jumbotron width=70%">
     <h1 class="display-4">Here's an example</h1>
     <p class="lead">This is one of my favorite cards. On the right is a highcart that shows how the price is trending.</p>
+    <hr class="my-4">
     <div class="row justify-content-md-center">
             <div class="col-md-auto">
-        <p><img src={{imageUrl}}  alt="card image goes here" width="250"></p>
+        <p><img src={{imageUrl}} class="rounded mx-auto d-block" alt="card image goes here" width="250"></p>
             </div>
 
         <div class="col-md-auto">
