@@ -6,7 +6,7 @@ It collects the data by running a craper that checks scryfall for new sets.
 It updates a sql database and a csv file.
 """
 import os 
-import project_flask
+import final_project_flask
 import datetime
 import time
 
@@ -33,6 +33,16 @@ except:
     with open(fPath, 'a') as f:
         f.write("\n" 'set Name Collector didnt run')
 
+#check for new cards
+
+try:
+    os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/setCardScraper.py')
+    with open(fPath, 'a') as f:
+        f.write("\n" 'running set card scraper')
+except:
+    print('could not run set card scraper')
+    with open(fPath, 'a') as f:
+        f.write("\n" 'set card scraper didnt run')
 
 with open(fPath, 'a') as f:
     f.write("\n" 'editing done: ' + dailyTime)

@@ -14,9 +14,9 @@ url = 'https://api.scryfall.com/sets'
 jason_obj = urllib.request.urlopen(url)
 data = json.load(jason_obj)
 
-# cardsDb = sqlite3.connect('C:\\users\\tim\\desktop\\CARDINFO.db')
+cardsDb = sqlite3.connect('C:\\users\\tim\\desktop\\CARDINFO.db')
 
-cardsDb = sqlite3.connect('CARDINFO.db')
+# cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
 
 c.execute('select * from CARDSET limit 1')

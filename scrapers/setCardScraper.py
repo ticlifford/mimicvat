@@ -94,6 +94,7 @@ def addCards(data):
         print('could not check for pages')
 
 cardsDb = sqlite3.connect('CARDINFO.db')
+# cardsDb = sqlite3.connect('C:\\users\\tim\\desktop\\CARDINFO.db')
 c = cardsDb.cursor()
 
 with open('setNames.csv', 'r') as csv_file:
