@@ -1,6 +1,6 @@
 import sqlite3
 
-cardsDb = sqlite3.connect('CARDINFO.db')
+cardsDb = sqlite3.connect('CARDINFOnew.db')
 c = cardsDb.cursor()
 
 #cards: ID, NAME, CMC, COLOR, SET, PICTURE 
@@ -39,7 +39,8 @@ try:
     c.execute('''CREATE TABLE IF NOT EXISTS CARDSET
                 (NAME text,
                 CODE text,
-                RELEASEDATE text)''')
+                RELEASEDATE text,
+                UNIQUE(CODE))''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS CARDS
                 (ID text,
