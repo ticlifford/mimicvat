@@ -4,12 +4,18 @@ import urllib.request
 from bs4 import BeautifulSoup as b
 
 
+# sets up an html soup parser for some URL
+# this is probably for collecting the data after the post,
+# and I haven't finished it
+"""
 html = urllib.request.urlopen(url).read()
 soup = b(html, 'html.parser')
+"""
+
 cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
 
-# sql collect info, adds to cList
+# SQL search for all mythics and rares, and outputs them in a list called cList
 cList = []
 try:
     # connects db, fills cList with ALL mythics and rares
@@ -19,9 +25,17 @@ try:
         cList.append(innerList)
 except:
     print('could not write sql function')
-#or x in cList:
-#    print(x)
+
+# posts each card after list creation
+"""
+for x in cList:
+    print(x)
+"""
+
 cardsDb.close()
+
+
+
 
 def selectRows(cList):
     # converts cList into 500 long chunks, then returns that chunk as popList and passes it to pasteHtml
@@ -67,3 +81,6 @@ def pasteHtml(popList):
     submit = browser.find_by_id(submitId).first.click()
 
 selectRows(cList)
+
+# here is where I left off. I haven't collected the values of each card yet.
+# I only post.
