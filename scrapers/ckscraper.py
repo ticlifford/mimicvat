@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup as b
 # sets up an html soup parser for some URL
 # this is probably for collecting the data after the post,
 # and I haven't finished it
+
+#configure scraper and db connection
 """
 html = urllib.request.urlopen(url).read()
 soup = b(html, 'html.parser')
