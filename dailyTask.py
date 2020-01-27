@@ -34,6 +34,16 @@ except:
     with open(fPath, 'a') as f:
         f.write("\n" 'setpricescraper didnt run')
 
+# frontpage scraper
+try:
+    os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/frontpagedb.py')
+    with open(fPath, 'a') as f:
+        f.write("\n" 'running frontpagedb')
+except:
+    print('could not run frontpagedb')
+    with open(fPath, 'a') as f:
+        f.write("\n" 'frontpagedb didnt run')
+
 # buylist scraper
 try:
     os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/buylistsetscraper.py')

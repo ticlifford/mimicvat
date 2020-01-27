@@ -61,6 +61,12 @@ try:
                 RARITY text,
                 UNIQUE(ID))''')
 
+    c.execute('''CREATE TABLE IF NOT EXISTS FRONTPAGE
+                (DATETIME text,
+                NORMPRICE real,
+                UNIQUE(DATETIME))
+                ''')
+
     print('database was created')
 except:
     print('database could not be created')
