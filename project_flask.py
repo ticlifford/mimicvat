@@ -38,7 +38,16 @@ def index(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500):
     con = sql.connect("CARDINFO.db")
     con.row_factory = sql.Row
     cur = con.cursor()
-    imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl)
+
+    # imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl)
+    imageUrl = 'https://img.scryfall.com/cards/normal/front/8/1/810a3792-a689-4849-bc14-fb3c71153aba.jpg?1562920975'
+
+
+# collects price and date vals of land tax to load up front page quickly
+    for vals in cur.execute("select * from frontpage order by datetime asc"):
+        priceList.append(vals[1])
+        dateList.append(vals[0])
+
 
     # chart insertion
     try:

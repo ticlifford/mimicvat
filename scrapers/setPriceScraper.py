@@ -71,7 +71,7 @@ def dailyPrice(data):
         try:
                 c.execute('insert into PRICES values (?,?,?,?,?)',(
                 obj['id'],
-                getTime(),
+                current_time,
                 obj['prices']['usd'],
                 obj['prices']['usd_foil'],
                 foilCalc
@@ -89,6 +89,8 @@ def printDb():
 
 cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
+
+current_time = getTime()
 
 with open('setNames.csv', 'r') as csv_file:
     csv_reader = csv.reader(csv_file)

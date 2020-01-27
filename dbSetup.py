@@ -1,6 +1,6 @@
 import sqlite3
 
-cardsDb = sqlite3.connect('CARDINFOnew.db')
+cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
 
 #cards: ID, NAME, CMC, COLOR, SET, PICTURE 
