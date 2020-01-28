@@ -12,6 +12,7 @@ def collect_prices():
                 row[0],
                 row[1]
             ))
+        print('finished frontpage insert')
     except:
         print('could not collect prices')
 

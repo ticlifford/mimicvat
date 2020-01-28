@@ -44,10 +44,12 @@ def index(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500):
 
 
 # collects price and date vals of land tax to load up front page quickly
-    for vals in cur.execute("select * from frontpage order by datetime asc"):
+    land_tax_vals = cur.execute("select * from frontpage order by datetime asc")
+    
+    for vals in land_tax_vals:
         priceList.append(vals[1])
         dateList.append(vals[0])
-
+    con.close()
 
     # chart insertion
     try:
@@ -61,7 +63,6 @@ def index(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500):
     except:
         print('something went wrong with the highcart vars')
 
-    con.close()
     return render_template('frontPage.html', pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, cardId = cardId, cardName = cardName)
 
 @app.route('/list')
@@ -108,9 +109,9 @@ def watchlist():
         try:
             cur.execute("INSERT or replace into watchlist (ID, PRICEDIRECTION) values (?, ?)", (cardId, valueIndicator, ) )
             con.commit()
-            con.close()
         except:
             print('could not insert card')
+        con.close()
 
         rows = getWatchList()
 
@@ -189,9 +190,11 @@ def searchID(cardId, chartID = 'chart_ID2', chart_type = 'line', chart_height = 
             imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl)
         except:
             print('cant perform searchcard')
-
-        cur.execute("select cards.cmc, type, power, toughness, rarity from cards where cards.id == ((?))",(cardId, ))
-        fetchInfo = cur.fetchone()
+        try:
+            cur.execute("select cards.cmc, type, power, toughness, rarity from cards where cards.id == ((?))",(cardId, ))
+            fetchInfo = cur.fetchone()
+        except:
+            print('could not perform id sql search')
 
         for value in fetchInfo:
             print('value: ',value)
@@ -376,6 +379,8 @@ def searchCard(cardId, cur, priceList, dateList, imageUrl):
             imageUrl = cardUrl[0]
             print('imageURL from searchcard:', imageUrl)
             # if the card is only foil, get foil prices. else get nonfoil prices
+
+            # this for loop is what makes loading a search slow
         for priceN in cur.execute("select datetime,normprice from prices where id=\""+cardId+"\" order by datetime asc"):
             priceList.append(priceN[1])
             dateList.append(priceN[0])

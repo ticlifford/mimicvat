@@ -67,6 +67,8 @@ try:
                 UNIQUE(DATETIME))
                 ''')
 
+cardsDb.close()
+
     print('database was created')
 except:
     print('database could not be created')
