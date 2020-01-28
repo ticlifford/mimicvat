@@ -21,46 +21,46 @@ print('test getTime:',dailyTime)
 
 with open(fPath, 'a') as f:
 #with open('daily.txt', 'a') as f:
-    f.write("\n" 'edited on: ' + dailyTime)
+    f.write('\n edited on: ' + dailyTime)
 
 
 # set price scraper
 try:
     os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/setPriceScraper.py')
     with open(fPath, 'a') as f:
-        f.write("\n" 'running set price scraper')
+        f.write('\n running set price scraper')
 except:
     print('could not run setpricescraper')
     with open(fPath, 'a') as f:
-        f.write("\n" 'setpricescraper didnt run')
+        f.write('\n setpricescraper didnt run')
 
 # frontpage scraper
 try:
     os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/frontpagedb.py')
     with open(fPath, 'a') as f:
-        f.write("\n" 'running frontpagedb')
+        f.write('\n running frontpagedb')
 except:
     print('could not run frontpagedb')
     with open(fPath, 'a') as f:
-        f.write("\n" 'frontpagedb didnt run')
+        f.write('\n frontpagedb didnt run')
 
 # buylist scraper
 try:
     os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/buylistsetscraper.py')
     with open(fPath, 'a') as f:
-        f.write("\n" 'running buylistscraper')
+        f.write('\n running buylistscraper')
 except:
     with open(fPath, 'a') as f:
-        f.write("\n" 'buylist scraper didnt run')
+        f.write('\n buylist scraper didnt run')
 
 try:
     rows = project_flask.getWatchList()
     with open(fPath, 'a') as f:
-        f.write("\n" 'running getWatchList')
+        f.write('\n running getWatchList')
 except:
     print('could not access getwatchlist')
     with open(fPath, 'a') as f:
-        f.write("\n" 'could not access getwatchlist')
+        f.write('\n could not access getwatchlist')
 
 # refreshes the watchlist trends
 print("updating watchlist")
@@ -69,11 +69,11 @@ try:
         project_flask.updateTrend(row[1])
         print('updating',row[1])
     with open(fPath, 'a') as f:
-        f.write("\n" 'processing watchlist updates')
+        f.write('\n processing watchlist updates')
 except:
     print('could not access updateTrend')
     with open(fPath, 'a') as f:
-        f.write("\n" 'could not access updateTrend')
+        f.write('\n could not access updateTrend')
 
 with open(fPath, 'a') as f:
-    f.write("\n" 'editing done: ' + dailyTime)
+    f.write('\n editing done: ' + dailyTime)
