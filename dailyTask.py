@@ -25,6 +25,7 @@ with open(fPath, 'a') as f:
 
 
 # set price scraper
+
 try:
     os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/setPriceScraper.py')
     with open(fPath, 'a') as f:
@@ -66,8 +67,8 @@ except:
 print("updating watchlist")
 try:
     for row in rows:
-        project_flask.updateTrend(row[1])
-        print('updating',row[1])
+        project_flask.updateTrend(row['id'])
+        print('updating',row['id'])
     with open(fPath, 'a') as f:
         f.write('\n processing watchlist updates')
 except:

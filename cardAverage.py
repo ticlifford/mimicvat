@@ -1,5 +1,5 @@
 
-#this program takes in a card ID, calculates the average past 7 days, and calculates the standard deviation
+#this program takes in a card ID, calculates the average past 7 days and calculates the standard deviation
 #it does the same with the past month
 #if the currrent day's price falls outside this standard deviation, It prints it accordingly
 #it also compares the month and week trends to track CHANGES in the direction which is a big indicator for buying and selling
@@ -59,6 +59,7 @@ def checkPriceMonth(cardId):
             return 'the price has not changed appreciably this month'
     except:
         print('could not do month value change')
+        return 'could not do month value change'
 
 def checkPriceWeek(cardId):
     cardsDb = sqlite3.connect(dbLoc)
@@ -68,11 +69,11 @@ def checkPriceWeek(cardId):
     foilL = []
     current = []
 
-    for row in c.execute('select * from PRICES  where ID = ? ORDER BY datetime DESC LIMIT 7',(cardId,)):
+    for row in c.execute('select * from PRICES where ID = ? ORDER BY datetime DESC LIMIT 7',(cardId,)):
         normL.append(row[2])
         foilL.append(row[3])
 
-    for row in c.execute('select * from PRICES  where ID = ? ORDER BY datetime DESC LIMIT 1',(cardId,)):
+    for row in c.execute('select * from PRICES where ID = ? ORDER BY datetime DESC LIMIT 1',(cardId,)):
         current.append(row[2])
         current.append(row[3])
     try:
@@ -108,6 +109,7 @@ def checkPriceWeek(cardId):
             return 'the price has not changed appreciably this week'
     except:
         print('could not find weekly value change')
+        return 'could not find weekly value change'
 
 def weekMonth(ID):
     #this is a big if statement to determine the action that is presented in the watchlist

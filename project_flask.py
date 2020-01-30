@@ -57,7 +57,7 @@ def index(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500):
         chart = {"renderTo": chartID, "type": chart_type, "height": chart_height, "zoomType": 'x'}
         series = [{"name": 'Price', "data": priceList}]
         title = {"text": cardName}
-        xAxis = {"categories": dateList}
+        xAxis = [{"categories": dateList},{'type':'datetime'}]
         yAxis = {"title": {"text": 'Price in dollars'}}
         pageType = 'graph'
     except:
@@ -85,17 +85,20 @@ def watchlist():
 
         return render_template("watchlistLayout.html", rows = rows)
 
+    # post to insert
     elif request.form.get('removeCard') == None:
         print('/watchlist post request insert')
         con = sql.connect("CARDINFO.db")
         con.row_factory = sql.Row
         cur = con.cursor()
+        # this is the name from html
         r = (request.form['watchlist'])
 
         cardId = ""
         valueIndicator = ""
 
         # card ID fetching
+        # selects first available ID
         try:
             for cardIdNum in cur.execute("select ID from CARDS where UPPER(NAME)=UPPER((?))", (r, )):
                 cardId = cardIdNum[0]
@@ -389,12 +392,21 @@ def searchCard(cardId, cur, priceList, dateList, imageUrl):
         print('the for-loops didnt work for cardUrl and price chart lists')
 
 def updateTrend(cardId):
-    print('running updateTrend for ',cardId)
-    con = sql.connect(dbLoc)
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    valueIndicator = ""
-    valueIndicator = cardAverage.weekMonth(cardId)[2]
+    print('running updateTrend for',cardId)
+    try:
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        print('connected to db')
+    except:
+        print('couldnt connect to db')
+
+    try:
+        valueIndicator = ""
+        valueIndicator = cardAverage.weekMonth(cardId)[2]
+        print('collected cardAverage')
+    except:
+        print('could not perform cardAverage')
     # insert to watchlist
     try:
         cur.execute("INSERT or replace into watchlist (ID, PRICEDIRECTION) values (?, ?)", (cardId, valueIndicator, ) )
@@ -434,17 +446,24 @@ def topCards():
 
 def getWatchList():
     # this is a function to get the watchlist results which I use in my GET and POST for /watchlist
-    con = sql.connect(dbLoc)
-    con.row_factory = sql.Row
-    cur = con.cursor()
     print('running getwatchlist')
-    cur.execute("select cards.name, watchlist.pricedirection, cards.id from watchlist, cards where watchlist.id = cards.id")
-    rows = cur.fetchall()
+    try:
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        print('connected to db')
+    except:
+        print('could not connect to db')
+    try:
+        cur.execute("select cards.name, watchlist.pricedirection, cards.id from watchlist, cards where watchlist.id = cards.id")
+        rows = cur.fetchall()
+    except:
+        print('could not select watchlist')
 
     for x in rows:
         print(x['id'])
-    con.close()
 
+    con.close()
     return rows
 
 
