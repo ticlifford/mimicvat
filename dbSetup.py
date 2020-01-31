@@ -64,10 +64,17 @@ try:
     c.execute('''CREATE TABLE IF NOT EXISTS FRONTPAGE
                 (DATETIME text,
                 NORMPRICE real,
-                UNIQUE(DATETIME))
-                ''')
+                UNIQUE(DATETIME))''')
 
-cardsDb.close()
+    c.execute('''CREATE TABLE IF NOT EXISTS COLLECTIONS
+                (USER_ID text,
+                COST_PAID real,
+                MSRP real,
+                NUMBER_OWNED real,
+                NAME text,
+                CODE text,
+                DATETIME text)''')
+    cardsDb.close()
 
     print('database was created')
 except:

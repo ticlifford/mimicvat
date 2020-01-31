@@ -98,9 +98,9 @@ def watchlist():
         valueIndicator = ""
 
         # card ID fetching
-        # selects first available ID
+        # selects first available ID where id's len is 3
         try:
-            for cardIdNum in cur.execute("select ID from CARDS where UPPER(NAME)=UPPER((?))", (r, )):
+            for cardIdNum in cur.execute("select ID from CARDS where UPPER(NAME)=UPPER((?)) and cards.ONLINEONLY != 'True' and length(cardset)=3", (r, )):
                 cardId = cardIdNum[0]
         except:
             print('could not find card')
@@ -172,7 +172,7 @@ def searchID(cardId, chartID = 'chart_ID2', chart_type = 'line', chart_height = 
         # select ids of all reprints
         print('card im looking up:', cardId)
         try:
-            for x in cur.execute("select id, cardset from cards where name = (select name from cards where id = \"" + cardId + "\") and cards.ONLINEONLY != 'TRUE'"):
+            for x in cur.execute("select id, cardset from cards where name = (select name from cards where id = \"" + cardId + "\") and cards.ONLINEONLY != 'True'"):
                 try:
                     sameCards.append(x[0])
                 except:
@@ -289,7 +289,7 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
     # for the result of the name search, get the ID and put it in cardId
     try:
         print('checking for more cards with the same name as',r)
-        searchResult = cur.execute("select id, cardset from cards where name = (select name from cards where upper(name) = \"" + r.upper() + "\") and cards.ONLINEONLY != 'TRUE'")
+        searchResult = cur.execute("select id, cardset from cards where name = (select name from cards where upper(name) = \"" + r.upper() + "\") and cards.ONLINEONLY != 'True' and length(cardset)=3")
         print('looking at:',searchResult)
         if not searchResult:
             print('there was no search result')
@@ -317,7 +317,7 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
         print('I couldnt select the ids for samecards')
 
     try:
-        for cardIdNum in cur.execute("select ID, CARDSET from CARDS where UPPER(NAME)=UPPER((?))", (r, )):
+        for cardIdNum in cur.execute("select ID, CARDSET from CARDS where UPPER(NAME)=UPPER((?)) and cards.ONLINEONLY != 'True' and length(cardset)=3", (r, )):
             cardId = cardIdNum[0]
 
             # most cards have more than one printing, this compiles a list of each card
@@ -442,7 +442,34 @@ def topCards():
     # return render_template("topLayout.html", rows = rows)
     return render_template("topLayout.html")
 
+@app.route('/collection', methods=['GET', 'POST'])
+def collectionPage():
+    if request.method == "GET":
+        return render_template("collection.html")
+    elif request.method == "POST":
 
+
+        user_id = 'timtim'
+        cost_paid = 3
+        msrp = 5
+        number_owned = 12
+        card_name = (request.form['name-form'])
+        set_code = (request.form['set-form'])
+        datetime = '1-2-2020'
+
+        cardsDb = sql.connect('CARDINFO.db')
+        cursor = cardsDb.cursor()
+        cursor.execute('insert into collections (user_id, cost_paid, msrp, number_owned, name, code, datetime) values (?, ?, ?, ?, ?, ?, ?)',(user_id, cost_paid, msrp, number_owned, card_name, set_code, datetime,))
+        cardsDb.commit()
+
+        for x in cursor.execute('select * from collections'):
+            print(x)
+        cardsDb.close()
+        # find msrp for today
+        # confirm card and code are real
+        # run datetime
+        print(card_name,set_code)
+        return render_template("collection.html")
 
 def getWatchList():
     # this is a function to get the watchlist results which I use in my GET and POST for /watchlist
@@ -465,6 +492,7 @@ def getWatchList():
 
     con.close()
     return rows
+
 
 
 if __name__ == "__main__":

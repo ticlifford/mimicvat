@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block paragraph %}
+<p>Collections will go here.</p>
+{% endblock %}
+
+{% block container %}
+<div class="row">
+    <div class="col-sm-6 col-md-6">
+
+
+            <form class="form-inline mt-2 mt-md-0" method="POST" action="/collection">
+                <input class="form-control mr-sm-2" type="text" placeholder="name" aria-label="watchlist" name="name-form">
+                <input class="form-control mr-sm-2" type="text" placeholder="set" aria-label="watchlist" name="set-form">
+                <input class="form-control mr-sm-2" type="text" placeholder="cost" aria-label="watchlist" name="cost-form">
+                <button class="btn btn-primary mb-2" type="submit">add card</button>
+              </form>
+              <p>This is where collections adding happens
+              </p>
+
+
+
+    </div>
+</div>
+{% endblock %}
