@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 
 {% block paragraph %}
-<p>Collections will go here.</p>
+<p>This page is a work in progress, and should be an interactable collection list that tracks the value of cards you own.
+    It stores the price you paid for specific cards, multiplies that by how many you have, and keeps a total. It then
+    checks the current daily value of those cards, tallies them out, and compares the two numbers. 
+</p>
 {% endblock %}
 
 {% block container %}
@@ -13,10 +16,49 @@
                 <input class="form-control mr-sm-2" type="text" placeholder="name" aria-label="watchlist" name="name-form">
                 <input class="form-control mr-sm-2" type="text" placeholder="set" aria-label="watchlist" name="set-form">
                 <input class="form-control mr-sm-2" type="text" placeholder="cost" aria-label="watchlist" name="cost-form">
+                <input class="form-control mr-sm-2" type="text" placeholder="number purchased" aria-label="watchlist" name="number-form">
                 <button class="btn btn-primary mb-2" type="submit">add card</button>
               </form>
-              <p>This is where collections adding happens
-              </p>
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Card name</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Cost</th>
+                    <th scope="col">MSRP</th>
+                    <th scope="col">Number owned</th>
+                    <th scope="col">MSRP today</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for card in collection_rows %}
+                  <tr>
+                    <!--<td></td>-->
+                     <td>{{card["NAME"]}}</td>
+                     <td>{{card["code"]}}</td>
+                     <td>{{card["cost_paid"]}}</td>
+                     <td>{{card["msrp"]}}</td>
+                     <td>{{card["number_owned"]}}</td>
+                     <td>
+                        <form action="/collection" method="POST">
+                           <input class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" name="removeCard" value="{{card["transaction_id"]}}">
+                         <button class="btn btn-primary mb-2" type="submit">Remove</button>
+                       </form>
+                      </td>
+                  </tr>
+               {% endfor %}
+               {% for x in todays_price %}
+               <tr>
+                <td>
+                    {{x}}
+                </td>
+                {% endfor %}
+                <p>total msrp:{{total_msrp}}</p>
+
+               </tr>
+                </tbody>
+              </table>
 
 
 

@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 import sqlite3 as sql
 import cardAverage
+import datetime
+import time
 
 
 # This is my flask file which runs the application
@@ -445,31 +447,101 @@ def topCards():
 @app.route('/collection', methods=['GET', 'POST'])
 def collectionPage():
     if request.method == "GET":
-        return render_template("collection.html")
-    elif request.method == "POST":
+        collection_rows = getCollection()
+        #today = getTime()
+        datetime = "2019-07-24"
+        today = datetime
+
+        cardsDb = sql.connect('CARDINFO.db')
+        cursor = cardsDb.cursor()
+
+        todays_price = []
+        total_msrp = 0
+        for card in collection_rows:
+            print('total daily msrp is:',total_msrp)
+            cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(card["card_id"],today,))
+            prix = cursor.fetchone()
+            print('prix is:',[prix])
+            todays_price.append(prix)
+            print('number owned:',card["number_owned"])
+            total_msrp = total_msrp+ card["number_owned"] * prix[0]
+        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, total_msrp = total_msrp)
+
+    # if its a post and adding a card from the form
+    elif request.method == "POST" and request.form.get('removeCard') == None:
 
 
         user_id = 'timtim'
         cost_paid = 3
         msrp = 5
-        number_owned = 12
+        number_owned = 1
         card_name = (request.form['name-form'])
         set_code = (request.form['set-form'])
-        datetime = '1-2-2020'
+        cost_paid = (request.form['cost-form'])
+        number_owned = (request.form['number-form'])
+        #today = getTime()
+        datetime = "2019-07-24"
+        today = datetime
 
         cardsDb = sql.connect('CARDINFO.db')
         cursor = cardsDb.cursor()
-        cursor.execute('insert into collections (user_id, cost_paid, msrp, number_owned, name, code, datetime) values (?, ?, ?, ?, ?, ?, ?)',(user_id, cost_paid, msrp, number_owned, card_name, set_code, datetime,))
+        card_id = cursor.execute('select id from cards where upper(name) = upper((?)) and upper(cardset) = upper((?))',(card_name,set_code,))
+        cardid = card_id.fetchone()[0]
+        print('cardid:',cardid)
+
+        print('selecting normprice')
+        cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(cardid,datetime,))
+        #cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(cardid,today,))
+        price = cursor.fetchone()
+        print('card normprice:',price[0])
+
+        if number_owned is '':
+            print('number owned is none')
+            number_owned = 1
+        else:
+            print('number owned is not none')
+
+        cardsDb = sql.connect('CARDINFO.db')
+        cursor = cardsDb.cursor()
+        cursor.execute('insert into collections (user_id, card_id, cost_paid, msrp, number_owned, name, code, datetime, transaction_id) values (?, ?, ?, ?, ?, ?, ?, ?, NULL)',(user_id, cardid, cost_paid, msrp, number_owned, card_name, set_code, datetime, ))
         cardsDb.commit()
 
         for x in cursor.execute('select * from collections'):
             print(x)
-        cardsDb.close()
-        # find msrp for today
-        # confirm card and code are real
-        # run datetime
-        print(card_name,set_code)
-        return render_template("collection.html")
+        collection_rows = getCollection()
+
+        todays_price = []
+        for card in collection_rows:
+            cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(card["card_id"],today,))
+            prix = cursor.fetchone()
+            todays_price.append(prix)
+        return render_template("collection.html",collection_rows = collection_rows, todays_price=todays_price)
+    else:
+        print("remove card post collection")
+        con = sql.connect("CARDINFO.db")
+        cur = con.cursor()
+        transaction_id = request.form.get('removeCard')
+
+        try:
+            cur.execute("delete from collections where transaction_id=(?)", (transaction_id, ))
+            print('removed ',transaction_id,' from collections')
+        except:
+            print('could not remove card from collections')
+        con.commit()
+        con.close()
+        collection_rows = getCollection()
+
+        #today = getTime()
+        datetime = "2019-07-24"
+        today = datetime
+
+        todays_price = []
+        for card in collection_rows:
+            cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(card["card_id"],today,))
+            prix = cursor.fetchone()
+            todays_price.append(prix)
+
+        return render_template("collection.html",collection_rows = collection_rows, todays_price=todays_price)
 
 def getWatchList():
     # this is a function to get the watchlist results which I use in my GET and POST for /watchlist
@@ -493,6 +565,32 @@ def getWatchList():
     con.close()
     return rows
 
+def getCollection():
+    print('running getCollection')
+    try:
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        print('connected to db')
+    except:
+        print('could not connect to db')
+    try:
+        cur.execute("select * from collections where user_id = 'timtim'")
+        rows = cur.fetchall()
+    except:
+        print('could not select collection')
+
+    for x in rows:
+        print(x['name'])
+
+    con.close()
+    return rows
+
+def getTime():
+    ts = time.time()
+    dailyTime = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
+    print('test getTime:',dailyTime)
+    return dailyTime
 
 
 if __name__ == "__main__":
