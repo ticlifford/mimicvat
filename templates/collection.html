@@ -1,13 +1,6 @@
 {% extends "layout.html" %}
 
 {% block paragraph %}
-<p>This page is a work in progress, and should be an interactable collection list that tracks the value of cards you own.
-    It stores the price you paid for specific cards, multiplies that by how many you have, and keeps a total. It then
-    checks the current daily value of those cards, tallies them out, and compares the two numbers. 
-</p>
-{% endblock %}
-
-{% block container %}
 <div class="row">
     <div class="col-sm-6 col-md-6">
 
@@ -28,7 +21,6 @@
                     <th scope="col">Cost</th>
                     <th scope="col">MSRP</th>
                     <th scope="col">Number owned</th>
-                    <th scope="col">MSRP today</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -48,13 +40,8 @@
                       </td>
                   </tr>
                {% endfor %}
-               {% for x in todays_price %}
-               <tr>
-                <td>
-                    {{x}}
-                </td>
-                {% endfor %}
                 <p>total msrp:{{total_msrp}}</p>
+                <p>total paid:{{total_paid}}</p>
 
                </tr>
                 </tbody>
@@ -62,6 +49,35 @@
 
 
 
+              <p>This page is a work in progress, and should be an interactable collection list that tracks the value of cards you own.
+                It stores the price you paid for specific cards, multiplies that by how many you have, and keeps a total. It then
+                checks the current daily value of those cards, tallies them out, and compares the two numbers. 
+            </p>
+
+
     </div>
 </div>
+{% endblock %}
+
+{% block graph %}
+            <!-- this is the highchart javascript -->
+            <div class="col-md-auto">
+                <div id={{ chartID|safe }} class="shadow chart" style="height: 500px; width: 500px;"></div>
+    
+                    <script>
+                        var chart_id = {{ chartID|safe }}
+                        var series = {{ series|safe }}
+                        var title = {{ title|safe }}
+                        var xAxis = {{ xAxis|safe }}
+                        var yAxis = {{ yAxis|safe }}
+                        var chart = {{ chart|safe }}
+                    </script>
+                        
+            
+            </div>
+{% endblock %}
+
+{% block bodyText %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+                       <script src="../static/graph.js"></script>
 {% endblock %}

@@ -28,7 +28,7 @@ dbLoc = 'CARDINFO.db'
 
 
 @app.route('/')
-def index(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500):
+def index(chartID = 'chart_ID', chart_type = 'line', chart_height = 500):
     # the front page with bootstrap layout parent, and static example card
     priceList = []
     dateList = []
@@ -445,7 +445,7 @@ def topCards():
     return render_template("topLayout.html")
 
 @app.route('/collection', methods=['GET', 'POST'])
-def collectionPage():
+def collectionPage(chartID= 'chart_ID', chart_type = 'area', chart_height = 500):
     if request.method == "GET":
         collection_rows = getCollection()
         #today = getTime()
@@ -455,17 +455,37 @@ def collectionPage():
         cardsDb = sql.connect('CARDINFO.db')
         cursor = cardsDb.cursor()
 
-        todays_price = []
-        total_msrp = 0
-        for card in collection_rows:
-            print('total daily msrp is:',total_msrp)
-            cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(card["card_id"],today,))
-            prix = cursor.fetchone()
-            print('prix is:',[prix])
-            todays_price.append(prix)
-            print('number owned:',card["number_owned"])
-            total_msrp = total_msrp+ card["number_owned"] * prix[0]
-        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, total_msrp = total_msrp)
+        todays_price,total_msrp,total_paid = collection_tally(collection_rows,cursor,today)
+        tally_pusher(total_msrp,total_paid,cursor,today)
+        cardsDb.commit()
+        chart_vals = cursor.execute("select DATETIME,COL_VAL, PAID_VAL from collection_val order by datetime asc")
+        
+        x_ax = []
+        y_ax = []
+        z_ax = []
+        for vals in chart_vals:
+            x_ax.append(vals[0])
+            y_ax.append(vals[1])
+            z_ax.append(vals[2])
+        
+
+        # price_chart(x_ax,y_ax)
+
+        # chart insertion
+        try:
+            subtitleText = 'the price chart'
+            chart = {"renderTo": chartID, "type": chart_type, "height": chart_height, "zoomType": 'x'}
+            series = [{"name": "MSRP", "data": y_ax},{"name": "Paid","data":z_ax}]
+            title = {"text": "cost vs value"}
+            xAxis = [{"categories": x_ax},{'type':'datetime'}]
+            yAxis = {"title": {"text": 'Price in dollars'}}
+            pageType = 'graph'
+        except:
+            print('something went wrong with the highcart vars')
+
+
+
+        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, total_msrp = total_msrp, total_paid=total_paid, pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
 
     # if its a post and adding a card from the form
     elif request.method == "POST" and request.form.get('removeCard') == None:
@@ -503,19 +523,17 @@ def collectionPage():
 
         cardsDb = sql.connect('CARDINFO.db')
         cursor = cardsDb.cursor()
-        cursor.execute('insert into collections (user_id, card_id, cost_paid, msrp, number_owned, name, code, datetime, transaction_id) values (?, ?, ?, ?, ?, ?, ?, ?, NULL)',(user_id, cardid, cost_paid, msrp, number_owned, card_name, set_code, datetime, ))
+        cursor.execute('insert into collections (user_id, card_id, cost_paid, msrp, number_owned, name, code, datetime, transaction_id) values (?, ?, ?, ?, ?, ?, ?, ?, NULL)',(user_id, cardid, cost_paid, price[0], number_owned, card_name, set_code, datetime, ))
         cardsDb.commit()
 
         for x in cursor.execute('select * from collections'):
             print(x)
         collection_rows = getCollection()
 
-        todays_price = []
-        for card in collection_rows:
-            cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(card["card_id"],today,))
-            prix = cursor.fetchone()
-            todays_price.append(prix)
-        return render_template("collection.html",collection_rows = collection_rows, todays_price=todays_price)
+        todays_price,total_msrp,total_paid = collection_tally(collection_rows,cursor,today)
+        #pushes new information so graph will have current info
+        #tally_pusher(collection_rows,cursor,today)
+        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, total_msrp = total_msrp, total_paid=total_paid)
     else:
         print("remove card post collection")
         con = sql.connect("CARDINFO.db")
@@ -535,13 +553,13 @@ def collectionPage():
         datetime = "2019-07-24"
         today = datetime
 
-        todays_price = []
-        for card in collection_rows:
-            cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(card["card_id"],today,))
-            prix = cursor.fetchone()
-            todays_price.append(prix)
-
-        return render_template("collection.html",collection_rows = collection_rows, todays_price=todays_price)
+        cardsDb = sql.connect('CARDINFO.db')
+        cursor = cardsDb.cursor()
+        todays_price,total_msrp,total_paid = collection_tally(collection_rows,cursor,today)
+        #pushes new information so graph will have current info
+        #tally_pusher(collection_rows,cursor,today)
+        cardsDb.close()
+        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, total_msrp = total_msrp, total_paid=total_paid)
 
 def getWatchList():
     # this is a function to get the watchlist results which I use in my GET and POST for /watchlist
@@ -592,6 +610,54 @@ def getTime():
     print('test getTime:',dailyTime)
     return dailyTime
 
+def collection_tally(collection_rows,cursor,today):
+    todays_price = []
+    total_msrp = 0
+    total_paid = 0
+    for card in collection_rows:
+        cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(card["card_id"],today,))
+        prix = cursor.fetchone()
+        print('prix is:',[prix])
+        todays_price.append(prix)
+        print('number owned:',card["number_owned"])
+        total_msrp = total_msrp+ card["number_owned"] * prix[0]
+        total_paid = total_paid+ card["number_owned"] * card["cost_paid"]
+        #total_paid could also go here
+    return todays_price,total_msrp,total_paid
+
+#push the daily tally to a db
+
+def tally_pusher(total_msrp,total_paid,cursor,today):
+    print('running tally pusher mk2')
+    print('total msrp is:',total_msrp)
+
+    cursor.execute('insert or replace into COLLECTION_VAL (USER_ID,COL_VAL,PAID_VAL,DATETIME) values (?,?,?,?)',("timtim",total_msrp,total_paid,today,))
+
+def price_chart(x_ax,y_ax):
+    print('running price_chart')
+    # chart insertion
+    chartID = 'chart_ID2'
+    chart_type = 'line'
+    chart_height = 500
+
+    try:
+        subtitleText = 'the price chart'
+        chart = {"renderTo": chartID, "type": chart_type, "height": chart_height, "zoomType": 'x'}
+        series = [{"name": 'Price', "data": y_ax}]
+        title = {"text": "the title here"}
+        xAxis = {"categories": x_ax}
+        yAxis = {"title": {"text": 'Price in dollars'}}
+        pageType = 'graph'
+    except:
+        print('something went wrong with the highcart vars in price_chart')
+
+"""
+def tally_pusher(collection_rows,cursor,today):
+    print('running tally pusher')
+    todays_price, total_msrp = collection_tally(collection_rows,cursor,today)
+    print('total msrp is:',total_msrp)
+    cursor.execute('insert or replace into COLLECTION_VAL (USER_ID,COL_VAL,DATETIME) values (?,?,?)',("timtim",total_msrp,today,))
+"""
 
 if __name__ == "__main__":
     app.run(debug=True)

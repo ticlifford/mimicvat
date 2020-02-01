@@ -77,6 +77,16 @@ try:
                 DATETIME text,
                 transaction_id integer primary key autoincrement,
                 unique(transaction_id))''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS COLLECTION_VAL
+                (USER_ID text,
+                COL_VAL real,
+                PAID_VAL real,
+                DATETIME text,
+                UNIQUE(DATETIME),
+                PRIMARY KEY (USER_ID, DATETIME)
+
+                )''')
     cardsDb.close()
 
     print('database was created')
