@@ -49,17 +49,11 @@
 
 
 
-              <p>This page is a work in progress, and should be an interactable collection list that tracks the value of cards you own.
-                It stores the price you paid for specific cards, multiplies that by how many you have, and keeps a total. It then
-                checks the current daily value of those cards, tallies them out, and compares the two numbers. 
+              <p>
             </p>
 
 
     </div>
-</div>
-{% endblock %}
-
-{% block graph %}
             <!-- this is the highchart javascript -->
             <div class="col-md-auto">
                 <div id={{ chartID|safe }} class="shadow chart" style="height: 500px; width: 500px;"></div>
@@ -75,6 +69,10 @@
                         
             
             </div>
+</div>
+{% endblock %}
+
+{% block graph %}
 {% endblock %}
 
 {% block bodyText %}
