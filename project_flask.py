@@ -441,8 +441,8 @@ def collectionPage():
     today = getTime()
 
     try:
-        # grab the chart values for today: total mrsp, and what I paid
-        # push those numbers to the database for today's date
+    # grab the chart values for today: total mrsp, and what I paid
+    # push those numbers to the database for today's date
         cardsDb = sql.connect('CARDINFO.db')
         cursor = cardsDb.cursor()
         todays_price,total_msrp,total_paid = collection_tally(collection_rows,cursor,today)
@@ -461,40 +461,7 @@ def collectionPage():
                 print('could not print val')
 
     if request.method == "GET":
-        cardsDb = sql.connect('CARDINFO.db')
-        cursor = cardsDb.cursor()
-        chart_vals = cursor.execute("select DATETIME,COL_VAL, PAID_VAL from collection_val order by datetime asc")
-        
-        x_ax = []
-        y_ax = []
-        z_ax = []
-        for vals in chart_vals:
-            x_ax.append(vals[0])
-            y_ax.append(vals[1])
-            z_ax.append(vals[2])
-        cardsDb.close()
-
-        # chart insertion
-        chartID = 'chart_ID'
-        chart_type = 'area'
-        chart_height = 500
-        try:
-            chart = {"renderTo": chartID, "type": chart_type, "height": chart_height, "zoomType": 'x'}
-            series = [{"name": "MSRP", "data": y_ax},{"name": "Paid","data":z_ax}]
-            title = {"text": "cost vs value"}
-            xAxis = [{"categories": x_ax},{'type':'datetime'}]
-            yAxis = {"title": {"text": 'Price in dollars'}}
-            pageType = 'graph'
-        except:
-            print('something went wrong with the highcart vars')
-        try:
-            perc = int(total_msrp/total_paid * 100)
-        except:
-            perc = 0
-
-
-        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, perc = perc, total_msrp = total_msrp, total_paid=total_paid, pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
-
+        None
     # if its a post and adding a card from the form
     elif request.method == "POST" and request.form.get('removeCard') == None:
 
@@ -586,12 +553,7 @@ def collectionPage():
             print('values:')
             mis_val = []
 
-        p = price_chart()
-        try:
-            perc = int(total_msrp/total_paid * 100)
-        except:
-            perc = 0
-        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price,perc=perc, total_msrp = total_msrp, total_paid=total_paid, pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4])
+
     else:
         print("remove card post collection")
         con = sql.connect("CARDINFO.db")
@@ -615,12 +577,14 @@ def collectionPage():
         tally_pusher(total_msrp,total_paid,cursor,today)
         cardsDb.commit()
         cardsDb.close()
-        p = price_chart()
-        try:
-            perc = int(total_msrp/total_paid * 100)
-        except:
-            perc = 0
-        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price,perc=perc, total_msrp = total_msrp, total_paid=total_paid, pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4])
+
+    p = price_chart()
+    try:
+        perc = int(total_msrp/total_paid * 100)
+    except:
+        perc = 0
+
+    return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, perc = perc, total_msrp = round(total_msrp,2), total_paid=round(total_paid,2), pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4])
 
 def getWatchList():
 # this is a function to get the watchlist results which I use in my GET and POST for /watchlist
@@ -747,7 +711,7 @@ def price_chart():
     try:
         cardsDb.close()
     except:
-        print('could not close db in price_chart')
+        print('could not close db')
     # chart insertion
 
     try:
