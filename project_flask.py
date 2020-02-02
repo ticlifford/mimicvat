@@ -422,24 +422,18 @@ def searchGet():
 @app.route('/topCards')
 def topCards():
 
-    # this is too slow to run on every page load.
-    # I need to do this daily and just import the json.
-    """
-    con = sql.connect(dbLoc)
-    con.row_factory = sql.Row
-    cur = con.cursor()
-    cur.execute("SELECT cards.NAME, cards.CARDSET, prices.FOILRATIO from prices, CARDS where NORMPRICE is not null and foilprice is not NULL and cards.ID = prices.ID order by datetime desc, FOILRATIO DESC limit 10")
-
-    rows = cur.fetchall()
-    for x in rows:
-        print(x[0])
-    con.close()
-    """
-
     # tensorflow/keras processing could go here in the future
 
     # return render_template("topLayout.html", rows = rows)
     return render_template("topLayout.html")
+
+
+
+
+
+
+
+
 
 @app.route('/collection', methods=['GET', 'POST'])
 def collectionPage():
@@ -458,6 +452,13 @@ def collectionPage():
         print('ran collection tally and pusher')
     except:
         print('could not run collection tally or pusher')
+        print('values:')
+        no_val = [todays_price,total_msrp,total_paid]
+        for x in no_val:
+            try:
+                print(x)
+            except:
+                print('could not print val')
 
     if request.method == "GET":
         cardsDb = sql.connect('CARDINFO.db')
@@ -486,74 +487,111 @@ def collectionPage():
             pageType = 'graph'
         except:
             print('something went wrong with the highcart vars')
+        try:
+            perc = int(total_msrp/total_paid * 100)
+        except:
+            perc = 0
 
 
-
-        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, total_msrp = total_msrp, total_paid=total_paid, pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
+        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, perc = perc, total_msrp = total_msrp, total_paid=total_paid, pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis)
 
     # if its a post and adding a card from the form
     elif request.method == "POST" and request.form.get('removeCard') == None:
 
-
-        user_id = 'timtim'
-        cost_paid = 3
-        number_owned = 1
-        card_name = (request.form['name-form'])
-        set_code = (request.form['set-form'])
-        cost_paid = (request.form['cost-form'])
-        number_owned = (request.form['number-form'])
-
-        if number_owned is '':
-            print('number owned is none')
+        try:
+            # html form request
+            user_id = 'timtim'
+            cost_paid = 3
             number_owned = 1
-        else:
-            print('number owned is not none')
+            card_name = (request.form['name-form'])
+            set_code = (request.form['set-form'])
+            cost_paid = (request.form['cost-form'])
+            number_owned = (request.form['number-form'])
+        except:
+            print('could not request html form data')
 
-        if cost_paid is '':
-            print('cost is none')
-            cost_paid = 0
-        else:
-            print('cost is not none')
-        
-        if set_code is '':
-            print('set code is none')
+        try:
+        # check form data results for missing info
+            if number_owned is '':
+                print('number owned is none')
+                number_owned = 1
+            else:
+                print('number owned is not none')
+
+            if cost_paid is '':
+                print('cost is none')
+                cost_paid = 0
+            else:
+                print('cost is not none')
+            
+            if set_code is '':
+                print('set code is none')
+                cardsDb = sql.connect('CARDINFO.db')
+                cursor = cardsDb.cursor()
+                cursor.execute('select cardset,id from cards where upper(name)=upper(?) and cards.ONLINEONLY != "True" and length(cardset)=3',(card_name,))
+                set_code,card_id = cursor.fetchone()
+            else:
+                print('set code is known')
+        except:
+            print('something went wrong checking form data results')
+
+        try:
+            # select id from cards
             cardsDb = sql.connect('CARDINFO.db')
             cursor = cardsDb.cursor()
-            cursor.execute('select cardset,id from cards where upper(name)=upper(?) and cards.ONLINEONLY != "True" and length(cardset)=3',(card_name,))
-            set_code,card_id = cursor.fetchone()
-        else:
-            print('set code is known')
+            card_id = cursor.execute('select id from cards where upper(name) = upper((?)) and upper(cardset) = upper((?))',(card_name,set_code,))
+            cardid = card_id.fetchone()[0]
+            print('cardid:',cardid)
+        except:
+            print('could not select id from cards')
 
-        cardsDb = sql.connect('CARDINFO.db')
-        cursor = cardsDb.cursor()
-        card_id = cursor.execute('select id from cards where upper(name) = upper((?)) and upper(cardset) = upper((?))',(card_name,set_code,))
-        cardid = card_id.fetchone()[0]
-        print('cardid:',cardid)
+        try:
+            print('selecting latest normprice')
+            #cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(cardid,today,))
+            cursor.execute('select normprice from prices where id = (?) order by datetime',(cardid,))
+            price = cursor.fetchone()
+            print('card normprice:',price[0])
+        except:
+            print('could not select latest normprice')
+        try:
+            # insert into collections
+            cursor.execute('insert into collections (user_id, card_id, cost_paid, msrp, number_owned, name, code, datetime, transaction_id) values (?, ?, ?, ?, ?, ?, ?, ?, NULL)',(user_id, cardid, cost_paid, price[0], number_owned, card_name, set_code, today, ))
+            cardsDb.commit()
+        except:
+            print('could not insert into collections')
+            unable = [user_id, cardid, cost_paid, price[0], number_owned, card_name, set_code, today]
+            for x in unable:
+                try:
+                    print(x)
+                except:
+                    print('cant print this val')
 
-        print('selecting normprice')
-        cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(cardid,today,))
-        #cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(cardid,today,))
-        price = cursor.fetchone()
-        print('card normprice:',price[0])
+        try:
+            # print collections, run getCollection
+            for x in cursor.execute('select * from collections'):
+                print(x)
+            collection_rows = getCollection()
+        except:
+            print('could not run getCollection')
 
-        cardsDb = sql.connect('CARDINFO.db')
-        cursor = cardsDb.cursor()
-        cursor.execute('insert into collections (user_id, card_id, cost_paid, msrp, number_owned, name, code, datetime, transaction_id) values (?, ?, ?, ?, ?, ?, ?, ?, NULL)',(user_id, cardid, cost_paid, price[0], number_owned, card_name, set_code, today, ))
-        cardsDb.commit()
-
-        for x in cursor.execute('select * from collections'):
-            print(x)
-        collection_rows = getCollection()
-
-        todays_price,total_msrp,total_paid = collection_tally(collection_rows,cursor,today)
-        #pushes new information so graph will have current info
-        tally_pusher(total_msrp,total_paid,cursor,today)
-        cardsDb.commit()
-        cardsDb.close()
-
+        try:
+            #pusher
+            todays_price,total_msrp,total_paid = collection_tally(collection_rows,cursor,today)
+            #pushes new information so graph will have current info
+            tally_pusher(total_msrp,total_paid,cursor,today)
+            cardsDb.commit()
+            cardsDb.close()
+        except:
+            print('couldnt run collection tally, or pusher')
+            print('values:')
+            mis_val = []
 
         p = price_chart()
-        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, total_msrp = total_msrp, total_paid=total_paid, pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4])
+        try:
+            perc = int(total_msrp/total_paid * 100)
+        except:
+            perc = 0
+        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price,perc=perc, total_msrp = total_msrp, total_paid=total_paid, pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4])
     else:
         print("remove card post collection")
         con = sql.connect("CARDINFO.db")
@@ -578,9 +616,14 @@ def collectionPage():
         cardsDb.commit()
         cardsDb.close()
         p = price_chart()
-        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, total_msrp = total_msrp, total_paid=total_paid, pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4])
+        try:
+            perc = int(total_msrp/total_paid * 100)
+        except:
+            perc = 0
+        return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price,perc=perc, total_msrp = total_msrp, total_paid=total_paid, pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4])
+
 def getWatchList():
-    # this is a function to get the watchlist results which I use in my GET and POST for /watchlist
+# this is a function to get the watchlist results which I use in my GET and POST for /watchlist
     print('running getwatchlist')
     try:
         con = sql.connect(dbLoc)
@@ -602,6 +645,7 @@ def getWatchList():
     return rows
 
 def getCollection():
+# selects existing card information from collection db
     print('running getCollection')
     try:
         con = sql.connect(dbLoc)
@@ -612,47 +656,75 @@ def getCollection():
         print('could not connect to db')
     try:
         cur.execute("select * from collections where user_id = 'timtim'")
+    except:
+        print('could not select collection')
+    try:
         rows = cur.fetchall()
         print('selecting all collection values for timtim:')
     except:
-        print('could not select collection')
+        print('could not fetch all collection')
 
-    for x in rows:
-        print(x['name'])
-
+    try:
+        for x in rows:
+            print(x['name'])
+    except:
+        print('could not print rows')
     con.close()
-    return rows
+    try:
+        return rows
+    except:
+        print('get_collection returned nothing')
+        return []
 
 def getTime():
+# returns todays date in string format
     ts = time.time()
     dailyTime = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
     print('test getTime:',dailyTime)
     return dailyTime
 
+def yesterday():
+# returns yesterdays date in string format
+    ts = time.time() - 86400
+    dailyTime = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
+    print('test yesterday:',dailyTime)
+    return dailyTime
+
 def collection_tally(collection_rows,cursor,today):
+# counts up values of the cards listed in user's collection
+# returns the total values 
+    print('running collection tally')
     todays_price = []
     total_msrp = 0
     total_paid = 0
+
     for card in collection_rows:
-        cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(card["card_id"],today,))
+        cursor.execute('select normprice from prices where id = (?) order by datetime',(card["card_id"],))
         prix = cursor.fetchone()
         print('prix is:',[prix])
         todays_price.append(prix)
         print('number owned:',card["number_owned"])
         total_msrp = total_msrp+ card["number_owned"] * prix[0]
         total_paid = total_paid+ card["number_owned"] * card["cost_paid"]
+
+
         #total_paid could also go here
     return todays_price,total_msrp,total_paid
 
-#push the daily tally to a db
-
 def tally_pusher(total_msrp,total_paid,cursor,today):
+# push the daily tally to a db
     print('running tally pusher:')
     print('todays msrp is:',total_msrp)
+    try:
+        cursor.execute('insert or replace into COLLECTION_VAL (USER_ID,COL_VAL,PAID_VAL,DATETIME) values (?,?,?,?)',("timtim",total_msrp,total_paid,today,))
+        print('tally pushed')
+    except:
+        print('could not push tally')
+    print('tally pusher ending')
 
-    cursor.execute('insert or replace into COLLECTION_VAL (USER_ID,COL_VAL,PAID_VAL,DATETIME) values (?,?,?,?)',("timtim",total_msrp,total_paid,today,))
-    print('tally is pushed')
 def price_chart():
+# used for displaying collection highcart
+# returns values in a dictionary
     print('running price_chart')
     try:
         print('refreshing chart data')
@@ -664,16 +736,18 @@ def price_chart():
     x_ax = []
     y_ax = []
     z_ax = []
-    for vals in chart_vals:
-        print(vals)
-        x_ax.append(vals[0])
-        y_ax.append(vals[1])
-        z_ax.append(vals[2])
-    
-    cardsDb.close()
-
-    # price_chart(x_ax,y_ax)
-
+    try:
+        for vals in chart_vals:
+            print(vals)
+            x_ax.append(vals[0])
+            y_ax.append(vals[1])
+            z_ax.append(vals[2])
+    except:
+        print('could not append chart_vals')
+    try:
+        cardsDb.close()
+    except:
+        print('could not close db in price_chart')
     # chart insertion
 
     try:
@@ -686,14 +760,6 @@ def price_chart():
     except:
         print('something went wrong with the highcart vars')
     return [chart,series,title,xAxis,yAxis,pageType]
-
-"""
-def tally_pusher(collection_rows,cursor,today):
-    print('running tally pusher')
-    todays_price, total_msrp = collection_tally(collection_rows,cursor,today)
-    print('total msrp is:',total_msrp)
-    cursor.execute('insert or replace into COLLECTION_VAL (USER_ID,COL_VAL,DATETIME) values (?,?,?)',("timtim",total_msrp,today,))
-"""
 
 if __name__ == "__main__":
     app.run(debug=True)

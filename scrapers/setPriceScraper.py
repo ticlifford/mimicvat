@@ -9,13 +9,17 @@ import sqlite3
 import sys
 
 def dataParse():
-    for obj in data['data']:
-        print(obj['name'])
-        print(obj['prices']['usd'])
-        print(obj['id'])
+    try:
+        for obj in data['data']:
+            print(obj['name'])
+            print(obj['prices']['usd'])
+            print(obj['id'])
+    except:
+        print('could not dataParse')
 
 def checkPage(data):
     try:
+        print('checking page:')
         if data['has_more'] == True:
                 print('I found another page of cards')
                 jason_obj = urllib.request.urlopen(data['next_page'])
@@ -38,20 +42,20 @@ def setGeneration(set):
         print('something went wrong with set',set)
 
 def getTime():
-        try:
-                ts = time.time()
-                dateTime = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
-                return dateTime
-        except:
-                print('getTime didnt work')
+    try:
+            ts = time.time()
+            dateTime = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
+            return dateTime
+    except:
+            print('getTime didnt work')
 print('test getTime:',getTime())
 
 def foilRatio():
-        try:
-                foilRatio = float(obj['prices']['usd_foil'])/float(obj['prices']['usd'])
-                return foilRatio
-        except:
-                return None
+    try:
+            foilRatio = float(obj['prices']['usd_foil'])/float(obj['prices']['usd'])
+            return foilRatio
+    except:
+            return None
 
 def dailyPrice(data):
     for obj in data['data']:
@@ -83,20 +87,26 @@ def dailyPrice(data):
     checkPage(data)
 
 def printDb():
+    try:
         print('im printing the db here:')
         for row in c.execute('SELECT * FROM PRICES'):
                 print(row)
+    except:
+        print('could not print prices db')
+
 
 cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
 
 current_time = getTime()
-
-with open('setNames.csv', 'r') as csv_file:
-    csv_reader = csv.reader(csv_file)
-    for line in csv_reader:
-        print('set scraping:',line[0])
-        setGeneration(line[0])
+try:
+    with open('setNames.csv', 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        for line in csv_reader:
+            print('set scraping:',line[0])
+            setGeneration(line[0])
+except:
+    print('could not write to setNames.csv')
 
 cardsDb.commit()
 print('im closing the db')
