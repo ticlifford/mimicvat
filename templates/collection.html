@@ -13,6 +13,21 @@
                 <button class="btn btn-primary mb-2" type="submit">add card</button>
               </form>
 
+              <table>
+              <tr>
+                <td><b>total msrp:</b></td>
+                <td>${{total_msrp}}</td>
+                <td><b>total paid:</b></td>
+                <td>${{total_paid}}</td>
+            </tr>
+            <tr>
+                <td><b>dollars made:</b></td>
+                <td>${{(total_msrp-total_paid)|int}}</td>
+                <td><b>percent gained:</b></td>
+                <td>{{(total_msrp/total_paid * 100)|int}}%</td>
+            </tr>
+        </table>
+
               <table class="table">
                 <thead>
                   <tr>
@@ -40,9 +55,6 @@
                       </td>
                   </tr>
                {% endfor %}
-                <p>total msrp:{{total_msrp}}</p>
-                <p>total paid:{{total_paid}}</p>
-
                </tr>
                 </tbody>
               </table>
