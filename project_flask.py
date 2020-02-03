@@ -515,7 +515,7 @@ def collectionPage():
         try:
             print('selecting latest normprice')
             #cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(cardid,today,))
-            cursor.execute('select normprice from prices where id = (?) order by datetime',(cardid,))
+            cursor.execute('select normprice from prices where id = (?) order by datetime desc',(cardid,))
             price = cursor.fetchone()
             print('card normprice:',price[0])
         except:
@@ -663,7 +663,7 @@ def collection_tally(collection_rows,cursor,today):
     total_paid = 0
 
     for card in collection_rows:
-        cursor.execute('select normprice from prices where id = (?) order by datetime',(card["card_id"],))
+        cursor.execute('select normprice from prices where id = (?) order by datetime desc',(card["card_id"],))
         prix = cursor.fetchone()
         print('prix is:',[prix])
         todays_price.append(prix)

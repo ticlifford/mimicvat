@@ -8,6 +8,13 @@ import datetime
 import sqlite3
 import sys
 
+fPath = '/home/timc/flask_project/flask_app/daily.txt'
+csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+
+with open(fPath, 'a') as f:
+    f.write('\n set price scraper crontab:')
+
 def dataParse():
     try:
         for obj in data['data']:
@@ -29,7 +36,15 @@ def checkPage(data):
         print('check page could not perform loop')
 
 def setGeneration(set):
-    print('the set is',set)
+
+    try:
+        print('the set is',set)
+    except:
+        with open(fPath, 'a') as f:
+            f.write('\n could not print set in setgen')
+
+    with open(fPath, 'a') as f:
+        f.write('\n scraping:'+set)
     url = "https://api.scryfall.com/cards/search?q=set%3D" + set
     print('sleeping now')
     time.sleep(.600)
@@ -38,8 +53,12 @@ def setGeneration(set):
         jason_obj = urllib.request.urlopen(url)
         data = json.load(jason_obj)
         dailyPrice(data)
+        with open(fPath, 'a') as f:
+            f.write('\n correctly scraping set:'+set)
     except:
         print('something went wrong with set',set)
+        with open(fPath, 'a') as f:
+            f.write('\n problem scraping set:'+set)
 
 def getTime():
     try:
@@ -48,6 +67,8 @@ def getTime():
             return dateTime
     except:
             print('getTime didnt work')
+            with open(fPath, 'a') as f:
+                f.write('\n couldnt run getTime')
 print('test getTime:',getTime())
 
 def foilRatio():
@@ -84,7 +105,10 @@ def dailyPrice(data):
                 print('could not add to db')
                 print( 'id:', obj['id'],'usd:' ,obj['prices']['usd'], 'foil:', obj['prices']['usd_foil'])
                 sys.exit()
-    checkPage(data)
+    try:
+        checkPage(data)
+    except:
+        print('could not checkPage')
 
 def printDb():
     try:
@@ -94,20 +118,36 @@ def printDb():
     except:
         print('could not print prices db')
 
-
-cardsDb = sqlite3.connect('CARDINFO.db')
-c = cardsDb.cursor()
-
-current_time = getTime()
 try:
-    with open('setNames.csv', 'r') as csv_file:
+    print('setPricescraper connecting to db')
+    with open(fPath, 'a') as f:
+        f.write('\n setPricescraper connecting to db')
+    cardsDb = sqlite3.connect(dbPath)
+    c = cardsDb.cursor()
+except:
+    print('couldnt connect to db')
+    with open(fPath, 'a') as f:
+        f.write('\n setPricescraper could not connect to db')
+
+try:
+    current_time = getTime()
+except:
+    print('could not get current time')
+
+try:
+    with open(csvPath, 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         for line in csv_reader:
-            print('set scraping:',line[0])
+            print(line[0])
             setGeneration(line[0])
+
 except:
-    print('could not write to setNames.csv')
+    print('could not open csvPath')
+
 
 cardsDb.commit()
 print('im closing the db')
 cardsDb.close()
+
+with open(fPath, 'a') as f:
+    f.write('\n finished running set price scraper')

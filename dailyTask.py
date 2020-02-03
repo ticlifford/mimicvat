@@ -47,17 +47,19 @@ except:
 
 # buylist scraper
 try:
-    os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/buylistsetscraper.py')
     with open(fPath, 'a') as f:
         f.write('\n running buylistscraper')
+    os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/buylistsetscraper.py')
+
 except:
     with open(fPath, 'a') as f:
         f.write('\n buylist scraper didnt run')
 
 try:
-    rows = project_flask.getWatchList()
     with open(fPath, 'a') as f:
         f.write('\n running getWatchList')
+    rows = project_flask.getWatchList()
+
 except:
     print('could not access getwatchlist')
     with open(fPath, 'a') as f:
@@ -66,11 +68,12 @@ except:
 # refreshes the watchlist trends
 print("updating watchlist")
 try:
+    with open(fPath, 'a') as f:
+        f.write('\n processing watchlist updates')
     for row in rows:
         project_flask.updateTrend(row['id'])
         print('updating',row['id'])
-    with open(fPath, 'a') as f:
-        f.write('\n processing watchlist updates')
+
 except:
     print('could not access updateTrend')
     with open(fPath, 'a') as f:
