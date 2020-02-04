@@ -33,14 +33,13 @@ for x in rows:
 # watchlist: a list of cards users can modify to track cards with
 # search: a series of get/post routes for searching for specific cards
 # topcards: an experimental page for displaying useful statistics and potential future features.
-# i'm currently working on integrating machine learning with keras to this section, and also a
-# card generator page with an lstm model just for fun
-#
+# I have it displaying some pandas stuff right now.
+
 
 
 @app.route('/')
 def index(chartID = 'chart_ID', chart_type = 'line', chart_height = 500):
-    # the front page with bootstrap layout parent, and static example card
+    # the front page with a static example card
     priceList = []
     dateList = []
     cardId = "810a3792-a689-4849-bc14-fb3c71153aba"
@@ -52,7 +51,6 @@ def index(chartID = 'chart_ID', chart_type = 'line', chart_height = 500):
     con.row_factory = sql.Row
     cur = con.cursor()
 
-    # imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl)
     imageUrl = 'https://img.scryfall.com/cards/normal/front/8/1/810a3792-a689-4849-bc14-fb3c71153aba.jpg?1562920975'
 
 
@@ -160,7 +158,7 @@ def searchID(cardId, chartID = 'chart_ID2', chart_type = 'line', chart_height = 
         con.row_factory = sql.Row
         cur = con.cursor()
 
-        # initializing my variables, cardId as a string, pricelist/datelist for graph, imageurl as string
+        # initializing my variables
         priceList = []
         dateList = []
         imageUrl = ""
@@ -170,7 +168,7 @@ def searchID(cardId, chartID = 'chart_ID2', chart_type = 'line', chart_height = 
         cardInfo = {}
         cardName = ""
 
-        # selects name and set of current card
+        # selects name and set of the card
         try:
             for x in cur.execute("select NAME, CARDSET from CARDS where ID=(?)", (cardId, )):
                 print('the name is:', x[0])
@@ -332,7 +330,7 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
             cardId = cardIdNum[0]
 
             # most cards have more than one printing, this compiles a list of each card
-            # currently, I display the last card thats in my list
+            # currently, I display the last card thats in my list I also filter to remove online cards and promos
             sameCards.append(cardIdNum[0])
     except:
         print('I couldnt get the cardID')
@@ -421,14 +419,15 @@ def updateTrend(cardId):
     try:
         cur.execute("INSERT or replace into watchlist (ID, PRICEDIRECTION) values (?, ?)", (cardId, valueIndicator, ) )
         con.commit()
+        con.close()
     except:
         print('could not update card with updateTrend')
-    con.close()
+        con.close()
 
 
 @app.route('/search', methods=['GET'])
 def searchGet():
-    return render_template("searchGetLayout.html")
+    return render_template("searchGetLayout.html", card_names=card_names)
 
 @app.route('/topCards')
 def topCards():
@@ -688,6 +687,7 @@ def collection_tally(collection_rows,cursor,today):
 
 def tally_pusher(total_msrp,total_paid,cursor,today):
 # push the daily tally to a db
+# this is a wrapper for a user's tally. I currently have it hardcoded to "timtim".
     print('running tally pusher:')
     print('todays msrp is:',total_msrp)
     try:
