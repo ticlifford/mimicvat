@@ -19,7 +19,7 @@ try:
                 EDHNUM real)''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS WATCHLIST
-                (ID text,
+                (ID text primary key,
                 PRICEDIRECTION text,
                 UNIQUE(ID))''')
 
@@ -28,18 +28,21 @@ try:
                 DATETIME text,
                 NORMPRICE real,
                 FOILPRICE real,
-                FOILRATIO real)''')
+                FOILRATIO real,
+                PRIMARY KEY(ID,DATETIME))''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS BUYLIST
                 (NAME text,
                 DATETIME text,
                 SETNAME text,
-                BUYPRICE real)''')
+                BUYPRICE real,
+                PRIMARY KEY(NAME,SETNAME))''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS CARDSET
                 (NAME text,
                 CODE text,
                 RELEASEDATE text,
+                PRIMARY KEY(CODE),
                 UNIQUE(CODE))''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS CARDS
@@ -59,11 +62,13 @@ try:
                 NONFOIL text,
                 ONLINEONLY text,
                 RARITY text,
+                PRIMARY KEY(ID),
                 UNIQUE(ID))''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS FRONTPAGE
                 (DATETIME text,
                 NORMPRICE real,
+                PRIMARY KEY(DATETIME),
                 UNIQUE(DATETIME))''')
 
     c.execute('''CREATE TABLE IF NOT EXISTS COLLECTIONS
@@ -85,7 +90,6 @@ try:
                 DATETIME text,
                 UNIQUE(DATETIME),
                 PRIMARY KEY (USER_ID, DATETIME)
-
                 )''')
     cardsDb.close()
 
