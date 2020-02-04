@@ -60,13 +60,21 @@
               </li>
             </ul>
             <form class="form-inline mt-2 mt-md-0" method="POST" action="/search">
-              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="searchbar">
+              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="searchbar" list="card_names">
               <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
           </div>
         </nav>
       </header>
       
+
+      <datalist id="card_names" size="8">
+
+          {% for name in card_names %}
+          <option value="{{name}}"></option>
+          {% endfor %}
+
+      </datalist>
 
 
       <!-- Begin page content -->

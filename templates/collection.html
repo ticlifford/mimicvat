@@ -11,7 +11,7 @@
                          Mimicvat tracks the value of your cards by scraping the tcgplayer.com market value
                         every day, and lets you know when prices spike.</p>
             <form class="form-inline mt-2 mt-md-0" method="POST" action="/collection">
-                <input class="form-control mr-sm-2" type="text" placeholder="name" aria-label="watchlist" name="name-form">
+                <input class="form-control mr-sm-2" type="text" placeholder="name" aria-label="watchlist" name="name-form" list="card_names">
                 <input class="form-control mr-sm-2" type="text" placeholder="set" aria-label="watchlist" name="set-form">
                 <input class="form-control mr-sm-2" type="text" placeholder="cost" aria-label="watchlist" name="cost-form">
                 <input class="form-control mr-sm-2" type="text" placeholder="number purchased" aria-label="watchlist" name="number-form">
@@ -19,6 +19,13 @@
                 <button class="btn btn-primary mb-2" type="submit">add card</button>
                 </div>
               </form>
+
+<datalist id="card_names" size="8">
+    {% for name in card_names %}
+    <option value="{{name}}"></option>
+    {% endfor %}
+</datalist>
+
 
                 </div>
             </div>

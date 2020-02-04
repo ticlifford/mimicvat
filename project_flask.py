@@ -10,9 +10,20 @@ import time
 app = Flask(__name__)
 
 # the location of the database, when running locally vs on server
-#dbLoc = '/home/timc/flask_project/flask_app/CARDINFO.db'
-dbLoc = 'CARDINFO.db'
+dbLoc = '/home/timc/flask_project/flask_app/CARDINFO.db'
+#dbLoc = 'CARDINFO.db'
 
+
+
+card_names = []
+con = sql.connect(dbLoc)
+con.row_factory = sql.Row
+cur = con.cursor()
+cur.execute("select distinct(name) from CARDS")
+rows = cur.fetchall()
+con.close()
+for x in rows:
+    card_names.append(x[0])
 
 #
 # App routes:
@@ -37,7 +48,7 @@ def index(chartID = 'chart_ID', chart_type = 'line', chart_height = 500):
     cardName = "Land Tax"
 
 
-    con = sql.connect("CARDINFO.db")
+    con = sql.connect(dbLoc)
     con.row_factory = sql.Row
     cur = con.cursor()
 
@@ -64,18 +75,18 @@ def index(chartID = 'chart_ID', chart_type = 'line', chart_height = 500):
     except:
         print('something went wrong with the highcart vars')
 
-    return render_template('frontPage.html', pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, cardId = cardId, cardName = cardName)
+    return render_template('frontPage.html', pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, cardId = cardId, cardName = cardName, card_names=card_names)
 
 @app.route('/list')
 def listPage():
-    con = sql.connect("CARDINFO.db")
+    con = sql.connect(dbLoc)
     con.row_factory = sql.Row
     cur = con.cursor()
     cur.execute("select * from CARDS where cardset='aer'")
     rows = cur.fetchall()
     con.close()
 
-    return render_template("listLayout.html", rows = rows)
+    return render_template("listLayout.html", rows = rows, card_names=card_names)
 
 @app.route('/watchlist', methods=['POST', 'GET'])
 def watchlist():
@@ -84,12 +95,12 @@ def watchlist():
         print('watchlist get request')
         rows = getWatchList()
 
-        return render_template("watchlistLayout.html", rows = rows)
+        return render_template("watchlistLayout.html", rows = rows, card_names=card_names)
 
     # post to insert
     elif request.form.get('removeCard') == None:
         print('/watchlist post request insert')
-        con = sql.connect("CARDINFO.db")
+        con = sql.connect(dbLoc)
         con.row_factory = sql.Row
         cur = con.cursor()
         # this is the name from html
@@ -119,12 +130,12 @@ def watchlist():
 
         rows = getWatchList()
 
-        return render_template("watchlistLayout.html", rows=rows)
+        return render_template("watchlistLayout.html", rows=rows, card_names=card_names)
 
     # post request to remove card from list
     else:
         print("remove card post request")
-        con = sql.connect("CARDINFO.db")
+        con = sql.connect(dbLoc)
         cur = con.cursor()
         cardID = request.form.get('removeCard')
 
@@ -138,14 +149,14 @@ def watchlist():
 
         rows = getWatchList()
 
-        return render_template("watchlistLayout.html", rows = rows)
+        return render_template("watchlistLayout.html", rows = rows, card_names=card_names)
 
 @app.route('/search/<cardId>', methods=['GET', 'POST'])
 def searchID(cardId, chartID = 'chart_ID2', chart_type = 'line', chart_height = 500):
     # the search bar results for the layout html
     if request.method == "GET":
         print('search cardID get request')
-        con = sql.connect("CARDINFO.db")
+        con = sql.connect(dbLoc)
         con.row_factory = sql.Row
         cur = con.cursor()
 
@@ -226,13 +237,13 @@ def searchID(cardId, chartID = 'chart_ID2', chart_type = 'line', chart_height = 
         yAxis = {"title": {"text": 'Price in dollars'}}
         pageType = 'graph'
 
-        return render_template("resultsLayout.html", pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, sameCards = sameCards, setCodes = setCodes, cardId = cardId, sameCardsCombo = sameCardsCombo, cardInfo = cardInfo)
+        return render_template("resultsLayout.html", pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, sameCards = sameCards, setCodes = setCodes, cardId = cardId, sameCardsCombo = sameCardsCombo, cardInfo = cardInfo, card_names=card_names)
 
     elif request.method == "POST":
         # post means i'm adding a card to the watchlist
         print('the request was post')
 
-        con = sql.connect("CARDINFO.db")
+        con = sql.connect(dbLoc)
         cur = con.cursor()
 
         valueIndicator = cardAverage.weekMonth(cardId)[2]
@@ -244,7 +255,7 @@ def searchID(cardId, chartID = 'chart_ID2', chart_type = 'line', chart_height = 
         con.close()
         rows = getWatchList()
 
-        return render_template("watchlistLayout.html", rows = rows)
+        return render_template("watchlistLayout.html", rows = rows, card_names=card_names)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -275,7 +286,7 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
     except:
         print('cant print q')
 
-    con = sql.connect("CARDINFO.db")
+    con = sql.connect(dbLoc)
     con.row_factory = sql.Row
     cur = con.cursor()
 
@@ -371,7 +382,7 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
     except:
         print('something went wrong with the highcart vars')
 
-    return render_template("resultsLayout.html", pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, sameCards = sameCards, cardId = cardId, sameCardsCombo = sameCardsCombo, cardInfo = cardInfo)
+    return render_template("resultsLayout.html", pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, sameCards = sameCards, cardId = cardId, sameCardsCombo = sameCardsCombo, cardInfo = cardInfo, card_names=card_names)
 
 def searchCard(cardId, cur, priceList, dateList, imageUrl):
     # for the url I make the variable the string, and for the date and price I add them to the lists
@@ -425,7 +436,7 @@ def topCards():
     # tensorflow/keras processing could go here in the future
 
     # return render_template("topLayout.html", rows = rows)
-    return render_template("topLayout.html")
+    return render_template("topLayout.html", card_names=card_names)
 
 
 
@@ -443,7 +454,7 @@ def collectionPage():
     try:
     # grab the chart values for today: total mrsp, and what I paid
     # push those numbers to the database for today's date
-        cardsDb = sql.connect('CARDINFO.db')
+        cardsDb = sql.connect(dbLoc)
         cursor = cardsDb.cursor()
         todays_price,total_msrp,total_paid = collection_tally(collection_rows,cursor,today)
         tally_pusher(total_msrp,total_paid,cursor,today)
@@ -493,7 +504,7 @@ def collectionPage():
             
             if set_code is '':
                 print('set code is none')
-                cardsDb = sql.connect('CARDINFO.db')
+                cardsDb = sql.connect(dbLoc)
                 cursor = cardsDb.cursor()
                 cursor.execute('select cardset,id from cards where upper(name)=upper(?) and cards.ONLINEONLY != "True" and length(cardset)=3',(card_name,))
                 set_code,card_id = cursor.fetchone()
@@ -504,7 +515,7 @@ def collectionPage():
 
         try:
             # select id from cards
-            cardsDb = sql.connect('CARDINFO.db')
+            cardsDb = sql.connect(dbLoc)
             cursor = cardsDb.cursor()
             card_id = cursor.execute('select id from cards where upper(name) = upper((?)) and upper(cardset) = upper((?))',(card_name,set_code,))
             cardid = card_id.fetchone()[0]
@@ -556,7 +567,7 @@ def collectionPage():
 
     else:
         print("remove card post collection")
-        con = sql.connect("CARDINFO.db")
+        con = sql.connect(dbLoc)
         cur = con.cursor()
         transaction_id = request.form.get('removeCard')
 
@@ -570,7 +581,7 @@ def collectionPage():
 
         collection_rows = getCollection()
 
-        cardsDb = sql.connect('CARDINFO.db')
+        cardsDb = sql.connect(dbLoc)
         cursor = cardsDb.cursor()
         todays_price,total_msrp,total_paid = collection_tally(collection_rows,cursor,today)
         #pushes new information so graph will have current info
@@ -584,7 +595,7 @@ def collectionPage():
     except:
         perc = 0
 
-    return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, perc = perc, total_msrp = round(total_msrp,2), total_paid=round(total_paid,2), pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4])
+    return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, perc = perc, total_msrp = round(total_msrp,2), total_paid=round(total_paid,2), pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4], card_names=card_names)
 
 def getWatchList():
 # this is a function to get the watchlist results which I use in my GET and POST for /watchlist
@@ -692,7 +703,7 @@ def price_chart():
     print('running price_chart')
     try:
         print('refreshing chart data')
-        cardsDb = sql.connect('CARDINFO.db')
+        cardsDb = sql.connect(dbLoc)
         cursor = cardsDb.cursor()
         chart_vals = cursor.execute("select DATETIME,COL_VAL, PAID_VAL from collection_val order by datetime asc")
     except:
