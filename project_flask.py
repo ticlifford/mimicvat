@@ -73,7 +73,18 @@ def index(chartID = 'chart_ID', chart_type = 'line', chart_height = 500):
     except:
         print('something went wrong with the highcart vars')
 
-    return render_template('frontPage.html', pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, cardId = cardId, cardName = cardName, card_names=card_names)
+    return render_template('frontPage.html',
+     pageType=pageType, 
+     chartID=chartID, 
+     chart=chart, 
+     series=series, 
+     title=title, 
+     xAxis=xAxis, 
+     yAxis=yAxis, 
+     imageUrl=imageUrl, 
+     cardId = cardId, 
+     cardName = cardName, 
+     card_names=card_names)
 
 @app.route('/list')
 def listPage():
@@ -110,7 +121,12 @@ def watchlist():
         # card ID fetching
         # selects first available ID where id's len is 3
         try:
-            for cardIdNum in cur.execute("select ID from CARDS where UPPER(NAME)=UPPER((?)) and cards.ONLINEONLY != 'True' and length(cardset)=3", (r, )):
+            for cardIdNum in cur.execute("""select ID 
+            from CARDS 
+            where UPPER(NAME)=UPPER((?)) 
+            and cards.ONLINEONLY != 'True' 
+            and length(cardset)=3""", 
+            (r, )):
                 cardId = cardIdNum[0]
         except:
             print('could not find card')
@@ -235,7 +251,21 @@ def searchID(cardId, chartID = 'chart_ID2', chart_type = 'line', chart_height = 
         yAxis = {"title": {"text": 'Price in dollars'}}
         pageType = 'graph'
 
-        return render_template("resultsLayout.html", pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, sameCards = sameCards, setCodes = setCodes, cardId = cardId, sameCardsCombo = sameCardsCombo, cardInfo = cardInfo, card_names=card_names)
+        return render_template("resultsLayout.html", 
+        pageType=pageType, 
+        chartID=chartID, 
+        chart=chart, 
+        series=series, 
+        title=title, 
+        xAxis=xAxis, 
+        yAxis=yAxis, 
+        imageUrl=imageUrl, 
+        sameCards = sameCards, 
+        setCodes = setCodes, 
+        cardId = cardId, 
+        sameCardsCombo = sameCardsCombo, 
+        cardInfo = cardInfo, 
+        card_names=card_names)
 
     elif request.method == "POST":
         # post means i'm adding a card to the watchlist
@@ -326,7 +356,12 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
         print('I couldnt select the ids for samecards')
 
     try:
-        for cardIdNum in cur.execute("select ID, CARDSET from CARDS where UPPER(NAME)=UPPER((?)) and cards.ONLINEONLY != 'True' and length(cardset)=3", (r, )):
+        for cardIdNum in cur.execute("""select ID, 
+        CARDSET from CARDS 
+        where UPPER(NAME)=UPPER((?)) 
+        and cards.ONLINEONLY != 'True' 
+        and length(cardset)=3""", 
+        (r, )):
             cardId = cardIdNum[0]
 
             # most cards have more than one printing, this compiles a list of each card
@@ -359,7 +394,18 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
         cardInfo['buylist'] = 'N/A'
     except:
         print('could not add values to cardInfo dictionary here')
-# cur.execute("select buylist.BUYPRICE, buylist.DATETIME from buylist, cards, CARDSET where cards.id == ((?))  and cards.CARDSET = CARDSET.CODE  and upper(cardset.name) = upper(replace (buylist.SETNAME,'-',' ')) and upper(cards.name) = upper(buylist.NAME) order by datetime desc",(cardId, ))
+
+# cur.execute("""select buylist.BUYPRICE, 
+# buylist.DATETIME 
+# from buylist, 
+# cards, 
+# CARDSET 
+# where cards.id == ((?)) 
+# and cards.CARDSET = CARDSET.CODE 
+# and upper(cardset.name) = upper(replace (buylist.SETNAME,'-',' ')) 
+# and upper(cards.name) = upper(buylist.NAME) 
+# order by datetime desc""",
+# (cardId, ))
 
 
 
@@ -380,7 +426,20 @@ def searchResults(chartID = 'chart_ID2', chart_type = 'line', chart_height = 500
     except:
         print('something went wrong with the highcart vars')
 
-    return render_template("resultsLayout.html", pageType=pageType, chartID=chartID, chart=chart, series=series, title=title, xAxis=xAxis, yAxis=yAxis, imageUrl=imageUrl, sameCards = sameCards, cardId = cardId, sameCardsCombo = sameCardsCombo, cardInfo = cardInfo, card_names=card_names)
+    return render_template("resultsLayout.html", 
+    pageType=pageType, 
+    chartID=chartID, 
+    chart=chart, 
+    series=series, 
+    title=title, 
+    xAxis=xAxis, 
+    yAxis=yAxis, 
+    imageUrl=imageUrl, 
+    sameCards = sameCards, 
+    cardId = cardId, 
+    sameCardsCombo = sameCardsCombo, 
+    cardInfo = cardInfo, 
+    card_names=card_names)
 
 def searchCard(cardId, cur, priceList, dateList, imageUrl):
     # for the url I make the variable the string, and for the date and price I add them to the lists
@@ -417,7 +476,8 @@ def updateTrend(cardId):
         print('could not perform cardAverage')
     # insert to watchlist
     try:
-        cur.execute("INSERT or replace into watchlist (ID, PRICEDIRECTION) values (?, ?)", (cardId, valueIndicator, ) )
+        cur.execute("INSERT or replace into watchlist (ID, PRICEDIRECTION) values (?, ?)", 
+        (cardId, valueIndicator, ) )
         con.commit()
         con.close()
     except:
@@ -505,7 +565,13 @@ def collectionPage():
                 print('set code is none')
                 cardsDb = sql.connect(dbLoc)
                 cursor = cardsDb.cursor()
-                cursor.execute('select cardset,id from cards where upper(name)=upper(?) and cards.ONLINEONLY != "True" and length(cardset)=3',(card_name,))
+                cursor.execute('''select cardset,
+                id 
+                from cards 
+                where upper(name)=upper(?) 
+                and cards.ONLINEONLY != "True" 
+                and length(cardset)=3''',
+                (card_name,))
                 set_code,card_id = cursor.fetchone()
             else:
                 print('set code is known')
@@ -516,7 +582,11 @@ def collectionPage():
             # select id from cards
             cardsDb = sql.connect(dbLoc)
             cursor = cardsDb.cursor()
-            card_id = cursor.execute('select id from cards where upper(name) = upper((?)) and upper(cardset) = upper((?))',(card_name,set_code,))
+            card_id = cursor.execute('''select id 
+            from cards 
+            where upper(name) = upper((?)) 
+            and upper(cardset) = upper((?))''',
+            (card_name,set_code,))
             cardid = card_id.fetchone()[0]
             print('cardid:',cardid)
         except:
@@ -524,19 +594,46 @@ def collectionPage():
 
         try:
             print('selecting latest normprice')
-            #cursor.execute('select normprice from prices where id = (?) and substr(datetime,1,10) = (?)',(cardid,today,))
-            cursor.execute('select normprice from prices where id = (?) order by datetime desc',(cardid,))
+            cursor.execute('''select normprice 
+            from prices where id = (?) 
+            order by datetime desc''',
+            (cardid,))
             price = cursor.fetchone()
             print('card normprice:',price[0])
         except:
             print('could not select latest normprice')
         try:
             # insert into collections
-            cursor.execute('insert into collections (user_id, card_id, cost_paid, msrp, number_owned, name, code, datetime, transaction_id) values (?, ?, ?, ?, ?, ?, ?, ?, NULL)',(user_id, cardid, cost_paid, price[0], number_owned, card_name, set_code, today, ))
+            cursor.execute('''insert into collections 
+            (user_id, 
+            card_id, 
+            cost_paid, 
+            msrp, 
+            number_owned, 
+            name, 
+            code, 
+            datetime, 
+            transaction_id) 
+            values (?, ?, ?, ?, ?, ?, ?, ?, NULL)''',
+            (user_id, 
+            cardid, 
+            cost_paid, 
+            price[0], 
+            number_owned, 
+            card_name, 
+            set_code, 
+            today, ))
             cardsDb.commit()
         except:
             print('could not insert into collections')
-            unable = [user_id, cardid, cost_paid, price[0], number_owned, card_name, set_code, today]
+            unable = [user_id, 
+                    cardid, 
+                    cost_paid, 
+                    price[0], 
+                    number_owned, 
+                    card_name, 
+                    set_code, 
+                    today]
             for x in unable:
                 try:
                     print(x)
@@ -594,7 +691,20 @@ def collectionPage():
     except:
         perc = 0
 
-    return render_template("collection.html", collection_rows = collection_rows, todays_price=todays_price, perc = perc, total_msrp = round(total_msrp,2), total_paid=round(total_paid,2), pageType=p[5], chartID="chart_ID", chart=p[0], series=p[1], title=p[2], xAxis=p[3], yAxis=p[4], card_names=card_names)
+    return render_template("collection.html", 
+    collection_rows = collection_rows, 
+    todays_price=todays_price, 
+    perc = perc, 
+    total_msrp = round(total_msrp,2), 
+    total_paid=round(total_paid,2), 
+    pageType=p[5], 
+    chartID="chart_ID", 
+    chart=p[0], 
+    series=p[1], 
+    title=p[2], 
+    xAxis=p[3], 
+    yAxis=p[4], 
+    card_names=card_names)
 
 def getWatchList():
 # this is a function to get the watchlist results which I use in my GET and POST for /watchlist
@@ -607,7 +717,12 @@ def getWatchList():
     except:
         print('could not connect to db')
     try:
-        cur.execute("select cards.name, watchlist.pricedirection, cards.id from watchlist, cards where watchlist.id = cards.id")
+        cur.execute("""select cards.name, 
+        watchlist.pricedirection, 
+        cards.id 
+        from watchlist, 
+        cards 
+        where watchlist.id = cards.id""")
         rows = cur.fetchall()
     except:
         print('could not select watchlist')
@@ -691,7 +806,8 @@ def tally_pusher(total_msrp,total_paid,cursor,today):
     print('running tally pusher:')
     print('todays msrp is:',total_msrp)
     try:
-        cursor.execute('insert or replace into COLLECTION_VAL (USER_ID,COL_VAL,PAID_VAL,DATETIME) values (?,?,?,?)',("timtim",total_msrp,total_paid,today,))
+        cursor.execute('insert or replace into COLLECTION_VAL (USER_ID,COL_VAL,PAID_VAL,DATETIME) values (?,?,?,?)',
+        ("timtim",total_msrp,total_paid,today,))
         print('tally pushed')
     except:
         print('could not push tally')
@@ -743,7 +859,21 @@ def price_chart():
 
 def buy_vs_tcg():
     None
-    #'select buylist.DATETIME, buylist.BUYPRICE, prices.NORMPRICE from buylist, cardset,cards,prices where upper(cardset.NAME)= upper(buylist.SETNAME) and buylist.name = "Land Tax" and buylist.SETNAME = "battlebond" and cardset.code = cards.CARDSET and cards.NAME = buylist.NAME and prices.id = cards.ID and buylist.datetime=prices.DATETIME order by buylist.datetime'
+    '''select buylist.DATETIME,
+     buylist.BUYPRICE,
+      prices.NORMPRICE from 
+      buylist,
+      cardset,
+      cards,
+      prices 
+      where upper(cardset.NAME) = upper(buylist.SETNAME) 
+      and buylist.name = "Land Tax" 
+      and buylist.SETNAME = "battlebond" 
+      and cardset.code = cards.CARDSET 
+      and cards.NAME = buylist.NAME 
+      and prices.id = cards.ID 
+      and buylist.datetime=prices.DATETIME 
+      order by buylist.datetime'''
 
 
 def get_id(name,setCode):
