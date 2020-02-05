@@ -734,7 +734,31 @@ def price_chart():
         pageType = 'graph'
     except:
         print('something went wrong with the highcart vars')
+# this line converts lists of my dates to date objects. change "datetime" at the end to the list's name(x_ax in this case)
+# dates_list = [dt.datetime.strptime(date, '%Y-%m-%d').date() for date in datetime]
     return [chart,series,title,xAxis,yAxis,pageType]
+
+
+
+
+def buy_vs_tcg():
+    None
+    #'select buylist.DATETIME, buylist.BUYPRICE, prices.NORMPRICE from buylist, cardset,cards,prices where upper(cardset.NAME)= upper(buylist.SETNAME) and buylist.name = "Land Tax" and buylist.SETNAME = "battlebond" and cardset.code = cards.CARDSET and cards.NAME = buylist.NAME and prices.id = cards.ID and buylist.datetime=prices.DATETIME order by buylist.datetime'
+
+
+def get_id(name,setCode):
+# returns card ID with a name and set code
+    con = sql.connect(dbLoc)
+    cursor = con.cursor()
+    cursor.execute('select cards.id from cards where upper(cards.name) = upper(?) and cards.cardset = (?)',(name,setCode))
+    card_id = cursor.fetchone()
+    print('card_id:',card_id)
+    return card_id
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
