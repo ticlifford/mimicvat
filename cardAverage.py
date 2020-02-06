@@ -9,8 +9,8 @@ import time
 import datetime
 import sqlite3
 
-#dbLoc = '/home/timc/flask_project/flask_app/CARDINFO.db'
-dbLoc = 'CARDINFO.db'
+dbLoc = '/home/timc/flask_project/flask_app/CARDINFO.db'
+#dbLoc = 'CARDINFO.db'
 
 def checkPriceMonth(cardId):
     cardsDb = sqlite3.connect(dbLoc)

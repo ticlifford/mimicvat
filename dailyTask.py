@@ -55,6 +55,7 @@ except:
     with open(fPath, 'a') as f:
         f.write('\n buylist scraper didnt run')
 
+# get the watchlist, return rows
 try:
     with open(fPath, 'a') as f:
         f.write('\n running getWatchList')

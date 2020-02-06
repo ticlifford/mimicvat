@@ -6,6 +6,9 @@ import csv
 import time
 import sqlite3
 
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
+
 def printDb():
         print('im printing the db here:')
         for row in c.execute('SELECT * FROM CARDS'):
@@ -93,11 +96,11 @@ def addCards(data):
     except:
         print('could not check for pages')
 
-cardsDb = sqlite3.connect('CARDINFO.db')
+cardsDb = sqlite3.connect(dbPath)
 # cardsDb = sqlite3.connect('C:\\users\\tim\\desktop\\CARDINFO.db')
 c = cardsDb.cursor()
 
-with open('setNames.csv', 'r') as csv_file:
+with open(csvPath, 'r') as csv_file:
     csv_reader = csv.reader(csv_file)
     for line in csv_reader:
         print('set scraping:',line[0])
