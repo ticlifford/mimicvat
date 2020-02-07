@@ -10,8 +10,8 @@ import time
 app = Flask(__name__)
 
 # the location of the database, when running locally vs on server
-#dbLoc = '/home/timc/flask_project/flask_app/CARDINFO.db'
-dbLoc = 'CARDINFO.db'
+dbLoc = '/home/timc/flask_project/flask_app/CARDINFO.db'
+#dbLoc = 'CARDINFO.db'
 
 
 try:
