@@ -134,7 +134,8 @@ def watchlist():
             from CARDS 
             where UPPER(NAME)=UPPER((?)) 
             and cards.ONLINEONLY != 'True' 
-            and length(cardset)=3""", 
+            and length(cardset)=3 
+            and nonfoil = 'True'""", 
             (r, )):
                 cardId = cardIdNum[0]
         except:
