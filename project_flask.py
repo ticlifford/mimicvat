@@ -61,6 +61,10 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
     imageUrl = 'https://img.scryfall.com/cards/normal/front/8/1/810a3792-a689-4849-bc14-fb3c71153aba.jpg?1562920975'
 
 
+# @app.route('/movers', methods=['GET', 'POST'])
+# def method_name():
+#    pass
+
 # collects price and date vals of land tax to load up front page quickly
     land_tax_vals = cur.execute(
         "select * from frontpage order by datetime asc")
@@ -107,6 +111,9 @@ def listPage():
 
     return render_template("listLayout.html", rows=rows, card_names=card_names)
 
+@app.route('/sets')
+def setsPage():
+    return render_template("sets.html", card_names=card_names)
 
 @app.route('/watchlist', methods=['POST', 'GET'])
 def watchlist():
