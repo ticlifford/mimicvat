@@ -8,6 +8,8 @@ This application scrapes scryfall for Magic the Gathering card information and p
 I gather pricing data daily of both the normal and foil version, I gather popularity from edhrec.com, and I plan to scrape ebay for daily average supply of cards to monitor the supply/demand. I also
 calculate the average weekly price and standard deviation of cards to tell if they are increasing or decreasing in value over time. The user is informed to buy a card that is climbing (or plateaued)
 in value, as well as sell if the price is dropping.</p> <p>The languages I used for this application include: python, html, javascript, and sql.
+
+<center><p><a class="btn btn-primary" href="https://github.com/ticlifford/mimicvat" role="button">Click here for the github link</a></p></center>
 {% endblock %}
 
 {% block graph %}
@@ -17,26 +19,28 @@ in value, as well as sell if the price is dropping.</p> <p>The languages I used 
     <p class="lead">This is one of my favorite cards. On the right is a highcart that shows how the price is trending.</p>
     <hr class="my-4">
     <div class="row justify-content-around">
-            <div class="col-md-auto">
-        <p><img src={{imageUrl}} class="center-block" alt="card image goes here" width="250"></p>
-            </div>
-
-        <div class="col-md-auto">
-            <div id={{ chartID|safe }} class="shadow chart" style="height: 500px; width: 500px;"></div>
-
-                <script>
-                    var chart_id = {{ chartID|safe }}
-                    var series = {{ series|safe }}
-                    var title = {{ title|safe }}
-                    var xAxis = {{ xAxis|safe }}
-                    var yAxis = {{ yAxis|safe }}
-                    var chart = {{ chart|safe }}
-                </script>
-                    
-        
+        <div class="col-md">
+            <center>
+            <p><img src={{imageUrl}} class="center-block" alt="card image goes here" width=50%></p>
+            <div class="speech-bubble">Here's a card, it has all types of data points on it such as name, color, type, etc.</div>
+            </center>
         </div>
 
+        <div class="col-md">
+            <div id={{ chartID|safe }} class="shadow chart" style="height: 500px; width: 500px;"></div>
+
+            <script>
+                var chart_id = {{ chartID|safe }}
+                var series = {{ series|safe }}
+                var title = {{ title|safe }}
+                var xAxis = {{ xAxis|safe }}
+                var yAxis = {{ yAxis|safe }}
+                var chart = {{ chart|safe }}
+            </script>
+            <div class="speech-bubble">This is pricing data projected over time. To see how I collect this data, click HERE.</div>
+        </div>
     </div>
+
 </div>
 </div>
 
