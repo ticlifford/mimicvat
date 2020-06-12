@@ -9,7 +9,7 @@ I gather pricing data daily of both the normal and foil version, I gather popula
 calculate the average weekly price and standard deviation of cards to tell if they are increasing or decreasing in value over time. The user is informed to buy a card that is climbing (or plateaued)
 in value, as well as sell if the price is dropping.</p> <p>The languages I used for this application include: python, html, javascript, and sql.
 
-<center><p><a class="btn btn-primary" href="https://github.com/ticlifford/mimicvat" role="button">Click here for the github link</a></p></center>
+<center><p><a class="btn btn-primary" style=margin:20px href="https://github.com/ticlifford/mimicvat" role="button">Click here for the github link</a></p></center>
 {% endblock %}
 
 {% block graph %}
@@ -22,7 +22,7 @@ in value, as well as sell if the price is dropping.</p> <p>The languages I used 
         <div class="col-md">
             <center>
             <p><img src={{imageUrl}} class="center-block" alt="card image goes here" width=50%></p>
-            <div class="speech-bubble">Here's a card, it has all types of data points on it such as name, color, type, etc.</div>
+            
             </center>
         </div>
 
@@ -37,7 +37,15 @@ in value, as well as sell if the price is dropping.</p> <p>The languages I used 
                 var yAxis = {{ yAxis|safe }}
                 var chart = {{ chart|safe }}
             </script>
-            <div class="speech-bubble">This is pricing data projected over time. To see how I collect this data, click HERE.</div>
+            
+        </div>
+    </div>
+    <div class="row justify-content-around">
+        <div class="col-md">
+            <div class="speech-bubble">Here's a card, it has all types of data points on it such as name, color, type, etc.</div>
+        </div>
+        <div class="col-md">
+            <div class="speech-bubble">This is pricing data projected over time. To see how I collect this data, click <a href="/sets">here.</a></div>
         </div>
     </div>
 
