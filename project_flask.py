@@ -60,7 +60,6 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
 
     imageUrl = 'https://img.scryfall.com/cards/normal/front/8/1/810a3792-a689-4849-bc14-fb3c71153aba.jpg?1562920975'
 
-
 # @app.route('/movers', methods=['GET', 'POST'])
 # def method_name():
 #    pass
@@ -99,6 +98,9 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
                            cardName=cardName,
                            card_names=card_names)
 
+@app.route('/reserveList')
+def method_name():
+   return render_template('reserveList.html')
 
 @app.route('/list')
 def listPage():

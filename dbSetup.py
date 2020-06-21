@@ -62,6 +62,7 @@ try:
                 NONFOIL text,
                 ONLINEONLY text,
                 RARITY text,
+                RESERVED text,
                 PRIMARY KEY(ID),
                 UNIQUE(ID))''')
 

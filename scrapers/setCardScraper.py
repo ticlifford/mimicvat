@@ -67,6 +67,8 @@ def addCards(data):
             None
         else:
             rarity = obj['rarity']
+        
+        reserved = obj['reserved']
 
         # db command to write object to db
         try:
@@ -86,7 +88,8 @@ def addCards(data):
             str(obj['foil']),
             str(obj['nonfoil']),
             str(obj['digital']),
-            rarity
+            rarity,
+            reserved
             ))
         except:
             print('could not add to db:',obj['name'])
