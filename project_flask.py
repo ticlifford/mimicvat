@@ -99,10 +99,60 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
                            card_names=card_names)
 
 @app.route('/reserveList')
-def reserveList():
+def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     # select all from reserve list sql table
     # reserve list sql table must be updated daily after price collection
-    return render_template('reserveList.html')
+
+
+    priceList = []
+    dateList = []
+    try:
+        print('connecting to db')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db')
+
+    try:
+        print('run select query')
+        reserved_vals = cur.execute(
+            "select * from reservedhistory order by datetime asc")
+    except:
+        print('could not select')
+
+    try:
+        print('appending chart lists')
+        for vals in reserved_vals:
+            print('vals:',vals[1],vals[0])
+            priceList.append(vals[1])
+            dateList.append(vals[0])
+    except:
+        print('could not append chart lists')
+    con.close()
+
+    # chart insertion
+    try:
+        chart = {"renderTo": chartID, "type": chart_type,
+                 "height": chart_height, "zoomType": 'x'}
+        series = [{"name": 'Price', "data": priceList}]
+        title = {"text": 'reserved list'}
+        xAxis = [{"categories": dateList}, {'type': 'datetime'}]
+        yAxis = {"title": {"text": 'Price in dollars'}}
+        pageType = 'graph'
+    except:
+        print('something went wrong with the highcart vars')
+
+
+    return render_template('reserveList.html',
+                        pageType=pageType,
+                        chartID=chartID,
+                        chart=chart,
+                        series=series,
+                        title=title,
+                        xAxis=xAxis,
+                        yAxis=yAxis,
+                        card_names=card_names)
 
 @app.route('/list')
 def listPage():

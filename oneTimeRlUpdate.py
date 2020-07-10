@@ -9,13 +9,15 @@ from datetime import date
 from dateutil.rrule import rrule, DAILY
 import sqlite3
 
-dbPath = 'CARDINFO.db'
+#dbPath = 'CARDINFO.db'
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
 cardsDb = sqlite3.connect(dbPath)
 c = cardsDb.cursor()
 
 # start
 a = date(2019, 6, 11)
 # end
+#b = date(2019, 6, 18)
 b = date(2020, 7, 9)
 
 compiled_dic = {}
@@ -43,3 +45,13 @@ for dt in rrule(DAILY, dtstart=a, until=b):
     add_day(datetime)
 
 print('finished')
+
+for key, value in compiled_dic.items():
+    c.execute("insert into reservedhistory values (?,?)",(key,value))
+    #print('key:',key)
+    #print('value:',value)
+"reservedhistory"
+
+cardsDb.commit()
+print('im closing the db')
+cardsDb.close()

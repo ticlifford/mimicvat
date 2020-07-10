@@ -7,13 +7,13 @@ import time
 import sqlite3
 
 # this scrapes card information from scryfall for the "cards" table
-# the input is a csv with every card set. Then it runs through each card set code
+# the input is a csv with every card set as a code (example, 'aer' is aether revolt)
+#it scrapes each set for things like the name, power, toughness etc and inserts that into an sql table called cards
 
-
-#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-dbPath = 'CARDINFO.db'
-#csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
-csvPath = 'setNames.csv'
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+#dbPath = 'CARDINFO.db'
+csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
+#csvPath = 'setNames.csv'
 
 def printDb():
         print('im printing the db here:')
@@ -67,7 +67,6 @@ def addCards(data):
             None
         else:
             cmc = obj['cmc']
-        
         rarity = None
         if 'rarity' not in obj.keys():
             None
@@ -105,10 +104,13 @@ def addCards(data):
     except:
         print('could not check for pages')
 
-cardsDb = sqlite3.connect(dbPath)
+try:
+    print('connecting to db')
+    cardsDb = sqlite3.connect(dbPath)
 # cardsDb = sqlite3.connect('C:\\users\\tim\\desktop\\CARDINFO.db')
-c = cardsDb.cursor()
-
+    c = cardsDb.cursor()
+except:
+    print('could not connect to dbPath')
 
 
 
