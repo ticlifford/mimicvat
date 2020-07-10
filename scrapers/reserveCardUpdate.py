@@ -78,24 +78,14 @@ def addCards(data):
 
         # db command to write object to db
         try:
-            c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
-            obj['id'],
-            obj['name'],
-            cmc,
-            obj['mana_cost'],
-            power,
-
-            toughness,
-            str(obj['colors']),
-            obj['set'],
-            obj['type_line'],
-            obj['image_uris']['normal'],
-
-            str(obj['foil']),
-            str(obj['nonfoil']),
-            str(obj['digital']),
-            rarity,
-            str(obj['reserved'])
+            print('inserting id:',obj['id'])
+            print('reserved val:',str(obj['reserved']))
+        except:
+            print('could not get card id and or reserved val')
+        try:
+            c.execute('update CARDS set reserved = ? where id = ?',(
+            str(obj['reserved']),
+            obj['id']
             ))
         except:
             print('could not add to db:',obj['name'])
@@ -108,6 +98,11 @@ def addCards(data):
 cardsDb = sqlite3.connect(dbPath)
 # cardsDb = sqlite3.connect('C:\\users\\tim\\desktop\\CARDINFO.db')
 c = cardsDb.cursor()
+
+#testing sql database
+first_row = c.execute('SELECT * FROM cards ORDER BY ROWID ASC LIMIT 1')
+for x in first_row:
+    print(x)
 
 
 

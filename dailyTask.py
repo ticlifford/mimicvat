@@ -80,5 +80,16 @@ except:
     with open(fPath, 'a') as f:
         f.write('\n could not access updateTrend')
 
+# update the reserve list table
+print("updating reserve list")
+try:
+    # update the reserve list code goes here
+    with open(fPath, 'a') as f:
+        f.write('\n updated reserve list')
+except:
+    print('could not update reserve list')
+    with open(fPath, 'a') as f:
+        f.write('\n could not update reserve list')
+
 with open(fPath, 'a') as f:
     f.write('\n editing done: ' + dailyTime)

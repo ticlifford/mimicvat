@@ -13,9 +13,14 @@ def compile_collection(collection_list):
 
     # goes through collection and compiles a total value by datetime
     # I should strip the hour and minute timecode from series data
+
+    # looking back, i'm not sure what this does.
+    # I provide a list of card IDs to compile_collection
+    # it creates an empty dic
+    # I select all from 
+
     for card_id in collection_list:
         price_info = cursor.execute('select * from prices where id=?',(card_id,))
-        
         for row in price_info:
             #print(row)
             if row[0] in collection_dic:

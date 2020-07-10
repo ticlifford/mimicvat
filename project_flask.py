@@ -99,8 +99,10 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
                            card_names=card_names)
 
 @app.route('/reserveList')
-def method_name():
-   return render_template('reserveList.html')
+def reserveList():
+    # select all from reserve list sql table
+    # reserve list sql table must be updated daily after price collection
+    return render_template('reserveList.html')
 
 @app.route('/list')
 def listPage():
