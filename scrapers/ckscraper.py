@@ -8,6 +8,10 @@ from bs4 import BeautifulSoup as b
 # this is probably for collecting the data after the post,
 # and I haven't finished it
 
+#card kingdom's bulk importer works with card names and sets.
+#pass a list of names and sets to selectRows(cList)
+#note, this script uses a chrome driver file for the automation and its currently linked to the desktop of my computer
+
 # configure scraper and db connection
 """
 html = urllib.request.urlopen(url).read()

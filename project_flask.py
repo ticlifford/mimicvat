@@ -98,6 +98,41 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
                            cardName=cardName,
                            card_names=card_names)
 
+@app.route('/setinfo/<setid>', methods=['GET', 'POST'])
+def setinfo(setid):
+    try:
+        print('connecting to db')
+        con = sql.connect(dbLoc)
+        #con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db in setinfo')
+    try:
+        print(setid)
+        print(type(setid))
+    except:
+        print('could not print setid or type')
+    try:
+        setcards = cur.execute('select cards.id, cards.name, normprice, foilprice from cards, prices where prices.id = cards.id and cardset = ? and prices.datetime = ?', (setid,'2019-07-24',))
+        #date field needs to be getTime() in production environment
+        setnorm = 0
+        setfoil = 0
+        for row in setcards:
+            setnorm = setnorm + row[2]
+            setfoil = setfoil + row[3]
+        print(setnorm)
+        print(setfoil)
+        print(setfoil/setnorm)
+
+    except:
+        print('could not run setinfo query')
+    try:
+        print(cur.fetchone())
+    except:
+        print('could not fetchone')
+    return render_template('404.html')
+
+
 @app.route('/reserveList')
 def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     # select all from reserve list sql table
