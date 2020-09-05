@@ -98,6 +98,21 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
                            cardName=cardName,
                            card_names=card_names)
 
+@app.route('/sets')
+def setsPage():
+    try:
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute("select name, code from cardset where substr(name,-6,6) != 'Tokens' and substr(name,-6,6) != 'Promos' and substr(name,-9,9) != 'Oversized'")
+        rows = cur.fetchall()
+        con.close()
+        setnames = rows
+    except:
+        print('could not collect set data')
+        setnames = []
+    return render_template("sets.html", setnames = setnames)
+
 @app.route('/setinfo/<setid>', methods=['GET', 'POST'])
 def setinfo(setid):
     try:
@@ -113,24 +128,46 @@ def setinfo(setid):
     except:
         print('could not print setid or type')
     try:
-        setcards = cur.execute('select cards.id, cards.name, normprice, foilprice from cards, prices where prices.id = cards.id and cardset = ? and prices.datetime = ?', (setid,'2019-07-24',))
+
+        setcards = cur.execute('select id, name, picurl from cards where cardset = ?', (setid,))
+        """
+        for card in setcards:
+            print('searching for price:',card[0],'name:',card[1])
+        """
+            #normp, foilp = cur.execute('select normprice, foilprice from prices where id = ?', (card[0],))
+        #setcards = cur.execute('select cards.id, cards.name, normprice, foilprice, picurl from cards, prices where prices.id = cards.id and cardset = ? and prices.datetime = ?', (setid,'2019-07-24',))
+        #select datetime,normprice from prices where id=(?) order by datetime asc
         #date field needs to be getTime() in production environment
         setnorm = 0
         setfoil = 0
-        for row in setcards:
-            setnorm = setnorm + row[2]
-            setfoil = setfoil + row[3]
-        print(setnorm)
-        print(setfoil)
-        print(setfoil/setnorm)
-
+        ratio = 0
+        print('fetch one:',cur.fetchone())
     except:
-        print('could not run setinfo query')
+        print('could not collect id name and picurl')
+    """
     try:
-        print(cur.fetchone())
+        print('performing normal vs foil calc')
+        for row in setcards:
+            print('name:',row[0])
+            setnorm = setnorm + row[2]
+            setnorm = round(setnorm,2)
+            setfoil = setfoil + row[3]
+            setfoil = round(setfoil,2)
+            ratio = setfoil/setnorm
+            ratio = round(ratio,2)
+    except:
+        print('could not perform norm vs foil calc')
+
+
+    try:
+        if cur.fetchone() is None:
+            ratio = 0
     except:
         print('could not fetchone')
-    return render_template('404.html')
+    """
+
+    #return render_template('setinfo.html',setnorm = setnorm,setfoil=setfoil,ratio=ratio,setcode=setid,carddeck = setcards)
+    return render_template('setinfo.html',setcode=setid, carddeck = setcards)
 
 
 @app.route('/reserveList')
@@ -199,10 +236,6 @@ def listPage():
     con.close()
 
     return render_template("listLayout.html", rows=rows, card_names=card_names)
-
-@app.route('/sets')
-def setsPage():
-    return render_template("sets.html", card_names=card_names)
 
 @app.route('/watchlist', methods=['POST', 'GET'])
 def watchlist():
@@ -275,6 +308,8 @@ def watchlist():
         return render_template("watchlistLayout.html", rows=rows, card_names=card_names)
 
 
+
+
 @app.route('/search/<cardId>', methods=['GET', 'POST'])
 def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
     # the search bar results for the layout html
@@ -311,7 +346,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
             cardset 
             from cards 
             where name = (?) 
-            and cards.ONLINEONLY != 'True'""", (cardId,)):
+            and cards.ONLINEONLY != 'True'""", (cardName,)):
                 try:
                     sameCards.append(x[0])
                 except:
@@ -654,7 +689,7 @@ def collectionPage():
         cursor = cardsDb.cursor()
         todays_price, total_msrp, total_paid = collection_tally(
             collection_rows, cursor, today)
-        tally_pusher(total_msrp, total_paid, cursor, today)
+        tally_pusher(round(total_msrp,2), round(total_paid,2), cursor, today)
         cardsDb.commit()
         cardsDb.close()
         print('ran collection tally and pusher')
