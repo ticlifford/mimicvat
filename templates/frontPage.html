@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 {% block navbar_brand %}Mimicvat{% endblock %}
 {% block heading %}Mimicvat card analysis {% endblock %}
-{% block head %}<meta name="viewport" content = "width=device-width, initial-scale=1.0">{% endblock %}
+{% block head %}<meta name="viewport" content = "width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="static/styles/speechbub.css">
+{% endblock %}
 {% block paragraph %}
 This application scrapes scryfall for Magic the Gathering card information and prices. It uses Flask, sqlite, highcarts, and bootstrap to display charts and tables of that data.</p>
 <p>The objective of this application is to track price information and alert the user when a card spikes in value. Also, the application informs them of associated cards that may also increase in value.

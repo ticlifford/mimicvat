@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="static/styles/collection.css"> 
+{% endblock %}
+
 {% block paragraph %}
 <div class="row">
     <div class="col-sm-6 col-md-6">
@@ -29,6 +33,7 @@
 
                 </div>
             </div>
+            <div class="card coll-res">
               <table>
               <tr>
                 <td><b>total msrp:</b></td>
@@ -43,14 +48,15 @@
                 <td>{{perc}}%</td>
             </tr>
         </table>
-        <div class="table-responive">
+        </div>
+        <div class="table-responsive">
             <table class="table table-striped table-sm">
                 <thead>
                     <tr>
                         <th scope="col">Card name</th>
-                        <th scope="col">Code</th>
-                        <th scope="col">Cost</th>
-                        <th scope="col">MSRP</th>
+                        <th scope="col"style="text-align:right;">Code</th>
+                        <th scope="col"style="text-align:right;">Cost</th>
+                        <th scope="col"style="text-align:right;">MSRP</th>
                         <th scope="col">Number owned</th>
                     </tr>
                 </thead>
@@ -59,10 +65,10 @@
                     <tr>
                     <!--<td></td>-->
                         <td><a href="/search/{{card["CARD_ID"]}}">{{card["NAME"]}}</a></td>
-                        <td>{{card["code"]}}</td>
-                        <td>{{card["cost_paid"]}}</td>
-                        <td>{{card["msrp"]}}</td>
-                        <td>{{card["number_owned"]}}</td>
+                        <td style="text-align:right;">{{card["code"]}}</td>
+                        <td style="text-align:right;>{{card["cost_paid"]}}</td>
+                        <td style="text-align:right;">{{card["msrp"]}}</td>
+                        <td style=text-align:right;>{{card["number_owned"]}}</td>
                         <td>
                             <form action="/collection" method="POST">
                                 <input class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" name="removeCard" value="{{card["transaction_id"]}}">
@@ -80,7 +86,6 @@
             <!-- this is the highchart javascript -->
             <div class="col-md-auto">
                 <div id={{ chartID|safe }} class="shadow chart" style="height: 500px; width: 500px;"></div>
-    
                     <script>
                         var chart_id = {{ chartID|safe }}
                         var series = {{ series|safe }}
@@ -89,8 +94,6 @@
                         var yAxis = {{ yAxis|safe }}
                         var chart = {{ chart|safe }}
                     </script>
-                        
-            
             </div>
 </div>
 {% endblock %}

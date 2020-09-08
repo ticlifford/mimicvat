@@ -4,47 +4,11 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     {% block viewport %}<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">{% endblock %}
-    {% block head %}{% endblock %}
     {% block viewport2 %}{% endblock %}
     <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-  
     <style>
-            .speech-bubble {
-            position: relative;
-            background: #b7d9dc;
-            border-radius: .4em;
-            padding: 20px;
-            margin:40px;
-            transition: transform .2s;
-        }
-            .speech-bubble:hover {
-                transform: scale(1.1);
-            }
-
-            .cardim {
-                transition: transform .2s;
-            }
-            .cardim:hover {
-                transform: scale(1.1);
-            }
-
-        .speech-bubble:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border: 30px solid transparent;
-            border-bottom-color: #b7d9dc;
-            border-top: 0;
-            margin-left: -30px;
-            margin-top: -30px;
-            
-        }
-
             .bd-placeholder-img {
               font-size: 1.125rem;
               text-anchor: middle;
@@ -63,6 +27,7 @@
           </style>
           <!-- Custom styles for this template -->
            <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/sticky-footer-navbar.css') }}">
+           {% block head %}{% endblock %}
         </head>
         <body class="d-flex flex-column h-100">
           <header>

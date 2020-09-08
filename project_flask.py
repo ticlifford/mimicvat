@@ -361,7 +361,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                 print("x 1:", x[1])
             print('duplicate_names:', duplicate_names)
         except:
-            print('I couldnt select the ids for samecards')
+            print('I couldn\'t select the ids for samecards')
 
         try:
             print('running searchCard')

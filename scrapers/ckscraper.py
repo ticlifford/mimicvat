@@ -14,6 +14,8 @@ from bs4 import BeautifulSoup as b
 
 # configure scraper and db connection
 """
+
+
 html = urllib.request.urlopen(url).read()
 soup = b(html, 'html.parser')
 """

@@ -1,30 +1,33 @@
 {% extends "layout.html" %}
-{% block paragraph %}
 
+{% block head %}
+<link rel="stylesheet" href="static/styles/styles.css"> 
+{% endblock %}
+
+{% block paragraph %}
 <p>This is a selection of cards on the application so you can get a gist for what the data looks like. 
    You can use this list to test the search function in the top right corner,
    and you can also use it to test the watchlist option by adding and removing cards from this list.
 </p>
 
 
-<table border = 1>
+<table style="white-space: nowrap;">
         <thead>
-           <td>ID</td>
-           <td>NAME</td>
-           <td>CMC</td>
-           <td>MANACOST</td>
-           <td>POWER</td>
-           <td>TOUGHNESS</td>
-           <td>COLOR</td>
-           <td>CARDSET</td>
-           <td>TYPE</td>
-           <td>PICURL</td>
+           <td class="headrow">Name</td>
+           <td class="headrow">ID</td>
+           <td class="headrow">CMC</td>
+           <td class="headrow">Mana cost</td>
+           <td class="headrow">Power</td>
+           <td class="headrow">Toughness</td>
+           <td class="headrow">Color</td>
+           <td class="headrow">Card set</td>
+           <td class="headrow">Type</td>
+           <td class="headrow">Picture URL</td>
         </thead>
-        
         {% for row in rows %}
            <tr>
-              <td>{{row["ID"]}}</td>
               <td><a href="search/{{row["ID"]}}">{{row["NAME"]}}</a></td>
+              <td>{{row["ID"]}}</td>
               <td> {{ row["CMC"]}}</td>
               <td> {{ row["MANACOST"]}}</td>
               <td> {{ row["POWER"]}}</td>
