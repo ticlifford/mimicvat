@@ -29,11 +29,11 @@
 {% for card in carddeck %}
 <div class="col-sm-6">
     <div class="card">
+        <h5 class="card-header">{{card[1]}}</h5>
       <div class="card-body">
-        <h5 class="card-title">name:{{card[1]}}</h5>
-        <p>id value:{{card[0]}}</p>
+        <p>id value: {{card[0]}}</p>
         <p class="card-text"></p>
-        <p><img src={{card[2]}} class="center-block cardim" alt="card image goes here" width=50% style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 1px 1px 6px rgba(0,0,0,0.45);"></p>
+        <p><img src={{card[2]}} class="center-block text-center" alt="card image goes here" width=50% style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 1px 1px 6px rgba(0,0,0,0.45);"></p>
         <a href="/search/{{card[0]}}" class="btn btn-primary">Go to card info</a>
         <p>image address: {{card[2]}}</p>
       </div>

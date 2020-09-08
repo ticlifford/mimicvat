@@ -111,7 +111,7 @@ def setsPage():
     except:
         print('could not collect set data')
         setnames = []
-    return render_template("sets.html", setnames = setnames)
+    return render_template("sets.html", setnames = setnames,card_names=card_names)
 
 @app.route('/setinfo/<setid>', methods=['GET', 'POST'])
 def setinfo(setid):
@@ -167,7 +167,7 @@ def setinfo(setid):
     """
 
     #return render_template('setinfo.html',setnorm = setnorm,setfoil=setfoil,ratio=ratio,setcode=setid,carddeck = setcards)
-    return render_template('setinfo.html',setcode=setid, carddeck = setcards)
+    return render_template('setinfo.html',setcode=setid, carddeck = setcards,card_names=card_names)
 
 
 @app.route('/reserveList')
@@ -441,7 +441,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('404.html',card_names=card_names), 404
 
 
 @app.route('/search', methods=['POST'])
