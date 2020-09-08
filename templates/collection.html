@@ -8,17 +8,17 @@
 <div class="row">
     <div class="col-sm-6 col-md-6">
 
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Add a card to your collection</h5>
                     <p class="card-text">Your collection's value changes every day.
                          Mimicvat tracks the value of your cards by scraping the tcgplayer.com market value
                         every day, and lets you know when prices spike.</p>
             <form class="form-inline mt-2 mt-md-0" method="POST" action="/collection">
-                <input class="form-control mr-sm-2" type="text" placeholder="name" aria-label="watchlist" name="name-form" list="card_names">
-                <input class="form-control mr-sm-2" type="text" placeholder="set" aria-label="watchlist" name="set-form">
-                <input class="form-control mr-sm-2" type="text" placeholder="cost" aria-label="watchlist" name="cost-form">
-                <input class="form-control mr-sm-2" type="text" placeholder="number purchased" aria-label="watchlist" name="number-form">
+                <input class="form-control mr-sm-2 mb-1" type="text" placeholder="name" aria-label="watchlist" name="name-form" list="card_names">
+                <input class="form-control mr-sm-2 mb-1" type="text" placeholder="set" aria-label="watchlist" name="set-form">
+                <input class="form-control mr-sm-2 mb-1" type="text" placeholder="cost" aria-label="watchlist" name="cost-form">
+                <input class="form-control mr-sm-2 mb-1" type="text" placeholder="number purchased" aria-label="watchlist" name="number-form">
                 <div class="card-body">
                 <button class="btn btn-primary mb-2" type="submit">add card</button>
                 </div>
@@ -33,7 +33,7 @@
 
                 </div>
             </div>
-            <div class="card coll-res">
+            <div class="card collres mb-3">
               <table>
               <tr>
                 <td><b>total msrp:</b></td>
