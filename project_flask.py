@@ -130,6 +130,14 @@ def setinfo(setid):
     try:
 
         setcards = cur.execute('select id, name, picurl from cards where cardset = ?', (setid,))
+        return_list = []
+        for card in setcards:
+            return_list.append(list(card))
+        for card in return_list:
+            price_val = cur.execute('select normprice from prices where id=? and datetime = ?',(card[0],'2019-07-24'))
+            print(card[0],' price: ',cur.fetchone())
+        print(return_list)
+
         """
         for card in setcards:
             print('searching for price:',card[0],'name:',card[1])
@@ -141,7 +149,7 @@ def setinfo(setid):
         setnorm = 0
         setfoil = 0
         ratio = 0
-        print('fetch one:',cur.fetchone())
+        print('fetch one:',cur.fetchone()[0])
     except:
         print('could not collect id name and picurl')
     """
@@ -167,7 +175,7 @@ def setinfo(setid):
     """
 
     #return render_template('setinfo.html',setnorm = setnorm,setfoil=setfoil,ratio=ratio,setcode=setid,carddeck = setcards)
-    return render_template('setinfo.html',setcode=setid, carddeck = setcards,card_names=card_names)
+    return render_template('setinfo.html',setcode=setid, carddeck = return_list,card_names=card_names)
 
 
 @app.route('/reserveList')
@@ -668,7 +676,7 @@ def searchGet():
     return render_template("searchGetLayout.html", card_names=card_names)
 
 
-@app.route('/topCards')
+@app.route('/pandas')
 def topCards():
 
     # tensorflow/keras processing could go here in the future

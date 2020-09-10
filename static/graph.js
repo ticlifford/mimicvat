@@ -5,6 +5,7 @@ $(document).ready(function() {
 		xAxis: xAxis,
 		yAxis: yAxis,
         series: series,
-        credits: {enabled: false}
+        credits: {"enabled":"false"},
+        legend: {"enabled":"false"}
 	});
 });

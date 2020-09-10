@@ -23,12 +23,14 @@ in value, as well as sell if the price is dropping.</p> <p>The languages I used 
     <div class="row justify-content-around">
         <div class="col-md">
             <center>
+            <p>Land tax</p>
+            <p>set:battlebond</p>
             <p><img src={{imageUrl}} class="center-block cardim" alt="card image goes here" width=50% style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 1px 1px 6px rgba(0,0,0,0.45);"></p>
             </center>
         </div>
 
         <div class="col-md">
-            <div id={{ chartID|safe }} class="shadow chart" style="height: 500px; width: 500px;"></div>
+            <div id={{ chartID|safe }} class="shadow chart" style="height: 500px; width: 500px; border-radius: 25px;"></div>
 
             <script>
                 var chart_id = {{ chartID|safe }}
@@ -48,6 +50,7 @@ in value, as well as sell if the price is dropping.</p> <p>The languages I used 
             <div class="speech-bubble">This is pricing data projected over time. To see how I collect this data, or if you're confused on how the site works, click <a href="/sets">here.</a></div>
         </div>
     </div>
+    <p style="text-align: center;">This information is the lowest price this card has sold for over time, and can be used to make informed decisions on buying cards.</p>
 
 </div>
 </div>

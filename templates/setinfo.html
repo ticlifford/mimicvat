@@ -2,6 +2,14 @@
 
 {% block paragraph %}
 
+<div class="card text-white bg-warning mb-3">
+    <div class="card-body">
+      <h2 class="card-title">A work in progress</h2>
+      <h6 class="card-subtitle mb-2 ">this isn't finished!</h6>
+      <p class="card-text">This page is designed to be a one page view on each set, showing a visual display of whats in the set and where the value is. I've only just started working on it.</p>
+    </div>
+  </div>
+
 <table>
     <tr>
     <th>set code:</th>
@@ -28,7 +36,7 @@
 
 {% for card in carddeck %}
 <div class="col-sm-6">
-    <div class="card">
+    <div class="card mb-3">
         <h5 class="card-header">{{card[1]}}</h5>
       <div class="card-body">
         <p>id value: {{card[0]}}</p>
