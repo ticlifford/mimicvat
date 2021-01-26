@@ -83,7 +83,7 @@ except:
 # update the reserve list table
 print("updating reserve list")
 try:
-    # update the reserve list code goes here
+    os.system(r'python3 /home/timc/flask_project/flask_app/RlDailyInsert.py')
     with open(fPath, 'a') as f:
         f.write('\n updated reserve list')
 except:

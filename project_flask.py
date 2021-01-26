@@ -11,7 +11,12 @@ app = Flask(__name__)
 
 # the location of the database, when running locally vs on server
 #dbLoc = '/home/timc/flask_project/flask_app/CARDINFO.db'
-dbLoc = 'CARDINFO.db'
+
+#website location
+#dbLoc = 'CARDINFO.db'
+
+#windows local
+dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 
 try:
@@ -77,7 +82,8 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
     try:
         chart = {"renderTo": chartID, "type": chart_type,
                  "height": chart_height, "zoomType": 'x'}
-        series = [{"name": 'Price', "data": priceList}]
+        series = [{"name": 'Price', "data": priceList, "id":"dataset"},
+        {"type":"roc", "linkedTo":"dataset","params":{"period":"10"}}]
         title = {"text": cardName}
         xAxis = [{"categories": dateList}, {'type': 'datetime'}]
         yAxis = {"title": {"text": 'Price in dollars'}}
