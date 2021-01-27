@@ -212,7 +212,7 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
         for vals in reserved_vals:
             print('vals:',vals[1],vals[0])
             priceList.append(vals[1])
-            dateList.append(vals[0])
+            dateList.append(vals[0].replace("-","/"))
     except:
         print('could not append chart lists')
     con.close()
@@ -644,7 +644,7 @@ def searchCard(cardId, cur, priceList, dateList, imageUrl):
                 priceList.append(0)
             else:
                 priceList.append(priceN[1])
-            dateList.append(priceN[0])
+            dateList.append(priceN[0].replace("-","/"))
         return imageUrl
     except:
         print('the for-loops didnt work for cardUrl and price chart lists')
