@@ -336,6 +336,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         # initializing my variables
         priceList = []
         dateList = []
+        combineddata = []
         imageUrl = ""
         sameCards = []
         setCodes = []
@@ -413,16 +414,16 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                  "height": chart_height, "zoomType": 'x'}
         series = [{"name": 'Price', "data": priceList}]
         title = {"text": cardName}
-        xAxis = {"categories": dateList}
-        yAxis = {"title": {"text": 'Price in dollars'}}
+        xAxis = {"categories": dateList, "type":'datetime'}
+        yAxis = {"title": {"text": 'Dollars'}}
         pageType = 'graph'
-
+        # I need to insert credits and any other variables into the html of the charts
         return render_template("resultsLayout.html",
                                pageType=pageType,
                                chartID=chartID,
                                chart=chart,
                                series=series,
-                               title=title,
+                               #title=title,
                                xAxis=xAxis,
                                yAxis=yAxis,
                                imageUrl=imageUrl,
@@ -606,7 +607,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
                  "height": chart_height, "zoomType": 'x'}
         series = [{"name": 'Price', "data": priceList}]
         title = {"text": r}
-        xAxis = {"categories": dateList}
+        xAxis = [{"categories": dateList, "type":"datetime"}]
         yAxis = {"title": {"text": 'Price in dollars'}}
         pageType = 'graph'
     except:
@@ -644,10 +645,25 @@ def searchCard(cardId, cur, priceList, dateList, imageUrl):
                 priceList.append(0)
             else:
                 priceList.append(priceN[1])
-            dateList.append(priceN[0].replace("-","/"))
+            newdate = priceN[0].replace("-","/")
+            time_element= datetime.datetime.strptime(newdate,"%Y/%m/%d")
+            timestamp = datetime.datetime.timestamp(time_element)
+            timestamp = int(timestamp)
+            timestamp = timestamp*1000
+            #print(timestamp)
+            dateList.append(timestamp)
+            #dateList.append(priceN[0].replace("-","/"))
+        #print('dateList:')
+        #print(dateList)
+        """
+        for x in dateList:
+            print('datelist val:')
+            print(datetime.datetime.fromtimestamp(x).strftime('%Y-%m-%d %H:%M:%S'))
+        """
         return imageUrl
     except:
         print('the for-loops didnt work for cardUrl and price chart lists')
+    print('dateList:')
 
 
 def updateTrend(cardId):
