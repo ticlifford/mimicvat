@@ -336,7 +336,6 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         # initializing my variables
         priceList = []
         dateList = []
-        combineddata = []
         imageUrl = ""
         sameCards = []
         setCodes = []
