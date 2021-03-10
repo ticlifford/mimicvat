@@ -17,3 +17,14 @@ tr:hover {
 .headrow {
     background-color:lightgray;
 }
+
+.portrait-crop{
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    object-position: top;
+}
+
+.chart_container{
+    background-color: lightslategray;
+}

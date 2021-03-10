@@ -70,24 +70,31 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
 #    pass
 
 # collects price and date vals of land tax to load up front page quickly
-    land_tax_vals = cur.execute(
-        "select * from frontpage order by datetime asc")
-
-    for vals in land_tax_vals:
-        priceList.append(vals[1])
-        dateList.append(vals[0])
+    try:
+        land_tax_vals = cur.execute(
+            "select * from frontpage order by datetime asc")
+    except:
+        print('could not connect to db for frontpage chart')
+    try:
+        for vals in land_tax_vals:
+            priceList.append(vals[1])
+            dateList.append(vals[0])
+    except:
+        print('could not print frontpage vals')
     con.close()
+    data = [list(x) for x in zip(dateList, priceList)]
 
     # chart insertion
     try:
         chart = {"renderTo": chartID, "type": chart_type,
                  "height": chart_height, "zoomType": 'x'}
-        series = [{"name": 'Price', "data": priceList, "id":"dataset"},
-        {"type":"roc", "linkedTo":"dataset","params":{"period":"10"}}]
+        series = [{"name": 'series label', "data": data}]
         title = {"text": cardName}
-        xAxis = [{"categories": dateList}, {'type': 'datetime'}]
-        yAxis = {"title": {"text": 'Price in dollars'}}
+        xAxis = {"type":"datetime"}
+        yAxis = {"title": {"text": 'yax'}}
         pageType = 'graph'
+
+
     except:
         print('something went wrong with the highcart vars')
 
@@ -133,16 +140,24 @@ def setinfo(setid):
         print(type(setid))
     except:
         print('could not print setid or type')
-    try:
 
+    try:
+        setname = cur.execute('select name from CARDSET where code = ?', (setid,))
+        setname = str(setname.fetchone()[0]).lower().replace(" ", "")
+        #print('set name collected')
+    except:
+        print('could not select cardset name')
+
+
+    try:
         setcards = cur.execute('select id, name, picurl from cards where cardset = ?', (setid,))
         return_list = []
         for card in setcards:
             return_list.append(list(card))
         for card in return_list:
             price_val = cur.execute('select normprice from prices where id=? and datetime = ?',(card[0],'2019-07-24'))
-            print(card[0],' price: ',cur.fetchone())
-        print(return_list)
+            #print(card[0],' price: ',cur.fetchone())
+        #print(return_list)
 
         """
         for card in setcards:
@@ -181,7 +196,7 @@ def setinfo(setid):
     """
 
     #return render_template('setinfo.html',setnorm = setnorm,setfoil=setfoil,ratio=ratio,setcode=setid,carddeck = setcards)
-    return render_template('setinfo.html',setcode=setid, carddeck = return_list,card_names=card_names)
+    return render_template('setinfo.html',setcode=setid, carddeck = return_list,card_names=card_names, setname=setname)
 
 
 @app.route('/reserveList')
@@ -357,7 +372,8 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         print('card im looking up:', cardId)
         try:
             for x in cur.execute("""select id, 
-            cardset 
+            cardset, 
+            picurl
             from cards 
             where name = (?) 
             and cards.ONLINEONLY != 'True'""", (cardName,)):
@@ -366,7 +382,8 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                 except:
                     print('could not append samecards in sameName')
                 try:
-                    duplicate_names.append([x[0], x[1]])
+                    price = recent_price(x[0])
+                    duplicate_names.append([x[0], x[1], x[2], price])
                 except:
                     print('could not append duplicate_names in sameName')
 
@@ -381,6 +398,8 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
             print('running searchCard')
             imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl)
             print('prices:', priceList)
+            print('dates:',dateList)
+            data = [list(x) for x in zip(dateList, priceList)]
         except:
             print('cant perform searchcard')
         try:
@@ -407,31 +426,35 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         print('power:', cardInfo['power'])
 
         con.close()
+# supposed to change data input
 
         # chart data routed to javascript
         chart = {"renderTo": chartID, "type": chart_type,
                  "height": chart_height, "zoomType": 'x'}
-        series = [{"name": 'Price', "data": priceList}]
+        series = [{"name": 'series label', "data": data}]
         title = {"text": cardName}
-        xAxis = {"categories": dateList, "type":'datetime'}
-        yAxis = {"title": {"text": 'Dollars'}}
+        xAxis = {"type":"datetime"}
+        yAxis = {"title": {"text": 'yax'}}
         pageType = 'graph'
+
+
+
         # I need to insert credits and any other variables into the html of the charts
         return render_template("resultsLayout.html",
-                               pageType=pageType,
-                               chartID=chartID,
-                               chart=chart,
-                               series=series,
-                               #title=title,
-                               xAxis=xAxis,
-                               yAxis=yAxis,
-                               imageUrl=imageUrl,
-                               sameCards=sameCards,
-                               setCodes=setCodes,
-                               cardId=cardId,
-                               sameCardsCombo=duplicate_names,
-                               cardInfo=cardInfo,
-                               card_names=card_names)
+                                pageType=pageType,
+                                chartID=chartID,
+                                chart=chart,
+                                series=series,
+                                title=title,
+                                xAxis=xAxis,
+                                yAxis=yAxis,
+                                imageUrl=imageUrl,
+                                sameCards=sameCards,
+                                setCodes=setCodes,
+                                cardId=cardId,
+                                sameCardsCombo=duplicate_names,
+                                cardInfo=cardInfo,
+                                card_names=card_names)
 
     elif request.method == "POST":
         # post means i'm adding a card to the watchlist
@@ -495,44 +518,8 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     duplicate_names = []
     # for the result of the name search, get the ID and put it in cardId
     try:
-        print('checking for every card with the name:', r)
-        searchResult = cur.execute("""select id, 
-        cardset 
-        from cards 
-        where name = (upper(?)) 
-        and cards.ONLINEONLY != 'True' 
-        and length(cardset)=3""", (r,))
-
-        print('looking at:', searchResult)
-
-        if not searchResult:
-            print('there was no search result')
-            return 'there was no search result'
-        for x in searchResult:
-            print('value of x:', x)
-            if not x:
-                print('there was no search result')
-                return "there was no search result"
-            try:
-                sameCards.append(x[0])
-                print('appending samecards with :', x[0])
-            except:
-                print('could not append samecards in sameName')
-            try:
-                duplicate_names.append([x[0], x[1]])
-            except:
-                print('could not append duplicate_names in sameName')
-
-            print("x 0:", x[0])
-            print("x 1:", x[1])
-        print('duplicate_names:', duplicate_names)
-
-    except:
-        print('I couldnt select the ids for samecards')
-
-    try:
         for cardIdNum in cur.execute("""select ID, 
-        CARDSET from CARDS 
+        CARDSET, PICURL from CARDS 
         where UPPER(NAME)=UPPER((?)) 
         and cards.ONLINEONLY != 'True' 
         and length(cardset)=3 
@@ -540,10 +527,13 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
                                      (r, )):
             cardId = cardIdNum[0]
             print('cardId from execute:', cardId)
+            print('card url:',cardIdNum[2])
             # most cards have more than one printing, this compiles a list of each card
             # currently, I display the last card thats in my list I also filter to remove online cards and promos
             sameCards.append(cardIdNum[0])
-            duplicate_names.append([cardIdNum[0], cardIdNum[1]])
+            price = recent_price(cardIdNum[0])
+            duplicate_names.append([cardIdNum[0], cardIdNum[1], cardIdNum[2], price])
+
     except:
         print('I couldnt get the cardID')
 
@@ -554,6 +544,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         print('there is no card ID')
         return render_template('frontPage.html', card_names=card_names)
     imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl)
+    data = [list(x) for x in zip(dateList, priceList)]
 
     print('imageUrl after searchcard:', imageUrl)
     print('priceList to display:', priceList)
@@ -569,6 +560,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     where id == ((?))""",
                 (cardId, ))
     fetchInfo = cur.fetchone()
+    price_now = recent_price(cardId)
 
     for value in fetchInfo:
         print('value: ', value)
@@ -603,11 +595,11 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     # chart data
     try:
         chart = {"renderTo": chartID, "type": chart_type,
-                 "height": chart_height, "zoomType": 'x'}
-        series = [{"name": 'Price', "data": priceList}]
+                 "height": chart_height, "zoomType": 'x', "backgroundColor":"#FCFFC5"}
+        series = [{"name": 'series label', "data": data}]
         title = {"text": r}
-        xAxis = [{"categories": dateList, "type":"datetime"}]
-        yAxis = {"title": {"text": 'Price in dollars'}}
+        xAxis = {"type":"datetime"}
+        yAxis = {"title": {"text": 'yax'}}
         pageType = 'graph'
     except:
         print('something went wrong with the highcart vars')
@@ -625,8 +617,8 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
                            cardId=cardId,
                            sameCardsCombo=duplicate_names,
                            cardInfo=cardInfo,
-                           card_names=card_names)
-
+                           card_names=card_names,
+                           price_now = price_now)
 
 def searchCard(cardId, cur, priceList, dateList, imageUrl):
     # for the url I make the variable the string, and for the date and price I add them to the lists
@@ -1130,6 +1122,48 @@ def get_id(name, setCode):
     con.close()
     return card_id
 
+def recent_price(cardID):
+    if cardID is None:
+        return 0
+    print('starting recent_price for ',cardID)
+    con = sql.connect(dbLoc)
+    cursor = con.cursor()
+    cursor.execute('''select normprice from prices where ID = (?) 
+    order by datetime desc''',
+                   (cardID, ))
+    price = cursor.fetchone()
+    price= price[0]
+    con.close()
+    if price is None:
+        print('price is none')
+        price = 0
+    print('price:',price)
+    print('finished recent_price search')
+    return price
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+#next line
+def duplicate_card(cur,r,duplicate_names):
+        try:
+            for cardIdNum in cur.execute("""select ID, 
+            CARDSET, PICURL from CARDS 
+            where UPPER(NAME)=UPPER((?)) 
+            and cards.ONLINEONLY != 'True' 
+            and length(cardset)=3 
+            and cardset != 'mb1'""",
+                                        (r, )):
+                cardId = cardIdNum[0]
+                print('cardId from execute:', cardId)
+                print('card url:',cardIdNum[2])
+                # most cards have more than one printing, this compiles a list of each card
+                # currently, I display the last card thats in my list I also filter to remove online cards and promos
+                sameCards.append(cardIdNum[0])
+                price = recent_price(cardIdNum[0])
+                duplicate_names.append([cardIdNum[0], cardIdNum[1], cardIdNum[2], price])
+                return duplicate_names
+
+        except:
+            print('I couldnt get the cardID')

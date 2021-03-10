@@ -23,6 +23,18 @@ with open(fPath, 'a') as f:
 #with open('daily.txt', 'a') as f:
     f.write('\n edited on: ' + dailyTime)
 
+# update the set name table
+print("updating set name list")
+try:
+    os.system(r'python3 /home/timc/flask_project/flask_app/scrapers/setNameCollector.py')
+    with open(fPath, 'a') as f:
+        f.write('\n updated set name list')
+except:
+    print('could not update set name list')
+    with open(fPath, 'a') as f:
+        f.write('\n could not update set name list')
+
+
 
 # set price scraper
 

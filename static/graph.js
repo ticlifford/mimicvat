@@ -6,6 +6,7 @@ $(document).ready(function() {
 		yAxis: yAxis,
         series: series,
         credits: credits,
-        legend: legend
+        legend: legend,
+        backgroundColor: backgroundColor
 	});
 });

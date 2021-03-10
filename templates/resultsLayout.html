@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block viewport2 %}{% endblock %}
+{% block viewport2 %}<link rel="stylesheet" href="../static/styles/styles.css">{% endblock %}
 
 {% block head %}<meta name="viewport" content = "width=device-width, initial-scale=1.0">{% endblock %}
 
@@ -14,38 +14,49 @@
     <div class="row">
         <div class="col-sm-6 col-md-6">
 <p><img src={{imageUrl}}  alt="card image goes here" width="250"></p>
-<p>ID: {{cardId}}</p>
 
 <form action="/search/{{cardId}}" method="POST">
     <input class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" name="addCard" value="remove this ID">
   <button class="btn btn-primary mb-2" type="submit">add this card to the watchlist</button>
 </form>
 
-<table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Other versions:</th>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>cmc: {{cardInfo['cmc']}}</td>
+                    <td>power: {{cardInfo['power']}}</td>
+                    <td>toughness: {{cardInfo['toughness']}}</td>
+                </tr>
+                <tr>
+                    <td>type: {{cardInfo['type']}}</td>
+                    <td>rarity: {{cardInfo['rarity']}}</td>
+                    <td>buylist price: {{cardInfo['buylist']}}</td>
+                </tr>
+            </tbody>
+  
+        </table>
+        <P>today's price: {{price_now}}</P>
 
-        
-      </tr>
-    </thead>
-    <tbody>
+
+
+
         {% if sameCardsCombo|length > 1 %}
+        <table class="table">
+            <tbody>
+        <thead>
+            <tr>
+              <th scope="col">Other versions:</th>
+            </tr>
+          </thead>
       {% for card in sameCardsCombo %}
       <tr>
         <!--<td></td>-->
-         <td>{{card[0]}}</td>
+         <td><a href="/search/{{card[0]}}"><img src={{card[2]}}  alt="card image goes here" width="250" class="portrait-crop"></p></td></a>
          <td>{{card[1]}}</td>
-         <td><a href="/search/{{card[0]}}">Click here for link</a></td>
+         <td>{{card[3]}}</td>
       </tr>
    {% endfor %}
       {% endif %}
-      <p>cmc: {{cardInfo['cmc']}}</p>
-      <p>power: {{cardInfo['power']}}</p>
-      <p>toughness: {{cardInfo['toughness']}}</p>
-      <p>type: {{cardInfo['type']}}</p>
-      <p>rarity: {{cardInfo['rarity']}}</p>
-      <p>buylist price: {{cardInfo['buylist']}}</p>
 
     </tbody>
   </table>
@@ -53,7 +64,7 @@
 
 <a href = "/">Go back to home page</a>
 </div>
-    <div class="col-sm-6 col-md-6">
+    <div style="background:pink" class="col-sm-6">
          <div id={{ chartID|safe }} class="chart" style="height: 500px; width: 500px;"></div>
 
                    <script>
@@ -65,6 +76,7 @@
                        var chart = {{ chart|safe }}
                        var credits = { "enabled":false }
                        var legend = { "enabled":false }
+                       var backgroundColor = 'FCFFC5'
                    </script>
         </div>
     </div>
