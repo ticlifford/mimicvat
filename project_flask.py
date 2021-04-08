@@ -111,6 +111,22 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
                            cardName=cardName,
                            card_names=card_names)
 
+@app.route('/collections')
+def collectionsPage():
+    try:
+        print('hello collection page')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute("select * from collections")
+        rows = cur.fetchall()
+        con.close()
+        colls = rows
+    except:
+        print('hello collections page is not working')
+
+    return render_template("collections.html", card_names = card_names)
+
 @app.route('/sets')
 def setsPage():
     try:
