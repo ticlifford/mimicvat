@@ -124,9 +124,31 @@ def collectionsPage():
         colls = rows
     except:
         print('hello collections page is not working')
+"""
+@app.route('/collections/<collection_id>', methods = ['GET', 'POST'])
+def collectionsPage():
+    try:
+        print('hello collection page')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+        cur.execute("select * from collections")
+        rows = cur.fetchall()
+        con.close()
+        colls = rows
+    except:
+        print('hello collections page is not working')
+
+# the collections sql table will look like this:
+#   *COLLECTION_ID    CARD_ID    QUANTITY
+#the second sql table will be collections metadata:
+#   USERNAME    COLLECTION_VAL   *COLLECTION_ID    COLLECTION_NAME
+
+#   the unique keys of the database will both be Collection_ID
+#   usernames can have more than one collection
 
     return render_template("collections.html", card_names = card_names)
-
+"""
 @app.route('/sets')
 def setsPage():
     try:
@@ -510,6 +532,13 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
 
     # r is the name in string format
     try:
+        fs = request.form['foil-switch']
+        print('switch to foil pricing')
+        print(fs)
+    except:
+        print('not foil pricing')
+        
+    try:
         r = (request.form['searchbar'])
         print('r result is:', r)
     except:
@@ -611,11 +640,11 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     # chart data
     try:
         chart = {"renderTo": chartID, "type": chart_type,
-                 "height": chart_height, "zoomType": 'x', "backgroundColor":"#FCFFC5"}
+                 "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
         series = [{"name": 'series label', "data": data}]
         title = {"text": r}
         xAxis = {"type":"datetime"}
-        yAxis = {"title": {"text": 'yax'}}
+        yAxis = {"title": {"text": 'dollars'}}
         pageType = 'graph'
     except:
         print('something went wrong with the highcart vars')

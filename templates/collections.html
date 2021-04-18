@@ -1,1 +1,21 @@
 {% extends "layout.html" %}
+
+{% block paragraph %}
+<div class="row">
+
+{% for col in collection_deck %}
+    <div class="col-sm-6">
+        <div class="card mb-3">
+            <h5 class="card-header">{{col[1]}}</h5>
+          <div class="card-body">
+            <p>id value: {{col[0]}}</p>
+            <p class="card-text"></p>
+            <p><img src={{col[2]}} class="center-block text-center" alt="card image goes here" width=50% style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 1px 1px 6px rgba(0,0,0,0.45);"></p>
+            <a href="/search/{{col[0]}}" class="btn btn-primary">Go to card info</a>
+            <p>image address: {{col[2]}}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+{% endblock %}
