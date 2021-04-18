@@ -10,11 +10,12 @@
    and you can also use it to test the watchlist option by adding and removing cards from this list.
 </p>
 
-
-<table style="white-space: nowrap;" class="table">
+<div class = "container" style = "border-style: dashed;">
+    <div class="row">
+        <div class="col">
+<table style="white-space: nowrap;" class="table text-center">
         <thead>
            <td class="headrow">Name</td>
-           <td class="headrow">ID</td>
            <td class="headrow">CMC</td>
            <td class="headrow">Mana cost</td>
            <td class="headrow">Power</td>
@@ -26,7 +27,6 @@
         {% for row in rows %}
            <tr>
               <td><a href="search/{{row["ID"]}}">{{row["NAME"]}}</a></td>
-              <td>{{row["ID"]}}</td>
               <td> {{ row["CMC"]}}</td>
               <td> {{ row["MANACOST"]}}</td>
               <td> {{ row["POWER"]}}</td>
@@ -39,5 +39,7 @@
            </tr>
         {% endfor %}
      </table>
-
+    </div>
+</div>
+</div>
 {% endblock %}
