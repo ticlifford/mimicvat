@@ -265,19 +265,49 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
         for vals in reserved_vals:
             print('vals:',vals[1],vals[0])
             priceList.append(vals[1])
-            dateList.append(vals[0].replace("-","/"))
+
+            newdate = vals[0].replace("-","/")
+            time_element= datetime.datetime.strptime(newdate,"%Y/%m/%d")
+            timestamp = datetime.datetime.timestamp(time_element)
+            timestamp = int(timestamp)
+            timestamp = timestamp*1000
+            print('timestamp:',timestamp)
+            dateList.append(timestamp)
+        data = [list(x) for x in zip(dateList, priceList)]
+        print('data: ',data)
     except:
         print('could not append chart lists')
+
+#cards collection
+
+    try:
+        print('run select query for cards')
+        #I need to select a date so right now i have it subquerying the most recent, that will be too slow on the live app but fine locally
+        #cur.execute("select prices.normprice,prices.id from cards, prices where cards.id=prices.id and reserved='True' and datetime='2021-04-21' order by normprice desc limit 10")
+        cur.execute("select prices.normprice,prices.id,cards.picurl from cards, prices where cards.id=prices.id and reserved='True' and datetime=(select max(datetime) from prices) order by normprice desc limit 10")
+        rows = cur.fetchall()
+    
+        reserve_cards = rows
+    except:
+        print('could not select reserve_top')
+
+
     con.close()
 
     # chart insertion
     try:
         chart = {"renderTo": chartID, "type": chart_type,
-                 "height": chart_height, "zoomType": 'x'}
-        series = [{"name": 'Price', "data": priceList}]
-        title = {"text": 'reserved list'}
-        xAxis = [{"categories": dateList}, {'type': 'datetime'}]
-        yAxis = {"title": {"text": 'Price in dollars'}}
+                 "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
+    except:
+        print('chart cant be made')
+    try:
+        series = [{"name": 'series label', "data": data}]
+    except:
+        print('series cant be made')
+    try:
+        title = {"text": 'Total value of reserved list'}
+        xAxis = {"type":"datetime"}
+        yAxis = {"title": {"text": 'dollars'}}
         pageType = 'graph'
     except:
         print('something went wrong with the highcart vars')
@@ -291,7 +321,9 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
                         title=title,
                         xAxis=xAxis,
                         yAxis=yAxis,
-                        card_names=card_names)
+                        card_names=card_names,
+                        reserve_cards=reserve_cards
+                        )
 
 @app.route('/list')
 def listPage():

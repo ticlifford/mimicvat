@@ -1,12 +1,25 @@
 {% extends "layout.html" %}
 
-{% block paragraph %}
+{% block container %}
 <div class="row">
-    <div class="col-sm-6 col-md-6">
+    <div class="col-md-auto" style="border-style: dotted;">
+        <p>cards in reserve_cards:</p>
+        <div class="card-deck">
+        {%for card in reserve_cards%}
+            <div class="card" style="width:300px">
+                <img class="card-img-top" src={{card[2]}} alt="Card image cap"style="width:200px">
+                <a href="/search/{{card[1]}}" class="btn btn-primary stretched-link">card details</a>
+                <div class="card-body">
+                    <p>${{card[0]}}</p>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
     </div>
+    <div class="col-4">
             <!-- this is the highchart javascript -->
-            <div class="col-md-auto">
-                <div id={{ chartID|safe }} class="shadow chart" style="height: 500px; width: 500px;"></div>
+            <div style="background:#f5f5f5" class="col-md-auto">
+                <div id={{ chartID|safe }} class="chart" style="height: 500px; width: 500px;"></div>
                     <script>
                         var chart_id = {{ chartID|safe }}
                         var series = {{ series|safe }}
@@ -14,9 +27,40 @@
                         var xAxis = {{ xAxis|safe }}
                         var yAxis = {{ yAxis|safe }}
                         var chart = {{ chart|safe }}
+                        var credits = { "enabled":false }
+                        var legend = { "enabled":false }
+                        var backgroundColor = 'f5f5f5'
                     </script>
             </div>
-            
+        </div>
+</div>
+<div class="row">
+    <div class="card-deck">
+        <div class="card">
+          <img class="card-img-top" src="..." alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+          </div>
+        </div>
+        <div class="card">
+          <img class="card-img-top" src="..." alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+          </div>
+        </div>
+        <div class="card">
+          <img class="card-img-top" src="..." alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
+            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+          </div>
+        </div>
+      </div>
 </div>
 {% endblock %}
 
