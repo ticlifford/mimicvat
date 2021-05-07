@@ -18,6 +18,9 @@ app = Flask(__name__)
 #windows local
 dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
+#csv file upload location
+UPLOAD_FOLDER = 'static/files'
+
 
 try:
     print('collecting distinct names')
@@ -71,27 +74,24 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
 
 # collects price and date vals of land tax to load up front page quickly
     try:
-        land_tax_vals = cur.execute(
-            "select * from frontpage order by datetime asc")
+        imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl)
+        data = [list(x) for x in zip(dateList, priceList)]
     except:
         print('could not connect to db for frontpage chart')
-    try:
-        for vals in land_tax_vals:
-            priceList.append(vals[1])
-            dateList.append(vals[0])
-    except:
-        print('could not print frontpage vals')
     con.close()
-    data = [list(x) for x in zip(dateList, priceList)]
-
+    try:
+        print(data)
+        print('printing data')
+    except:
+        print('could not print data')
     # chart insertion
     try:
         chart = {"renderTo": chartID, "type": chart_type,
-                 "height": chart_height, "zoomType": 'x'}
+        "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
         series = [{"name": 'series label', "data": data}]
         title = {"text": cardName}
         xAxis = {"type":"datetime"}
-        yAxis = {"title": {"text": 'yax'}}
+        yAxis = {"title": {"text": 'dollars'}}
         pageType = 'graph'
 
 
@@ -261,6 +261,12 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
         print('could not select')
 
     try:
+        today_date = cur.execute("select max(datetime) from prices")
+        today_date  = cur.fetchone()
+        print("today_date ",today_date[0])
+    except:
+        print('could not process moving average')
+    try:
         print('appending chart lists')
         for vals in reserved_vals:
             print('vals:',vals[1],vals[0])
@@ -284,6 +290,7 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
         print('run select query for cards')
         #I need to select a date so right now i have it subquerying the most recent, that will be too slow on the live app but fine locally
         #cur.execute("select prices.normprice,prices.id from cards, prices where cards.id=prices.id and reserved='True' and datetime='2021-04-21' order by normprice desc limit 10")
+        date_today = cur.execute("select max(datetime) from prices where id=")
         cur.execute("select prices.normprice,prices.id,cards.picurl from cards, prices where cards.id=prices.id and reserved='True' and datetime=(select max(datetime) from prices) order by normprice desc limit 10")
         rows = cur.fetchall()
     
@@ -651,18 +658,6 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     except:
         print('could not add values to cardInfo dictionary here')
 
-# cur.execute("""select buylist.BUYPRICE,
-# buylist.DATETIME
-# from buylist,
-# cards,
-# CARDSET
-# where cards.id == ((?))
-# and cards.CARDSET = CARDSET.CODE
-# and upper(cardset.name) = upper(replace (buylist.SETNAME,'-',' '))
-# and upper(cards.name) = upper(buylist.NAME)
-# order by datetime desc""",
-# (cardId, ))
-
     print('the card cmc value:', cardInfo['cmc'])
     print('search value:', cardInfo['type'])
     print('power:', cardInfo['power'])
@@ -678,6 +673,8 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'dollars'}}
         pageType = 'graph'
+
+
     except:
         print('something went wrong with the highcart vars')
 
@@ -713,6 +710,9 @@ def searchCard(cardId, cur, priceList, dateList, imageUrl):
                 priceList.append(0)
             else:
                 priceList.append(priceN[1])
+            # the date is stored with dash marks but needs to be displayed with slashes
+            # also js needs the timestamps multiplied by 1000 for unix time or some shit
+            # this block of text made it hell to display charts across different parts of the site because of the date format changes
             newdate = priceN[0].replace("-","/")
             time_element= datetime.datetime.strptime(newdate,"%Y/%m/%d")
             timestamp = datetime.datetime.timestamp(time_element)
@@ -1139,7 +1139,19 @@ def price_chart():
     try:
         for vals in chart_vals:
             print(vals)
-            x_ax.append(vals[0])
+            # the date needs a reformat to display on highcharts
+            # this may appear to be confusing, because it is.
+            # javascript needs unix time multiplied by 1000, and I store
+            # dates with hyphens instead of slashes.
+            newdate = vals[0].replace("-","/")
+            time_element= datetime.datetime.strptime(newdate,"%Y/%m/%d")
+            timestamp = datetime.datetime.timestamp(time_element)
+            timestamp = int(timestamp)
+            timestamp = timestamp*1000
+            #print(timestamp)
+            x_ax.append(timestamp)
+            #x_ax.append(vals[0])
+
             y_ax.append(vals[1])
             z_ax.append(vals[2])
         cardsDb.close()
@@ -1147,15 +1159,24 @@ def price_chart():
         print('could not append chart_vals')
         cardsDb.close()
 
+    #convert values to data list
+    dateList = x_ax
+    priceList1 = y_ax
+    priceList2 = z_ax
+    data = [list(x) for x in zip(dateList, priceList1, priceList2)]
+
+
     # chart insertion
+
+
+
 
     try:
         chart = {"renderTo": "chart_ID", "type": "area",
-                 "height": 500, "zoomType": 'x'}
-        series = [{"name": "MSRP", "data": y_ax},
-                  {"name": "Paid", "data": z_ax}]
+                 "height": 500, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
+        series = [{"name": "MSRP", "data": data[1]},{"name":"PPAID","data":data[2]}]
         title = {"text": "cost vs value"}
-        xAxis = [{"categories": x_ax}, {'type': 'datetime'}]
+        xAxis = {'type': 'datetime'}
         yAxis = {"title": {"text": 'Price in dollars'}}
         pageType = 'graph'
     except:
