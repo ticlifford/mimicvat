@@ -95,14 +95,19 @@ def addCards(data):
     except:
         print('could not check for pages')
 
+
+
+# make a database connection
 cardsDb = sqlite3.connect(dbPath)
 # cardsDb = sqlite3.connect('C:\\users\\tim\\desktop\\CARDINFO.db')
 c = cardsDb.cursor()
 
+"""
 #testing sql database
 first_row = c.execute('SELECT * FROM cards ORDER BY ROWID ASC LIMIT 1')
 for x in first_row:
     print(x)
+"""
 
 
 

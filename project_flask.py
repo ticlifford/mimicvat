@@ -113,6 +113,8 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
 
 @app.route('/collections')
 def collectionsPage():
+    return render_template("yourCollection.html", card_names = card_names)
+    """
     try:
         print('hello collection page')
         con = sql.connect(dbLoc)
@@ -124,6 +126,7 @@ def collectionsPage():
         colls = rows
     except:
         print('hello collections page is not working')
+    """
 """
 @app.route('/collections/<collection_id>', methods = ['GET', 'POST'])
 def collectionsPage():
@@ -290,11 +293,13 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
         print('run select query for cards')
         #I need to select a date so right now i have it subquerying the most recent, that will be too slow on the live app but fine locally
         #cur.execute("select prices.normprice,prices.id from cards, prices where cards.id=prices.id and reserved='True' and datetime='2021-04-21' order by normprice desc limit 10")
-        date_today = cur.execute("select max(datetime) from prices where id=")
+        #date_today = cur.execute("select max(datetime) from prices where id=")
         cur.execute("select prices.normprice,prices.id,cards.picurl from cards, prices where cards.id=prices.id and reserved='True' and datetime=(select max(datetime) from prices) order by normprice desc limit 10")
         rows = cur.fetchall()
-    
         reserve_cards = rows
+
+        for x in reserve_cards:
+            
     except:
         print('could not select reserve_top')
 
@@ -1164,6 +1169,8 @@ def price_chart():
     priceList1 = y_ax
     priceList2 = z_ax
     data = [list(x) for x in zip(dateList, priceList1, priceList2)]
+    print('data:')
+    print(data)
 
 
     # chart insertion
@@ -1174,7 +1181,7 @@ def price_chart():
     try:
         chart = {"renderTo": "chart_ID", "type": "area",
                  "height": 500, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
-        series = [{"name": "MSRP", "data": data[1]},{"name":"PPAID","data":data[2]}]
+        series = [{"name": 'series label', "data": data}]
         title = {"text": "cost vs value"}
         xAxis = {'type': 'datetime'}
         yAxis = {"title": {"text": 'Price in dollars'}}
