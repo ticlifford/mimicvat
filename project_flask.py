@@ -256,6 +256,7 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     except:
         print('could not connect to db')
 
+
     try:
         print('run select query')
         reserved_vals = cur.execute(
@@ -269,6 +270,8 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
         print("today_date ",today_date[0])
     except:
         print('could not process moving average')
+
+
     try:
         print('appending chart lists')
         for vals in reserved_vals:
@@ -287,6 +290,37 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     except:
         print('could not append chart lists')
 
+
+    try:
+
+        newdate = today_date[0].replace("-","/")
+        print('today_date replaced:',newdate)
+
+
+    except:
+        print('could not do last_week 1')
+    try:
+        time_element= datetime.datetime.strptime(newdate,"%Y/%m/%d")
+        last_week = time_element - datetime.timedelta(days=7)
+        todays_date = time_element
+        yesterday_date = time_element - datetime.timedelta(days = 1)
+        last_week = last_week.date()
+        print('last week: ',last_week)
+    except:
+        print('could not do last week 2')
+    try:
+        #cur.execute(" select (select normprice from prices where datetime = (?))/avg(normprice), prices.id, datetime from cards, prices where cards.id=prices.id and reserved='True' and datetime>(?) and datetime<(?) group by prices.id", (todays_date,last_week,yesterday_date, ))
+        avg_norms = cur.execute("select avg(normprice), prices.id from cards, prices where cards.id=prices.id and reserved='True' and datetime>(?) and datetime<(?) group by prices.id", (last_week,yesterday_date, ))
+        print('printing avg norms')
+        rows2 = cur.fetchall()
+        for row in rows2:
+            print('one row')
+            print(row)
+        #print('rows2:')
+        #print(rows2[0])
+    except:
+        print('could not select avg')
+
 #cards collection
 
     try:
@@ -299,7 +333,7 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
         reserve_cards = rows
 
         for x in reserve_cards:
-            
+            None
     except:
         print('could not select reserve_top')
 
