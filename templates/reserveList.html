@@ -15,6 +15,24 @@
             </div>
         {% endfor %}
         </div>
+    <table class="table">
+        <thread>
+        <tr>
+            <th scope="col">first</th>
+            <th scope="col">second</th>
+            <th scope="col">third</th>
+        </tr>
+        </thread>
+        <tbody>
+            {%for card in reserve_cards%}
+            <tr>
+                <td>{{card[1]}}</td>
+                <td>second</td>
+                <td>third</td>
+            </tr>
+            {% endfor %}
+    </tbody>
+    </table>
     </div>
     <div class="col-4">
             <!-- this is the highchart javascript -->

@@ -5,6 +5,18 @@
 {% endblock %}
 
 {% block paragraph %}
+
+<div class="card text-white bg-warning mb-3">
+    <div class="card-body">
+      <h2 class="card-title">A work in progress</h2>
+      <h6 class="card-subtitle mb-2 ">this isn't finished!</h6>
+      <p class="card-text">This page is is going to allow CSV uploads to track collection values. I'm rebuilding the feature after making changes to the way dates are stored,
+          so it's going to take some time to get it working.
+      </p>
+    </div>
+  </div>
+
+
 <div class="row">
     <div class="col-sm-6 col-md-6">
 
@@ -21,6 +33,8 @@
                 <input class="form-control mr-sm-2 mb-1" type="text" placeholder="number purchased" aria-label="watchlist" name="number-form">
                 <div class="card-body">
                 <button class="btn btn-primary mb-2" type="submit">add card</button>
+                <button class="btn btn-primary mb-2" onclick="alert('bulk import was clicked')" type="submit_csv">bulk import with csv</button>
+                <input type="file" class="form-control" id="customFile" />
                 </div>
               </form>
 
@@ -91,6 +105,9 @@
                         var xAxis = {{ xAxis|safe }}
                         var yAxis = {{ yAxis|safe }}
                         var chart = {{ chart|safe }}
+                        var credits = { "enabled":false }
+                        var legend = { "enabled":false }
+                        var backgroundColor = 'f5f5f5'
                     </script>
             </div>
 </div>
