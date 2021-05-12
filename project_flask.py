@@ -259,20 +259,26 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
 
     try:
         print('run select query')
-        reserved_vals = cur.execute(
-            "select * from reservedhistory order by datetime asc")
+        cur.execute("select * from reservedhistory order by datetime asc")
+        reserved_vals = cur.fetchall()
     except:
         print('could not select')
 
     try:
         today_date = cur.execute("select max(datetime) from prices")
         today_date  = cur.fetchone()
-        print("today_date ",today_date[0])
+        #print("today_date ",today_date[0])
     except:
         print('could not process moving average')
 
+    try:
+        print('reserved_vals:')
+        print(reserved_vals[0])
+    except:
+        print('could not print reserved_vals')
 
     try:
+
         print('appending chart lists')
         for vals in reserved_vals:
             print('vals:',vals[1],vals[0])
