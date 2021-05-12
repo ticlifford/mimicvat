@@ -18,19 +18,21 @@
     <table class="table">
         <thread>
         <tr>
-            <th scope="col">first</th>
-            <th scope="col">second</th>
-            <th scope="col">third</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price change</th>
+            <th scope="col">Set name</th>
         </tr>
         </thread>
         <tbody>
-            {%for card in reserve_cards%}
+            
+            {%for card in top_10_rl%}
             <tr>
+                <td>{{card[0]}}</td>
+                <td>{{card[3]}}</td>
                 <td>{{card[1]}}</td>
-                <td>second</td>
-                <td>third</td>
             </tr>
             {% endfor %}
+        
     </tbody>
     </table>
     </div>
