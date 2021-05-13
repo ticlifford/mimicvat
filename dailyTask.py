@@ -103,5 +103,15 @@ except:
     with open(fPath, 'a') as f:
         f.write('\n could not update reserve list')
 
+print("updating top rl table")
+try:
+    os.system(r'python3 /home/timc/flask_project/flask_app/topReserveUpdate.py')
+    with open(fPath, 'a') as f:
+        f.write('\n updated top rl table')
+except:
+    print('could not update top rl table')
+    with open(fPath, 'a') as f:
+        f.write('\n could not update top rl table')
+
 with open(fPath, 'a') as f:
     f.write('\n editing done: ' + dailyTime)

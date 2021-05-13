@@ -1,20 +1,42 @@
 {% extends "layout.html" %}
 
-{% block container %}
-<div class="row">
-    <div class="col-md-auto" style="border-style: dotted;">
-        <p>cards in reserve_cards:</p>
-        <div class="card-deck">
+{% block heading %}
+The Reserve List
+{% endblock %}
+
+{% block paragraph %}
+<p>The Reserve list in Magic the Gathering is a designation that specific cards will never be reprinted as a method of manufactured scarcity.
+ They act as a barometer for the value of old magic formats because you need them to play certain formats. To watch their prices, I've created
+a chart that adds all their values together once a day and I chart it, which you can see below.</p>
+<br>
+<h1>Top three cards on the Reserve List<br></h1>
+<p>Since this website is built off actual transactions in the marketplace,
+the values are skewed. Most high end (over two grand roughly) cards aren't sold
+on normal Magic card platforms like tcgplayer. There basically isn't a 'going rate' of
+the exceptionally high end because condition plays a bigger factor, and cards
+are auctioned through other platforms.
+</p>
+<h1>Biggest changes this week</h1>
+{% endblock %}
+
+{% block graph %}
+
+
+
+<div class="row row-cols-1 row-cols-md-2 g-4 p-5">
+    
         {%for card in reserve_cards%}
-            <div class="card" style="width:300px">
+        <div class="col">
+            <div class="card" style="width:200px">
                 <img class="card-img-top" src={{card[2]}} alt="Card image cap"style="width:200px">
                 <a href="/search/{{card[1]}}" class="btn btn-primary stretched-link">card details</a>
                 <div class="card-body">
                     <p>${{card[0]}}</p>
                 </div>
             </div>
-        {% endfor %}
         </div>
+        {% endfor %}
+
     <table class="table">
         <thread>
         <tr>
@@ -25,11 +47,11 @@
         </thread>
         <tbody>
             
-            {%for card in top_10_rl%}
+            {%for card in top_10%}
             <tr>
-                <td>{{card[0]}}</td>
-                <td>{{card[3]}}</td>
+                <td><a href="/search/{{card[3]}}">{{card[0]}}</a></td>
                 <td>{{card[1]}}</td>
+                <td>{{card[2]}}</td>
             </tr>
             {% endfor %}
         
@@ -54,38 +76,10 @@
             </div>
         </div>
 </div>
-<div class="row">
-    <div class="card-deck">
-        <div class="card">
-          <img class="card-img-top" src="..." alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-          </div>
-        </div>
-        <div class="card">
-          <img class="card-img-top" src="..." alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-          </div>
-        </div>
-        <div class="card">
-          <img class="card-img-top" src="..." alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-          </div>
-        </div>
-      </div>
-</div>
+
 {% endblock %}
 
-{% block graph %}
-{% endblock %}
+
 
 {% block bodyText %}
 <script src="https://code.highcharts.com/highcharts.js"></script>

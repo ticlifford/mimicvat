@@ -317,76 +317,10 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     except:
         print('could not do last week 2')
     try:
-        #cur.execute(" select (select normprice from prices where datetime = (?))/avg(normprice), prices.id, datetime from cards, prices where cards.id=prices.id and reserved='True' and datetime>(?) and datetime<(?) group by prices.id", (todays_date,last_week,yesterday_date, ))
-        #avg_norms = cur.execute("select avg(normprice), prices.id from cards, prices where cards.id=prices.id and reserved='True' and datetime>(?) and datetime<(?) group by prices.id", (last_week,yesterday_date, ))
-        avg_norms = cur.execute("select avg(normprice),cards.id,cards.name,cards.PICURL from prices, cards where prices.id=cards.id and cards.reserved='True' and datetime>(?) and datetime<(?) group by cards.id",(last_week,yesterday_date,))
-        print('printing avg norms')
-        rows2 = cur.fetchall()
+        cur.execute("select cards.name, RESERVEDCHANGE.change, cards.cardset, cards.id from cards, RESERVEDCHANGE where cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=RESERVEDCHANGE.id order by RESERVEDCHANGE.change desc limit 10")
+        top_10 = cur.fetchall()
     except:
-        print('could not select averages')
-    try:
-        print('creating dict')
-        rl_dict = {}
-        for row in rows2:
-            #print(row[0],' - ',row[1])
-            rl_dict[row[1]] = [row[0]]
-    except:
-        print('could not create dict')
-    try:
-        today_cur = cur.execute("select normprice,cards.id from cards, prices where cards.id=prices.id and cards.reserved='True' and datetime=(?)",(todays_date.date(),))
-    except:
-        print('could not select today_date val')
-    try:
-        rows3 = cur.fetchall()
-        for row in rows3:
-            #print('row1:',row[1])
-            if row[1] in rl_dict:
-                #print('row1 is in rl_dict')
-                #print('current row:',rl_dict[row[1]])
-                week_avg = rl_dict[row[1]]
-                try:
-                    #print('dividing')
-                    percent_change = row[0]/week_avg[0]
-                    #print('percent_change: ',percent_change)
-                    rl_dict[row[1]] = percent_change
-                except:
-                    #print('none type found in week change')
-                    rl_dict[row[1]] =0.0
-                #rl_dict[row[1]] = [week_avg[0],row[0]]
-                #print('updated dict: ',rl_dict[row[1]])
-    except:
-        print('could not update dict')
-    try:
-        print('sorting')
-        sorted_dict = {}
-        sorted_keys = sorted(rl_dict, key=rl_dict.get)
-
-        for w in sorted_keys:
-            sorted_dict[w] = rl_dict[w]
-        #print(sorted_dict)
-
-        top_10_rl = []
-        for x in list(sorted_dict)[-10:]:
-            top_10_rl.append([x,"{:.0%}".format(sorted_dict[x]-1)])
-        print('top 10:')
-        top_10_rl.reverse()
-        #print(top_10_rl)
-        top_10_info = []
-        for card in top_10_rl:
-            cur.execute("select name, cardset,picurl from cards where id=(?)",(card[0],))
-            card_info = cur.fetchone()
-            print('collecting sql for card_info')
-            print(card_info[0])
-            print(card_info[1])
-            top_10_info.append([card_info[0],card_info[1],card_info[2],card[1]])
-        print('top_10_info')
-        print(top_10_info)
-        top_10_rl = top_10_info
-
-        
-
-    except:
-        print('could not sort dict')
+        print('could not get top 10 rl')
 
 #cards collection
 
@@ -395,7 +329,7 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
         #I need to select a date so right now i have it subquerying the most recent, that will be too slow on the live app but fine locally
         #cur.execute("select prices.normprice,prices.id from cards, prices where cards.id=prices.id and reserved='True' and datetime='2021-04-21' order by normprice desc limit 10")
         #date_today = cur.execute("select max(datetime) from prices where id=")
-        cur.execute("select prices.normprice,prices.id,cards.picurl from cards, prices where cards.id=prices.id and reserved='True' and datetime=(select max(datetime) from prices) order by normprice desc limit 10")
+        cur.execute("select prices.normprice,prices.id,cards.picurl from cards, prices where cards.id=prices.id and reserved='True' and datetime=(select max(datetime) from prices) order by normprice desc limit 3")
         rows = cur.fetchall()
         reserve_cards = rows
 
@@ -436,7 +370,7 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
                         yAxis=yAxis,
                         card_names=card_names,
                         reserve_cards=reserve_cards,
-                        top_10_rl = top_10_rl
+                        top_10 = top_10
                         )
 
 @app.route('/list')

@@ -15,8 +15,8 @@ import sqlite3
 
 # database connection setup
 
-dbPath = 'CARDINFO.db'
-#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+#dbPath = 'CARDINFO.db'
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
 cardsDb = sqlite3.connect(dbPath)
 c = cardsDb.cursor()
 
@@ -52,9 +52,9 @@ def add_day(datetime):
 # these are date ranges to run the batch updater
 """
 # start
-a = date(2020, 7, 9)
+a = date(2020, 2, 10)
 # end
-b = date(2021, 1, 22)
+b = date(2021, 5, 12)
 """
 
 """
