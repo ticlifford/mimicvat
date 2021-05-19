@@ -184,60 +184,87 @@ def setinfo(setid):
 
     try:
         setname = cur.execute('select name from CARDSET where code = ?', (setid,))
-        setname = str(setname.fetchone()[0]).lower().replace(" ", "")
+        setname = setname.fetchone()[0]
+        fullsetname = setname
+        setname = str(setname).lower().replace(" ", "")
         #print('set name collected')
     except:
         print('could not select cardset name')
-
+    try:
+        numcards = cur.execute('select count(name) from cards where cardset = ?', (setid,))
+        numcards = numcards.fetchone()[0]
+    except:
+        print('could not count numcards')
 
     try:
         setcards = cur.execute('select id, name, picurl from cards where cardset = ?', (setid,))
         return_list = []
         for card in setcards:
             return_list.append(list(card))
+        recent_date = cur.execute('select max(datetime) from prices')
+        recent_date = recent_date.fetchone()[0]
+        #print('recent date:',recent_date)
+    except:
+        print('couldnt finish recent_date stuff')
+
+    try:
+        card_prices = []
+
         for card in return_list:
-            price_val = cur.execute('select normprice from prices where id=? and datetime = ?',(card[0],'2019-07-24'))
-            #print(card[0],' price: ',cur.fetchone())
-        #print(return_list)
-
-        """
-        for card in setcards:
-            print('searching for price:',card[0],'name:',card[1])
-        """
-            #normp, foilp = cur.execute('select normprice, foilprice from prices where id = ?', (card[0],))
-        #setcards = cur.execute('select cards.id, cards.name, normprice, foilprice, picurl from cards, prices where prices.id = cards.id and cardset = ? and prices.datetime = ?', (setid,'2019-07-24',))
-        #select datetime,normprice from prices where id=(?) order by datetime asc
-        #date field needs to be getTime() in production environment
-        setnorm = 0
-        setfoil = 0
-        ratio = 0
-        print('fetch one:',cur.fetchone()[0])
+            price_val = cur.execute('select id, normprice from prices where id=? and datetime = ?',(card[0],recent_date))
+            #print('fetching price for ',card[0])
+            #print("price_val:")
+            #print(price_val.fetchone()[1])
+            price_val = price_val.fetchone()
+            card_prices.append(price_val)
+        #print('card_prices:',card_prices)
     except:
-        print('could not collect id name and picurl')
-    """
+        print('could not collect prices')
     try:
-        print('performing normal vs foil calc')
-        for row in setcards:
-            print('name:',row[0])
-            setnorm = setnorm + row[2]
-            setnorm = round(setnorm,2)
-            setfoil = setfoil + row[3]
-            setfoil = round(setfoil,2)
-            ratio = setfoil/setnorm
-            ratio = round(ratio,2)
+        """
+        combined = zip(return_list,card_prices)
+        print('combined:')
+        print(list(combined))
+        """
+        cards_dict = {}
+        for card in return_list:
+            cards_dict[card[0]]=card
+            #print('adding card:')
+            #print(card)
     except:
-        print('could not perform norm vs foil calc')
-
-
+        print('could not make dict')
+    #print('dict:')
+    #print(cards_dict)
     try:
-        if cur.fetchone() is None:
-            ratio = 0
+        for card in card_prices:
+            if card[0] in cards_dict:
+                cards_dict[card[0]].append(card[1])
+                #print('adding price value:')
+                #print("id: ",card[0]," price: ",card[1])
+
+        #print(cards_dict)
     except:
-        print('could not fetchone')
-    """
+        print('could not combine into dict')
+    try:
+        dict_list = []
+        for key in cards_dict:
+            #print(cards_dict[key])
+            dict_list.append(cards_dict[key])
+        for x in dict_list:
+            print(x)
+    except:
+        print('could not append dict list')
+    try:
+        def sort_four(elem):
+            return elem[3]
+        dict_list.sort(key =sort_four, reverse=True)
+        print("sorted list:")
+        print(dict_list)
+    except:
+        print('could not sort list')
 
     #return render_template('setinfo.html',setnorm = setnorm,setfoil=setfoil,ratio=ratio,setcode=setid,carddeck = setcards)
-    return render_template('setinfo.html',setcode=setid, carddeck = return_list,card_names=card_names, setname=setname)
+    return render_template('setinfo.html',setcode=setid, carddeck = dict_list,card_names=card_names, setname=setname,fullsetname=fullsetname,numcards=numcards)
 
 
 @app.route('/reserveList')
@@ -317,8 +344,13 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     except:
         print('could not do last week 2')
     try:
-        cur.execute("select cards.name, RESERVEDCHANGE.change, cards.cardset, cards.id from cards, RESERVEDCHANGE where cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=RESERVEDCHANGE.id order by RESERVEDCHANGE.change desc limit 10")
+        cur.execute("select cards.name, RESERVEDCHANGE.change, cards.cardset, cards.id, cards.picurl from cards, RESERVEDCHANGE where cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=RESERVEDCHANGE.id order by RESERVEDCHANGE.change desc limit 10")
         top_10 = cur.fetchall()
+        top_10_list = []
+        for x in top_10:
+            top_10_list.append([x[0],"{0:.0%}".format(x[1]-1),x[2],x[3],x[4]])
+            print([x[0],"{0:.0%}".format(x[1]-1),x[2],x[3],x[4]])
+        top_10 = top_10_list
     except:
         print('could not get top 10 rl')
 
@@ -485,6 +517,10 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                 setCodes.append(x[1])
         except:
             print('I couldnt get the card name')
+        try:
+            price_now = recent_price(cardId)
+        except:
+            print('could not get price today')
 
         # select ids of all reprints
         print('card im looking up:', cardId)
@@ -521,7 +557,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         except:
             print('cant perform searchcard')
         try:
-            cur.execute("select cards.cmc, type, power, toughness, rarity from cards where cards.id == ((?))",
+            cur.execute("select cards.cmc, type, power, toughness, rarity, cardset from cards where cards.id == ((?))",
                         (cardId, ))
             fetchInfo = cur.fetchone()
         except:
@@ -536,8 +572,17 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
             cardInfo['toughness'] = fetchInfo['toughness']
             cardInfo['rarity'] = fetchInfo['rarity']
             cardInfo['buylist'] = 'N/A'
+            cardInfo['cardset'] = fetchInfo['cardset']
+            cardInfo['cardname'] = cardName
         except:
             print('could not add values to cardInfo dictionary')
+        
+        try:
+            cur.execute('select name from cardset where code = (?)',(cardInfo['cardset'],))
+            cardInfo['setname'] = cur.fetchone()[0]
+            print(cardInfo['setname'])
+        except:
+            print('could not grab set name')
 
         print('the card cmc value:', cardInfo['cmc'])
         print('search value:', cardInfo['type'])
@@ -548,9 +593,9 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
 
         # chart data routed to javascript
         chart = {"renderTo": chartID, "type": chart_type,
-                 "height": chart_height, "zoomType": 'x'}
+                 "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
         series = [{"name": 'series label', "data": data}]
-        title = {"text": cardName}
+        title = {"text": ' '}
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'yax'}}
         pageType = 'graph'
@@ -572,7 +617,8 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                                 cardId=cardId,
                                 sameCardsCombo=duplicate_names,
                                 cardInfo=cardInfo,
-                                card_names=card_names)
+                                card_names=card_names,
+                                price_now = price_now)
 
     elif request.method == "POST":
         # post means i'm adding a card to the watchlist
@@ -608,7 +654,8 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         print("request form searchbar is nothing:", request.form.get('addCard'))
         return "searchbar is nothing"
     else:
-        print('request form searchbar has a value')
+        #print('request form searchbar has a value')
+        None
 
     # r is the name in string format
     try:
@@ -616,17 +663,18 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         print('switch to foil pricing')
         print(fs)
     except:
-        print('not foil pricing')
-        
+        #print('not foil pricing')
+        None
+
     try:
         r = (request.form['searchbar'])
-        print('r result is:', r)
+        #print('r result is:', r)
     except:
         print('the r request did not go through')
 
     try:
         q = request.form
-        print("q:", q)
+        #print("q:", q)
     except:
         print('cant print q')
 
@@ -651,8 +699,8 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         and cardset != 'mb1'""",
                                      (r, )):
             cardId = cardIdNum[0]
-            print('cardId from execute:', cardId)
-            print('card url:',cardIdNum[2])
+            #print('cardId from execute:', cardId)
+            #print('card url:',cardIdNum[2])
             # most cards have more than one printing, this compiles a list of each card
             # currently, I display the last card thats in my list I also filter to remove online cards and promos
             sameCards.append(cardIdNum[0])
@@ -664,31 +712,42 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
 
     # my test to print all the cards with the same name
     for x in sameCards:
-        print('unique printing:', x)
+        None
+        #print('unique printing:', x)
     if not cardId:
         print('there is no card ID')
         return render_template('frontPage.html', card_names=card_names)
     imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl)
     data = [list(x) for x in zip(dateList, priceList)]
 
-    print('imageUrl after searchcard:', imageUrl)
-    print('priceList to display:', priceList)
+    #print('imageUrl after searchcard:', imageUrl)
+    #print('priceList to display:', priceList)
 
     # here I collect the bits of data I want to display, cmc, color, stats etc
-    cur.execute("""select 
-    cmc, 
-    type, 
-    power, 
-    toughness, 
-    rarity 
-    from cards 
-    where id == ((?))""",
-                (cardId, ))
-    fetchInfo = cur.fetchone()
-    price_now = recent_price(cardId)
+    try:
+        print('selecting data to display')
+        cur.execute("""select 
+        cmc, 
+        type, 
+        power, 
+        toughness, 
+        rarity,
+        cardset,
+        name
+        from cards 
+        where id == ((?))""",
+                    (cardId, ))
+        fetchInfo = cur.fetchone()
+        print('cardID: ', cardId)
+        print('fetch one for sql:')
+        for x in fetchInfo:
+            print(x)
+        price_now = recent_price(cardId)
 
-    for value in fetchInfo:
-        print('value: ', value)
+        for value in fetchInfo:
+            print('value: ', value)
+    except:
+        print('could not select sql returns for cardInfo')
     try:
         cardInfo['cmc'] = fetchInfo[0]
         cardInfo['type'] = fetchInfo[1]
@@ -696,8 +755,18 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         cardInfo['toughness'] = fetchInfo[3]
         cardInfo['rarity'] = fetchInfo[4]
         cardInfo['buylist'] = 'N/A'
+        cardInfo['cardset'] = fetchInfo[5]
+        cardInfo['cardname'] = fetchInfo[6]
+        print('card set: ',cardInfo['cardset'])
     except:
         print('could not add values to cardInfo dictionary here')
+    try:
+        cur.execute('select name from cardset where code = (?)',(cardInfo['cardset'],))
+        cardInfo['setname'] = cur.fetchone()[0]
+        print('card set name: ',cardInfo['setname'])
+        print('set name:',cardInfo['setname'])
+    except:
+        print('could not grab set name')
 
     print('the card cmc value:', cardInfo['cmc'])
     print('search value:', cardInfo['type'])
@@ -710,7 +779,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         chart = {"renderTo": chartID, "type": chart_type,
                  "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
         series = [{"name": 'series label', "data": data}]
-        title = {"text": r}
+        title = {"text": ''}
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'dollars'}}
         pageType = 'graph'
@@ -1266,7 +1335,7 @@ def get_id(name, setCode):
 def recent_price(cardID):
     if cardID is None:
         return 0
-    print('starting recent_price for ',cardID)
+    #print('starting recent_price for ',cardID)
     con = sql.connect(dbLoc)
     cursor = con.cursor()
     cursor.execute('''select normprice from prices where ID = (?) 
@@ -1278,8 +1347,8 @@ def recent_price(cardID):
     if price is None:
         print('price is none')
         price = 0
-    print('price:',price)
-    print('finished recent_price search')
+    #print('price:',price)
+    #print('finished recent_price search')
     return price
 
 if __name__ == "__main__":
