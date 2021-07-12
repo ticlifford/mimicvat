@@ -14,8 +14,9 @@
     you get ten commons, three uncommons, and one rare. One in every eight packs has it's
     rare card replaced with a mythic rare card.
 </p>
-
+<ul style="grid-template-columns: repeat(4, 1fr);display: grid;">
 {% for name in setnames %}
-<a href="/setinfo/{{name[1]}}">{{name[0]}}</a><br>
+<li><a href="/setinfo/{{name[1]}}">{{name[0]}}</a></li>
 {% endfor %}
+</ul>
 {% endblock %}

@@ -31,7 +31,7 @@
           <header>
         <!-- Fixed navbar -->
 
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="box-shadow: 5px 0px 30px 0px black">
           <a class="navbar-brand" href="#">{% block navbar_brand %}{% endblock %}</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -88,7 +88,7 @@
 
 
       <!-- Begin page content -->
-      <main role="main" class="flex-shrink-0" style="border-style: dotted;">
+      <main role="main" class="flex-shrink-0">
     <!-- block container is used on top cards, but it needs padding-->
         <div class="container">
           {% block container %}{% endblock %}

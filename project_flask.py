@@ -179,14 +179,8 @@ def setinfo(setid):
         print('could not connect to db in setinfo')
 
     try:
-        #set ID
-        print(setid)
-        print(type(setid))
-    except:
-        print('could not print setid or type')
-
-    try:
         #set name collection
+        print('selecting name for ',setid)
         setname = cur.execute('select name from CARDSET where code = ?', (setid,))
         setname = setname.fetchone()[0]
         fullsetname = setname
@@ -196,6 +190,7 @@ def setinfo(setid):
 
     try:
         #set size
+        print('counting set size')
         numcards = cur.execute('select count(name) from cards where cardset = ?', (setid,))
         numcards = numcards.fetchone()[0]
     except:
@@ -206,6 +201,7 @@ def setinfo(setid):
         setcards = cur.execute('select id, name, picurl from cards where cardset = ?', (setid,))
         return_list = []
         for card in setcards:
+            print('appending return_list')
             return_list.append(list(card))
         recent_date = cur.execute('select max(datetime) from prices')
         recent_date = recent_date.fetchone()[0]
@@ -261,6 +257,7 @@ def setinfo(setid):
     except:
         print('could not append dict list')
     try:
+        # sorting by the fourth element of dict_list, 
         def sort_four(elem):
             return elem[3]
         dict_list.sort(key =sort_four, reverse=True)
@@ -270,7 +267,7 @@ def setinfo(setid):
         print('could not sort list')
 
     #return render_template('setinfo.html',setnorm = setnorm,setfoil=setfoil,ratio=ratio,setcode=setid,carddeck = setcards)
-    return render_template('setinfo.html',setcode=setid, carddeck = dict_list,card_names=card_names, setname=setname,fullsetname=fullsetname,numcards=numcards)
+    return render_template('setinfoold.html',setcode=setid, carddeck = dict_list,card_names=card_names, setname=setname,fullsetname=fullsetname,numcards=numcards)
 
 
 @app.route('/reserveList')

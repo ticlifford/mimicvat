@@ -37,26 +37,29 @@
     <th>{{ratio}}</th>
     </tr>
 </table>
-{% endblock %}
-{% block graph %}
+
 <div class="row">
 
 {% for card in carddeck %}
-<img src={{card[2]}} class="center-block text-center" alt="card image goes here" width=200px style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 1px 1px 6px rgba(0,0,0,0.45);">
-        <!--<a href="/search/{{card[0]}}" class="btn btn-primary">Go to card info</a>-->
-        <!--<h2>${{card[3]}}</h2>-->
-
-
-
-<!--
-<img src="{{card[2]}}" width=200px alt="card image">
-<u>${{card[3]}}</u>
+<div class="col-sm-6">
+    <div class="card mb-3 text-center">
+        <h5 class="card-header">{{card[1]}}</h5>
+      <div class="card-body">
+        <p class="card-text"></p>
+        <p><img src={{card[2]}} class="center-block text-center" alt="card image goes here" width=50% style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 1px 1px 6px rgba(0,0,0,0.45);"></p>
+        <a href="/search/{{card[0]}}" class="btn btn-primary">Go to card info</a>
+        <h2>${{card[3]}}</h2>
+      </div>
+    </div>
+  </div>
 {% endfor %}
-</ul>
--->
-{% endblock %}
 
 </div>
+
+{% endblock %}
+
+{% block graph %}
+{% endblock %}
 
 {% block bodyText %}
 <script src="https://code.highcharts.com/highcharts.js"></script>

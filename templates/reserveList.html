@@ -16,65 +16,65 @@ on normal Magic card platforms like tcgplayer. There basically isn't a 'going ra
 the exceptionally high end because condition plays a bigger factor, and cards
 are auctioned through other platforms.
 </p>
-<h1>Biggest changes this week</h1>
+<h1>Biggest price increases this week:</h1>
 {% endblock %}
 
 {% block graph %}
 
 
 
-<div class="row row-cols-1 row-cols-md-2 g-4 p-5">
+<div class="row p-5">
     
-        {%for card in reserve_cards%}
+        {%for card in top_10%}
         <div class="col">
             <div class="card" style="width:200px">
-                <img class="card-img-top" src={{card[2]}} alt="Card image cap"style="width:200px">
-                <a href="/search/{{card[1]}}" class="btn btn-primary stretched-link">card details</a>
+                <img class="card-img-top" src={{card[4]}} alt="Card image cap">
+                <a href="/search/{{card[3]}}" class="btn btn-primary stretched-link">{{card[1]}}</a>
                 <div class="card-body">
-                    <p>${{card[0]}}</p>
                 </div>
             </div>
         </div>
         {% endfor %}
-
-    <table class="table">
-        <thread>
-        <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Price change</th>
-            <th scope="col">Set name</th>
-        </tr>
-        </thread>
-        <tbody>
-            
-            {%for card in top_10%}
-            <tr>
-                <td><a href="/search/{{card[3]}}">{{card[0]}}</a></td>
-                <td>{{card[1]}}</td>
-                <td>{{card[2]}}</td>
-            </tr>
-            {% endfor %}
-        
-    </tbody>
-    </table>
+</div>
+<div class="row justify-content-center">
+    <div class="col-auto">
+        <table class="table w-auto">
+            <thread>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price change</th>
+                    <th scope="col">Set name</th>
+                </tr>
+            </thread>
+            <tbody>
+                {%for card in top_10%}
+                <tr>
+                    <td><a href="/search/{{card[3]}}">{{card[0]}}</a></td>
+                    <td>{{card[1]}}</td>
+                    <td><a href="/setinfo/{{card[2]}}">{{card[2]}}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <div class="col-4">
-            <!-- this is the highchart javascript -->
-            <div style="background:#f5f5f5" class="col-md-auto">
-                <div id={{ chartID|safe }} class="chart" style="height: 500px; width: 500px;"></div>
-                    <script>
-                        var chart_id = {{ chartID|safe }}
-                        var series = {{ series|safe }}
-                        var title = {{ title|safe }}
-                        var xAxis = {{ xAxis|safe }}
-                        var yAxis = {{ yAxis|safe }}
-                        var chart = {{ chart|safe }}
-                        var credits = { "enabled":false }
-                        var legend = { "enabled":false }
-                        var backgroundColor = 'f5f5f5'
-                    </script>
-            </div>
+    <div class="col-auto">
+        <!-- this is the highchart javascript -->
+        <div style="background:#f5f5f5" class="col-md-auto">
+            <div id={{ chartID|safe }} class="chart" style="height: 500px; width: 500px;"></div>
+                <script>
+                    var chart_id = {{ chartID|safe }}
+                    var series = {{ series|safe }}
+                    var title = {{ title|safe }}
+                    var xAxis = {{ xAxis|safe }}
+                    var yAxis = {{ yAxis|safe }}
+                    var chart = {{ chart|safe }}
+                    var credits = { "enabled":false }
+                    var legend = { "enabled":false }
+                    var backgroundColor = 'f5f5f5'
+                </script>
         </div>
+    </div>
+</div>
 </div>
 
 {% endblock %}
