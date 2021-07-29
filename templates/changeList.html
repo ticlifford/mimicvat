@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block graph %}
+
+<div class="row p-5">
+        {%for card in top_10%}
+        <div class="col">
+            <div class="card" style="width:200px">
+                <img class="card-img-top" src={{card[4]}} alt="Card image cap">
+                <a href="/search/{{card[3]}}" class="btn btn-primary stretched-link">{{card[1]}}</a>
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        {%for card in bot_10%}
+        <div class="col">
+            <div class="card" style="width:200px">
+                <img class="card-img-top" src={{card[4]}} alt="Card image cap">
+                <a href="/search/{{card[3]}}" class="btn btn-primary stretched-link">{{card[1]}}</a>
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+</div>
+{% endblock %}

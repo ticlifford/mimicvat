@@ -57,6 +57,7 @@ except:
 def index(chartID='chart_ID', chart_type='line', chart_height=500):
     # the front page with a static example card
     priceList = []
+    foilList = []
     dateList = []
     cardId = "810a3792-a689-4849-bc14-fb3c71153aba"
     imageUrl = ""
@@ -68,13 +69,10 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
 
     imageUrl = 'https://img.scryfall.com/cards/normal/front/8/1/810a3792-a689-4849-bc14-fb3c71153aba.jpg?1562920975'
 
-# @app.route('/movers', methods=['GET', 'POST'])
-# def method_name():
-#    pass
 
-# collects price and date vals of land tax to load up front page quickly
+    # collects price and date vals of land tax to load up front page quickly
     try:
-        imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl, False)
+        imageUrl = searchCard(cardId, cur, priceList, foilList, dateList, imageUrl, False)
         data = [list(x) for x in zip(dateList, priceList)]
     except:
         print('could not connect to db for frontpage chart')
@@ -269,6 +267,44 @@ def setinfo(setid):
     #return render_template('setinfo.html',setnorm = setnorm,setfoil=setfoil,ratio=ratio,setcode=setid,carddeck = setcards)
     return render_template('setinfoold.html',setcode=setid, carddeck = dict_list,card_names=card_names, setname=setname,fullsetname=fullsetname,numcards=numcards)
 
+@app.route('/change')
+def change():
+
+    try:
+        print('connecting to db')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db')
+
+    try:
+        cur.execute("select cards.name, PRICECHANGE.change, cards.cardset, cards.id, cards.picurl from cards, PRICECHANGE where cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=PRICECHANGE.id order by PRICECHANGE.change desc limit 10")
+        top_10 = cur.fetchall()
+        top_10_list = []
+        for x in top_10:
+            top_10_list.append([x[0],"{0:.0%}".format(x[1]-1),x[2],x[3],x[4]])
+            print([x[0],"{0:.0%}".format(x[1]-1),x[2],x[3],x[4]])
+        top_10 = top_10_list
+    except:
+        print('could not get top 10 rl')
+
+    try:
+        cur.execute("select cards.name, PRICECHANGE.change, cards.cardset, cards.id, cards.picurl from cards, PRICECHANGE where cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=PRICECHANGE.id order by PRICECHANGE.change asc limit 10")
+        bot_10 = cur.fetchall()
+        bot_10_list = []
+        for x in bot_10:
+            bot_10_list.append([x[0],"{0:.0%}".format(x[1]-1),x[2],x[3],x[4]])
+            print([x[0],"{0:.0%}".format(x[1]-1),x[2],x[3],x[4]])
+        bot_10 = bot_10_list
+    except:
+        print('could not get bot 10 rl')
+    con.close()
+    return render_template('changeList.html',
+                        top_10 = top_10,
+                        bot_10 = bot_10,
+                        card_names=card_names
+                        )
 
 @app.route('/reserveList')
 def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
@@ -357,8 +393,7 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     except:
         print('could not get top 10 rl')
 
-#cards collection
-
+    #cards collection
     try:
         print('run select query for cards')
         #I need to select a date so right now i have it subquerying the most recent, that will be too slow on the live app but fine locally
@@ -503,6 +538,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
 
         # initializing my variables
         priceList = []
+        foilList = []
         dateList = []
         imageUrl = ""
         sameCards = []
@@ -560,8 +596,9 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
             foil = not foil
             #print('does a nonfoil exist?: ',nonfoil)
             #print('foil value being sent to searchCard:', not nonfoil)
-            imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl, foil)
+            imageUrl = searchCard(cardId, cur, priceList, foilList, dateList, imageUrl, foil)
             data = [list(x) for x in zip(dateList, priceList)]
+            foildata = [list(x) for x in zip(dateList, foilList)]
         except:
             print('cant perform searchcard')
         try:
@@ -584,7 +621,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
             cardInfo['cardname'] = cardName
         except:
             print('could not add values to cardInfo dictionary')
-        
+
         try:
             cur.execute('select name from cardset where code = (?)',(cardInfo['cardset'],))
             cardInfo['setname'] = cur.fetchone()[0]
@@ -602,7 +639,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         # chart data routed to javascript
         chart = {"renderTo": chartID, "type": chart_type,
                  "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
-        series = [{"name": 'series label', "data": data}]
+        series = [{"name": 'nonfoil', "data": data},{"name":'foil', "data": foildata}]
         title = {"text": ' '}
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'yax'}}
@@ -692,6 +729,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
 
     cardId = ""
     priceList = []
+    foilList = []
     dateList = []
     imageUrl = ""
     cardInfo = {}
@@ -725,8 +763,9 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     if not cardId:
         print('there is no card ID')
         return render_template('frontPage.html', card_names=card_names)
-    imageUrl = searchCard(cardId, cur, priceList, dateList, imageUrl,False)
+    imageUrl = searchCard(cardId, cur, priceList, foilList, dateList, imageUrl,False)
     data = [list(x) for x in zip(dateList, priceList)]
+    foildata = [list(x) for x in zip(dateList, foilList)]
 
     #print('imageUrl after searchcard:', imageUrl)
     #print('priceList to display:', priceList)
@@ -786,7 +825,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     try:
         chart = {"renderTo": chartID, "type": chart_type,
                  "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
-        series = [{"name": 'series label', "data": data}]
+        series = [{"name": 'nonfoil', "data": data},{"name":'foil', "data": foildata}]
         title = {"text": ''}
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'dollars'}}
@@ -812,11 +851,14 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
                            card_names=card_names,
                            price_now = price_now)
 
-def searchCard(cardId, cur, priceList, dateList, imageUrl, foil):
+def searchCard(cardId, cur, priceList, foilList, dateList, imageUrl, foil):
     # for the url I make the variable the string, and for the date and price I add them to the lists
     #import pdb; pdb.set_trace()
-    print('im doing a search card for:', cardId)
-    print('card foil value:',foil)
+    try:
+        print('im doing a search card for:', cardId)
+        print('card foil value:',foil)
+    except:
+        print('could not start searchCard')
     try:
         for cardUrl in cur.execute("select PICURL from cards where id=(?)", (cardId,)):
             imageUrl = cardUrl[0]
@@ -826,39 +868,26 @@ def searchCard(cardId, cur, priceList, dateList, imageUrl, foil):
         print('could not collect cardurl in searchCard')
 
     try:
-        if not foil:
-            print('card in searchCard is nonfoil')
-            for priceN in cur.execute("select datetime,normprice from prices where id=(?) order by datetime asc", (cardId,)):
-                if priceN[1] is None:
-                    priceList.append(0)
-                else:
-                    priceList.append(priceN[1])
-                # the date is stored with dash marks but needs to be displayed with slashes
-                # also js needs the timestamps multiplied by 1000 for unix time or some shit
-                # this block of text made it hell to display charts across different parts of the site because of the date format changes
-                newdate = priceN[0].replace("-","/")
-                time_element= datetime.datetime.strptime(newdate,"%Y/%m/%d")
-                timestamp = datetime.datetime.timestamp(time_element)
-                timestamp = int(timestamp)
-                timestamp = timestamp*1000
-                dateList.append(timestamp)
-
-        elif foil:
-            print('card in searchCard is foil')
-            for priceN in cur.execute("select datetime,foilprice from prices where id=(?) order by datetime asc", (cardId,)):
-                if priceN[1] is None:
-                    priceList.append(0)
-                else:
-                    priceList.append(priceN[1])
-                # the date is stored with dash marks but needs to be displayed with slashes
-                # also js needs the timestamps multiplied by 1000 for unix time or some shit
-                # this block of text made it hell to display charts across different parts of the site because of the date format changes
-                newdate = priceN[0].replace("-","/")
-                time_element= datetime.datetime.strptime(newdate,"%Y/%m/%d")
-                timestamp = datetime.datetime.timestamp(time_element)
-                timestamp = int(timestamp)
-                timestamp = timestamp*1000
-                dateList.append(timestamp)
+        print('card in searchCard is nonfoil')
+        for priceN in cur.execute("select datetime,normprice,foilprice from prices where id=(?) order by datetime asc", (cardId,)):
+            if priceN[1] is None:
+                priceList.append(0)
+            else:
+                priceList.append(priceN[1])
+    
+            if priceN[2] is None:
+                foilList.append(0)
+            else:
+                foilList.append(priceN[2])
+            # the date is stored with dash marks but needs to be displayed with slashes
+            # also js needs the timestamps multiplied by 1000 for unix time or some shit
+            # this block of text made it hell to display charts across different parts of the site because of the date format changes
+            newdate = priceN[0].replace("-","/")
+            time_element= datetime.datetime.strptime(newdate,"%Y/%m/%d")
+            timestamp = datetime.datetime.timestamp(time_element)
+            timestamp = int(timestamp)
+            timestamp = timestamp*1000
+            dateList.append(timestamp)
     except:
         print('could not detect foil status in cardSearch')
 
@@ -1126,6 +1155,7 @@ def collectionPage():
                            card_names=card_names)
 
 
+# functions
 def getWatchList():
     # this is a function to get the watchlist results which I use in my GET and POST for /watchlist
     print('running getwatchlist')
@@ -1321,9 +1351,9 @@ def price_chart():
         pageType = 'graph'
     except:
         print('something went wrong with the highcart vars')
-# this line converts lists of my dates to date objects.
-# change "datetime" at the end to the list's name(x_ax in this case)
-# dates_list = [dt.datetime.strptime(date, '%Y-%m-%d').date() for date in datetime]
+    # this line converts lists of my dates to date objects.
+    # change "datetime" at the end to the list's name(x_ax in this case)
+    # dates_list = [dt.datetime.strptime(date, '%Y-%m-%d').date() for date in datetime]
     return [chart, series, title, xAxis, yAxis, pageType]
 
 
