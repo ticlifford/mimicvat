@@ -113,5 +113,15 @@ except:
     with open(fPath, 'a') as f:
         f.write('\n could not update top rl table')
 
+print("updating top change table")
+try:
+    os.system(r'python3 /home/timc/flask_project/flask_app/topCardUpdate.py')
+    with open(fPath, 'a') as f:
+        f.write('\n updated top change table')
+except:
+    print('could not update top change table')
+    with open(fPath, 'a') as f:
+        f.write('\n could not update top change table')
+
 with open(fPath, 'a') as f:
     f.write('\n editing done: ' + dailyTime)

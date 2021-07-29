@@ -23,6 +23,22 @@ try:
                 PRICEDIRECTION text,
                 UNIQUE(ID))''')
 
+    c.execute('''CREATE TABLE IF NOT EXISTS RESERVEDCHANGE
+                (ID text primary key,
+                CHANGE real,
+                UNIQUE(ID))''')
+
+#    c.execute('''CREATE INDEX RL_CHANGE_INDEX
+#                ON RESERVEDCHANGE (ID)''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS PRICECHANGE
+                (ID text primary key,
+                CHANGE real,
+                UNIQUE(ID))''')
+
+#    c.execute('''CREATE INDEX PRICE_CHANGE_INDEX
+#                ON PRICECHANGE (ID)''')
+
     c.execute('''CREATE TABLE IF NOT EXISTS PRICES
                 (ID text,
                 DATETIME text,
