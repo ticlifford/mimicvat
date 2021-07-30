@@ -47,6 +47,12 @@ try:
                 FOILRATIO real,
                 PRIMARY KEY(ID,DATETIME))''')
 
+    c.execute('''CREATE TABLE IF NOT EXISTS PRICETODAY
+                (ID text,
+                NORMPRICE real,
+                FOILPRICE real,
+                PRIMARY KEY(ID))''')
+
     c.execute('''CREATE TABLE IF NOT EXISTS BUYLIST
                 (NAME text,
                 DATETIME text,
@@ -79,6 +85,8 @@ try:
                 ONLINEONLY text,
                 RARITY text,
                 RESERVED text,
+                tcgplayer_id real,
+                cardmarket_id real,
                 PRIMARY KEY(ID),
                 UNIQUE(ID))''')
 

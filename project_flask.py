@@ -10,13 +10,12 @@ import time
 app = Flask(__name__)
 
 # the location of the database, when running locally vs on server
-#dbLoc = '/home/timc/flask_project/flask_app/CARDINFO.db'
 
 #website location
-#dbLoc = 'CARDINFO.db'
+dbLoc = 'CARDINFO.db'
 
 #windows local
-dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+#dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 #csv file upload location
 UPLOAD_FOLDER = 'static/files'
@@ -196,76 +195,20 @@ def setinfo(setid):
 
     try:
         #cards collection, selects recent date, fetches recent_date
-        setcards = cur.execute('select id, name, picurl from cards where cardset = ?', (setid,))
+        setcards = cur.execute('select cards.id, name, picurl, pricetoday.normprice from cards, pricetoday where cardset = ? and cards.id=pricetoday.id order by pricetoday.normprice desc', (setid,))
         return_list = []
         for card in setcards:
             print('appending return_list')
             return_list.append(list(card))
-        recent_date = cur.execute('select max(datetime) from prices')
-        recent_date = recent_date.fetchone()[0]
+        #recent_date = cur.execute('select max(datetime) from prices')
+        #recent_date = recent_date.fetchone()[0]
         #print('recent date:',recent_date)
     except:
         print('couldnt finish recent_date stuff')
 
-    try:
-        #price collection of today
-        card_prices = []
-        for card in return_list:
-            price_val = cur.execute('select id, normprice from prices where id=? and datetime = ?',(card[0],recent_date))
-            #print('fetching price for ',card[0])
-            #print("price_val:")
-            #print(price_val.fetchone()[1])
-            price_val = price_val.fetchone()
-            card_prices.append(price_val)
-        #print('card_prices:',card_prices)
-    except:
-        print('could not collect prices')
-    try:
-        """
-        combined = zip(return_list,card_prices)
-        print('combined:')
-        print(list(combined))
-        """
-        cards_dict = {}
-        for card in return_list:
-            cards_dict[card[0]]=card
-            #print('adding card:')
-            #print(card)
-    except:
-        print('could not make dict')
-    #print('dict:')
-    #print(cards_dict)
-    try:
-        for card in card_prices:
-            if card[0] in cards_dict:
-                cards_dict[card[0]].append(card[1])
-                #print('adding price value:')
-                #print("id: ",card[0]," price: ",card[1])
-
-        #print(cards_dict)
-    except:
-        print('could not combine into dict')
-    try:
-        dict_list = []
-        for key in cards_dict:
-            #print(cards_dict[key])
-            dict_list.append(cards_dict[key])
-        for x in dict_list:
-            print(x)
-    except:
-        print('could not append dict list')
-    try:
-        # sorting by the fourth element of dict_list, 
-        def sort_four(elem):
-            return elem[3]
-        dict_list.sort(key =sort_four, reverse=True)
-        print("sorted list:")
-        print(dict_list)
-    except:
-        print('could not sort list')
 
     #return render_template('setinfo.html',setnorm = setnorm,setfoil=setfoil,ratio=ratio,setcode=setid,carddeck = setcards)
-    return render_template('setinfoold.html',setcode=setid, carddeck = dict_list,card_names=card_names, setname=setname,fullsetname=fullsetname,numcards=numcards)
+    return render_template('setinfoold.html',setcode=setid, carddeck = return_list,card_names=card_names, setname=setname,fullsetname=fullsetname,numcards=numcards)
 
 @app.route('/change')
 def change():
@@ -279,7 +222,11 @@ def change():
         print('could not connect to db')
 
     try:
-        cur.execute("select cards.name, PRICECHANGE.change, cards.cardset, cards.id, cards.picurl from cards, PRICECHANGE where cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=PRICECHANGE.id order by PRICECHANGE.change desc limit 10")
+        cur.execute('''select cards.name, PRICECHANGE.change, cards.cardset, cards.id, cards.picurl, pricetoday.normprice 
+        from cards, PRICECHANGE, PRICETODAY 
+        where cards.onlineonly = FALSE and cards.id = pricetoday.id and cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=PRICECHANGE.id 
+        order by PRICECHANGE.change desc limit 10''')
+
         top_10 = cur.fetchall()
         top_10_list = []
         for x in top_10:
@@ -290,7 +237,11 @@ def change():
         print('could not get top 10 rl')
 
     try:
-        cur.execute("select cards.name, PRICECHANGE.change, cards.cardset, cards.id, cards.picurl from cards, PRICECHANGE where cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=PRICECHANGE.id order by PRICECHANGE.change asc limit 10")
+        cur.execute('''select cards.name, PRICECHANGE.change, cards.cardset, cards.id, cards.picurl 
+        from cards, PRICECHANGE, PRICETODAY 
+        where cards.onlineonly = FALSE and cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=PRICECHANGE.id 
+        order by PRICECHANGE.change asc limit 10''')
+
         bot_10 = cur.fetchall()
         bot_10_list = []
         for x in bot_10:

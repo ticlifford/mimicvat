@@ -77,7 +77,7 @@ def addCards(data):
 
         # db command to write object to db
         try:
-            c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+            c.execute('insert or update into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
             obj['id'],
             obj['name'],
             cmc,
@@ -94,7 +94,9 @@ def addCards(data):
             str(obj['nonfoil']),
             str(obj['digital']),
             rarity,
-            str(obj['reserved'])
+            str(obj['reserved']),
+            obj['tcgplayer_id'],
+            obj['cardmarket_id']
             ))
         except:
             print('could not add to db:',obj['name'])

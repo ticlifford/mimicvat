@@ -8,9 +8,12 @@ import datetime
 import sqlite3
 import sys
 
-fPath = '/home/timc/flask_project/flask_app/daily.txt'
-csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
-dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+#fPath = '/home/timc/flask_project/flask_app/daily.txt'
+fPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/daily.txt'
+#csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
+csvPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/setNames.csv'
+#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 with open(fPath, 'a') as f:
     f.write('\n set price scraper crontab:')
@@ -101,6 +104,14 @@ def dailyPrice(data):
                 obj['prices']['usd_foil'],
                 foilCalc
                 ))
+
+                c.execute('insert or replace into PRICETODAY values (?,?,?)',(
+                obj['id'],
+                obj['prices']['usd'],
+                obj['prices']['usd_foil']
+                ))
+
+
         except:
                 print('could not add to db')
                 print( 'id:', obj['id'],'usd:' ,obj['prices']['usd'], 'foil:', obj['prices']['usd_foil'])
