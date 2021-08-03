@@ -49,3 +49,16 @@
  scraping:tgn2
  problem scraping set:tgn2
  scraping:gn2
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ problem scraping set:tund
+ scraping:und
+ problem scraping set:und
+ scraping:pthb
+ problem scraping set:pthb
+ scraping:tthb
+ problem scraping set:tthb
+ scraping:thb
+ problem scraping set:thb
+ scraping:pf20

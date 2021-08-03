@@ -11,9 +11,9 @@ import sqlite3
 #it scrapes each set for things like the name, power, toughness etc and inserts that into an sql table called cards
 
 dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-#dbPath = 'CARDINFO.db'
+#dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
-#csvPath = 'setNames.csv'
+#csvPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/setNames.csv'
 
 def printDb():
         print('im printing the db here:')
@@ -73,31 +73,43 @@ def addCards(data):
         else:
             rarity = obj['rarity']
 
+        tcg_id = None
+        if 'tcgplayer_id' not in obj.keys():
+            print('no tcgid')
+            None
 
+        else:
+            tcg_id = obj['tcgplayer_id']
+
+        cm_id = None
+        if 'cardmarket_id' not in obj.keys():
+            print('no cmid')
+            None
+        else:
+            cm_id = obj['cardmarket_id']
 
         # db command to write object to db
         try:
-            c.execute('insert or update into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+            c.execute('insert into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
             obj['id'],
             obj['name'],
             cmc,
             obj['mana_cost'],
             power,
-
             toughness,
             str(obj['colors']),
             obj['set'],
             obj['type_line'],
             obj['image_uris']['normal'],
-
             str(obj['foil']),
             str(obj['nonfoil']),
             str(obj['digital']),
             rarity,
             str(obj['reserved']),
-            obj['tcgplayer_id'],
-            obj['cardmarket_id']
+            tcg_id,
+            cm_id
             ))
+            print("SUCESS")
         except:
             print('could not add to db:',obj['name'])
 

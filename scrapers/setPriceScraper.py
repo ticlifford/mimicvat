@@ -8,12 +8,16 @@ import datetime
 import sqlite3
 import sys
 
-#fPath = '/home/timc/flask_project/flask_app/daily.txt'
+
+fPath = '/home/timc/flask_project/flask_app/daily.txt'
+csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+
+"""
 fPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/daily.txt'
-#csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
 csvPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/setNames.csv'
-#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
 dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+"""
 
 with open(fPath, 'a') as f:
     f.write('\n set price scraper crontab:')
@@ -97,19 +101,20 @@ def dailyPrice(data):
                 foilCalc = float(obj['prices']['usd_foil'])/float(obj['prices']['usd'])
 
         try:
-                c.execute('insert into PRICES values (?,?,?,?,?)',(
-                obj['id'],
-                current_time,
-                obj['prices']['usd'],
-                obj['prices']['usd_foil'],
-                foilCalc
-                ))
 
-                c.execute('insert or replace into PRICETODAY values (?,?,?)',(
-                obj['id'],
-                obj['prices']['usd'],
-                obj['prices']['usd_foil']
-                ))
+            c.execute('insert into PRICES values (?,?,?,?,?)',(
+            obj['id'],
+            current_time,
+            obj['prices']['usd'],
+            obj['prices']['usd_foil'],
+            foilCalc
+            ))
+
+            c.execute('insert into PRICETODAY values (?,?,?)',(
+            obj['id'],
+            obj['prices']['usd'],
+            obj['prices']['usd_foil']
+            ))
 
 
         except:
@@ -139,6 +144,11 @@ except:
     print('couldnt connect to db')
     with open(fPath, 'a') as f:
         f.write('\n setPricescraper could not connect to db')
+
+try:
+    c.execute('delete from PRICETODAY')
+except:
+    print('could not wipe prices today')
 
 try:
     current_time = getTime()
