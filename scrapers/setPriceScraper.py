@@ -22,15 +22,9 @@ dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 with open(fPath, 'a') as f:
     f.write('\n set price scraper crontab:')
 
-def dataParse():
-    try:
-        for obj in data['data']:
-            print(obj['name'])
-            print(obj['prices']['usd'])
-            print(obj['id'])
-    except:
-        print('could not dataParse')
 
+# scryfall breaks large sets up into multiple pages of cards, and 'has_more'/'next_page'
+# are used to indicate this. checkPage lets me parse through the pages to run dailyPrice on each page of cards
 def checkPage(data):
     try:
         print('checking page:')
@@ -42,6 +36,8 @@ def checkPage(data):
     except:
         print('check page could not perform loop')
 
+# set generation makes the URL for the api call with my set codes (like SOM for scars of mirrodin, etc) and runs the first daily price
+# the checkPage function is recursive in dailyPrice
 def setGeneration(set):
 
     try:
@@ -85,6 +81,9 @@ def foilRatio():
     except:
             return None
 
+# the function that does most of the work. It gets passed a json with cards, and breaks up the card's info
+# the card data is packed with all kinds of stuff like card id, name, price, color, text, images etc.
+# I just use id and prices here.
 def dailyPrice(data):
     for obj in data['data']:
         foilCalc = None
@@ -110,7 +109,7 @@ def dailyPrice(data):
             foilCalc
             ))
 
-            c.execute('insert into PRICETODAY values (?,?,?)',(
+            c.execute('insert or replace into PRICETODAY values (?,?,?)',(
             obj['id'],
             obj['prices']['usd'],
             obj['prices']['usd_foil']

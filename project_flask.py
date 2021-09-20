@@ -12,10 +12,10 @@ app = Flask(__name__)
 # the location of the database, when running locally vs on server
 
 #website location
-dbLoc = 'CARDINFO.db'
+#dbLoc = 'CARDINFO.db'
 
 #windows local
-#dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 #csv file upload location
 UPLOAD_FOLDER = 'static/files'
@@ -194,11 +194,13 @@ def setinfo(setid):
         print('could not count numcards')
 
     try:
-        #cards collection, selects recent date, fetches recent_date
+        # this crashes the page because i don't even have a pricetoday table
+
+        # cards collection, selects recent date, fetches recent_date
         setcards = cur.execute('select cards.id, name, picurl, pricetoday.normprice from cards, pricetoday where cardset = ? and cards.id=pricetoday.id order by pricetoday.normprice desc', (setid,))
         return_list = []
         for card in setcards:
-            print('appending return_list')
+            #print('appending return_list')
             return_list.append(list(card))
         #recent_date = cur.execute('select max(datetime) from prices')
         #recent_date = recent_date.fetchone()[0]

@@ -109,7 +109,7 @@ def addCards(data):
             tcg_id,
             cm_id
             ))
-            print("SUCESS")
+            print("SUCCESS")
         except:
             print('could not add to db:',obj['name'])
 
