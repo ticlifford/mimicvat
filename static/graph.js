@@ -1,5 +1,6 @@
 $(document).ready(function() {
-	$(chart_id).highcharts({
+	$(chart_id).Highcharts.stockChart({
+        rangeSelector: {selected: 1},
 		chart: chart,
 		title: title,
 		xAxis: xAxis,

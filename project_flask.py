@@ -83,9 +83,29 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
         print('could not print data')
     # chart insertion
     try:
+        # 7 day SMA
+        window_size = 30
+        numbers = priceList
+        i = 0
+        moving_averages = []
+        while i < len(numbers) - window_size + 1:
+            this_window = numbers[i : i + window_size]
+
+            window_average = sum(this_window) / window_size
+            moving_averages.append(window_average)
+            i += 1
+        print(moving_averages)
+        for x in range(0,window_size-1):
+            moving_averages.insert(x,priceList[x])
+        smadata = [list(x) for x in zip(dateList, moving_averages)]
+
+
+    except:
+        print('sma failed')
+    try:
         chart = {"renderTo": chartID, "type": chart_type,
         "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
-        series = [{"name": 'series label', "data": data}]
+        series = [{"name": 'series label', "data": data, "id":"normalprice"},{"name": 'series sma label', "data": smadata, "id":"sma","dashStyle":"Dot","color":"orange"}]
         title = {"text": cardName}
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'dollars'}}
@@ -589,10 +609,31 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         con.close()
     # supposed to change data input
 
+        try:
+        # 7 day SMA
+            window_size = 30
+            numbers = priceList
+            i = 0
+            moving_averages = []
+            while i < len(numbers) - window_size + 1:
+                this_window = numbers[i : i + window_size]
+
+                window_average = sum(this_window) / window_size
+                moving_averages.append(window_average)
+                i += 1
+            print(moving_averages)
+            for x in range(0,window_size-1):
+                moving_averages.insert(x,priceList[x])
+            smadata = [list(x) for x in zip(dateList, moving_averages)]
+
+
+        except:
+            print('sma failed')
+
         # chart data routed to javascript
         chart = {"renderTo": chartID, "type": chart_type,
                  "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
-        series = [{"name": 'nonfoil', "data": data},{"name":'foil', "data": foildata}]
+        series = [{"name": 'nonfoil', "data": data},{"name":'foil', "data": foildata},{"name": 'series sma label', "data": smadata, "id":"sma","dashStyle":"Dot","color":"orange"}]
         title = {"text": ' '}
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'yax'}}
@@ -774,11 +815,32 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
 
     con.close()
 
+    try:
+        # 7 day SMA
+        window_size = 30
+        numbers = priceList
+        i = 0
+        moving_averages = []
+        while i < len(numbers) - window_size + 1:
+            this_window = numbers[i : i + window_size]
+
+            window_average = sum(this_window) / window_size
+            moving_averages.append(window_average)
+            i += 1
+        print(moving_averages)
+        for x in range(0,window_size-1):
+            moving_averages.insert(x,priceList[x])
+        smadata = [list(x) for x in zip(dateList, moving_averages)]
+
+
+    except:
+        print('sma failed')
+
     # chart data
     try:
         chart = {"renderTo": chartID, "type": chart_type,
                  "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
-        series = [{"name": 'nonfoil', "data": data},{"name":'foil', "data": foildata}]
+        series = [{"name": 'nonfoil', "data": data},{"name":'foil', "data": foildata},{"name": 'series sma label', "data": smadata, "id":"sma","dashStyle":"Dot","color":"orange"}]
         title = {"text": ''}
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'dollars'}}
