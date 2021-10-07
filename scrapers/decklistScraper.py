@@ -77,17 +77,9 @@ create index sideboard_name on side_board(cardname);
 #legacy decks from top8
 legacy_url = "https://mtgtop8.com/format?f=LE"
 
-#html = urllib.request.urlopen(url).read()
-#soup = b(html, 'html.parser')
 
-#results=soup.find_all("div",class_="S14")
-"""
-for job_el in results:
-    #these are links to events
-    #scrape each url
-    print(job_el)
-"""
-
+# opens every 'next page' link on a format url
+# produces a 'new url' for the next page
 def open_event(url):
     print('i am processing url:',url)
     html = urllib.request.urlopen(url).read()
@@ -99,13 +91,20 @@ def open_event(url):
         next_button = soup.find("a", string="Next")
         new_url = legacy_url[:-5] + next_button.get('href')
         print('the new_url:',new_url)
-        print('there is a next url:',new_url)
+
+        print('starting up explore_event')
+        # explore_event scrapes each event url from the page
+        # then it calls event_processor
+        explore_event(new_url)
         print('running recursion')
         open_event(new_url)
     except:
         print('there is no next url')
     #collect the next and pass it to open_event
     #open_event(next_url)
+
+# it finds every event(and link) on the page, do inside open_event
+# this should call the 
 
 def explore_event(event_url):
     url = event_url
@@ -116,15 +115,23 @@ def explore_event(event_url):
         last_events = soup.find_all('table',class_='Stable')[1]
         s14 = last_events.find_all('td',class_='S14')
         #print(s14[0])
+        links = []
         for atag in s14:
-            print(atag.a['href'])
+            #print("https://mtgtop8.com/" + atag.a['href'])
+            links.append("https://mtgtop8.com/" + atag.a['href'])
             #implement deck scrape for that href
+        for x in links:
+            try:
+                print('starting event_processor for ',x)
+                event_processor(x)
+            except:
+                None
     except:
         print('failed to find')
 
-#more of a deck scraper than event scraper
-def event_scrape(event_scrape_url):
-    url=event_scrape_url
+# this scrapes the deck that's on the page
+def deck_scrape(deck_scrape_url):
+    url=deck_scrape_url
     html = urllib.request.urlopen(url).read()
     soup = b(html, 'html.parser')
 
@@ -217,6 +224,9 @@ def add_mainboard():
 def add_sideboard():
     None
 
+# event_processor checks the list of decks in the event
+# it creates a link to that deck's page
+# it should call the deck scraper
 def event_processor(event_url):
     #count the number of decks in the sidebar
     url=event_url
@@ -226,28 +236,34 @@ def event_processor(event_url):
     for x in soup.find_all('div',attrs={'style':'margin:0px 4px 0px 4px;'}):
         ats = x.find_all('a', href = True, class_=None,attrs={"src":False})
         for y in ats:
-            print(y)
-            print(y.get('href'))
+            #print(y)
+            #print(y.get('href'))
             if y.get('href') != '':
-                hrefs.add(y.get('href'))
-    
+                hrefs.add("https://mtgtop8.com/event" + y.get('href'))
+    for x in hrefs:
+        try:
+            print('running deck_scrape for ',x)
+            deck_scrape(x)
+        except:
+            None
+
     #a set of deck urls to process
-    print('set: ',hrefs)
+    print('event_processor set: ',hrefs)
 
 #open_event(legacy_url)
-#explore_event(legacy_url)
-leg_event = 'https://mtgtop8.com/event?e=32512&f=LE'
+explore_event(legacy_url)
+#leg_event = 'https://mtgtop8.com/event?e=32512&f=LE'
 #event_processor(leg_event)
-#event_scrape(leg_event)
+#deck_scrape(leg_event)
 
 
 
 print('connecting to db')
 cardsDb = sqlite3.connect(dbPath)
 c = cardsDb.cursor()
-
-
-event_scrape(leg_event)
+open_event(legacy_url)
+#explore_event(legacy_url)
+#deck_scrape(leg_event)
 
 cardsDb.commit()
 print('im closing the db')
