@@ -77,11 +77,22 @@ create index sideboard_name on side_board(cardname);
 #legacy decks from top8
 legacy_url = "https://mtgtop8.com/format?f=LE"
 
+#open the meta dropdown on a format and run open_event for that meta, pass the meta result
+def format_metas(url):
+    print('running format_metas')
+    html = urllib.request.urlopen(url).read()
+    soup = b(html, 'html.parser')
+    for x in soup.find_all('div',{'id':'metas_list'}):
+        for y in x.find_all('a'):
+            print("https://mtgtop8.com/format" + y['href'], y.string)
+            open_event("https://mtgtop8.com/format" + y['href'], y.string)
+
 
 # opens every 'next page' link on a format url
 # produces a 'new url' for the next page
-def open_event(url):
+def open_event(url, meta):
     print('i am processing url:',url)
+    print('the meta: ',meta)
     html = urllib.request.urlopen(url).read()
     soup = b(html, 'html.parser')
     #scan all the events
@@ -95,9 +106,9 @@ def open_event(url):
         print('starting up explore_event')
         # explore_event scrapes each event url from the page
         # then it calls event_processor
-        explore_event(new_url)
+        explore_event(new_url, meta)
         print('running recursion')
-        open_event(new_url)
+        open_event(new_url, meta)
     except:
         print('there is no next url')
     #collect the next and pass it to open_event
@@ -106,7 +117,7 @@ def open_event(url):
 # it finds every event(and link) on the page, do inside open_event
 # this should call the 
 
-def explore_event(event_url):
+def explore_event(event_url, meta):
     url = event_url
     html = urllib.request.urlopen(url).read()
     soup = b(html, 'html.parser')
@@ -123,18 +134,18 @@ def explore_event(event_url):
         for x in links:
             try:
                 print('starting event_processor for ',x)
-                event_processor(x)
+                event_processor(x, meta)
             except:
                 None
     except:
         print('failed to find')
 
 # this scrapes the deck that's on the page
-def deck_scrape(deck_scrape_url):
+def deck_scrape(deck_scrape_url, meta):
     url=deck_scrape_url
     html = urllib.request.urlopen(url).read()
     soup = b(html, 'html.parser')
-
+    meta = meta
     #find the deck name, player name, date, event name
     #event is in class_="event_title" and its the first one. deck name is second
     event_title = soup.find_all(class_='event_title')
@@ -163,7 +174,8 @@ def deck_scrape(deck_scrape_url):
     #event_date
     #event_title
     #player_name
-    c.execute('insert into deck_meta values (?,?,?,?,?,?,?)',(
+    #meta
+    c.execute('insert into deck_meta values (?,?,?,?,?,?,?,?)',(
         str(event_title),
         #event_date,
         'date',
@@ -171,7 +183,8 @@ def deck_scrape(deck_scrape_url):
         'legacy',
         str(deck_uuid),
         str(deck_name),
-        'place'
+        'place',
+        meta
     ))
 
     # finds the txt file for the decklist
@@ -227,7 +240,7 @@ def add_sideboard():
 # event_processor checks the list of decks in the event
 # it creates a link to that deck's page
 # it should call the deck scraper
-def event_processor(event_url):
+def event_processor(event_url, meta):
     #count the number of decks in the sidebar
     url=event_url
     html = urllib.request.urlopen(url).read()
@@ -243,7 +256,7 @@ def event_processor(event_url):
     for x in hrefs:
         try:
             print('running deck_scrape for ',x)
-            deck_scrape(x)
+            deck_scrape(x, meta)
         except:
             None
 
@@ -251,7 +264,7 @@ def event_processor(event_url):
     print('event_processor set: ',hrefs)
 
 #open_event(legacy_url)
-explore_event(legacy_url)
+#explore_event(legacy_url)
 #leg_event = 'https://mtgtop8.com/event?e=32512&f=LE'
 #event_processor(leg_event)
 #deck_scrape(leg_event)
@@ -261,10 +274,15 @@ explore_event(legacy_url)
 print('connecting to db')
 cardsDb = sqlite3.connect(dbPath)
 c = cardsDb.cursor()
-open_event(legacy_url)
+#open_event(legacy_url)
 #explore_event(legacy_url)
 #deck_scrape(leg_event)
+format_metas(legacy_url)
 
 cardsDb.commit()
 print('im closing the db')
 cardsDb.close()
+
+# this script is mostly completed. You pass it a format link on mtgtop8, and need to hardcode the format.
+# it also needs tuning up around the open_event stuff. the deck name is not always scraped correctly, and I think I still need to fix the ascii/utf-8 thing where accent marks crash the scraper
+# it also needs to delay at the deck scraping thing

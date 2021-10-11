@@ -12,6 +12,7 @@ import sqlite3
 
 dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
 #dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+#dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO_test.db'
 csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
 #csvPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/setNames.csv'
 
@@ -88,19 +89,45 @@ def addCards(data):
         else:
             cm_id = obj['cardmarket_id']
 
-        # db command to write object to db
-        try:
-            c.execute('insert into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+        #dual face cards
+
+        if obj['layout'] == 'modal_dfc':
+            print('modal dfc card found')
+            try:
+                #inside card_faces, theres a list of two dictionaries
+                #accessing each card face by calling [0] or [1]
+                #the sql insert should be called for both faces with their respective object indexes
+                print(obj['card_faces'][0]['name'],"DFC")
+                print(
             obj['id'],
-            obj['name'],
-            cmc,
-            obj['mana_cost'],
+            str(obj['name']),
+            obj['cmc'],
+            obj['card_faces'][0]['mana_cost'],
             power,
             toughness,
-            str(obj['colors']),
+            str(obj['card_faces'][0]['colors']),
             obj['set'],
-            obj['type_line'],
-            obj['image_uris']['normal'],
+            obj['card_faces'][0]['type_line'],
+            obj['card_faces'][0]['image_uris']['normal'],
+            str(obj['foil']),
+            str(obj['nonfoil']),
+            str(obj['digital']),
+            rarity,
+            str(obj['reserved']),
+            tcg_id,
+            cm_id
+                )
+                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+            obj['id'],
+            str(obj['name']),
+            obj['cmc'],
+            obj['card_faces'][0]['mana_cost'],
+            power,
+            toughness,
+            str(obj['card_faces'][0]['colors']),
+            obj['set'],
+            obj['card_faces'][0]['type_line'],
+            obj['card_faces'][0]['image_uris']['normal'],
             str(obj['foil']),
             str(obj['nonfoil']),
             str(obj['digital']),
@@ -109,9 +136,36 @@ def addCards(data):
             tcg_id,
             cm_id
             ))
-            print("SUCCESS")
-        except:
-            print('could not add to db:',obj['name'])
+            except:
+                print('could not complete dfc faces print')
+        else:
+
+
+
+            # db command to write object to db
+            try:
+                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+                obj['id'],
+                str(obj['name']),
+                cmc,
+                obj['mana_cost'],
+                power,
+                toughness,
+                str(obj['colors']),
+                obj['set'],
+                obj['type_line'],
+                obj['image_uris']['normal'],
+                str(obj['foil']),
+                str(obj['nonfoil']),
+                str(obj['digital']),
+                rarity,
+                str(obj['reserved']),
+                tcg_id,
+                cm_id
+                ))
+                print("insert was a SUCCESS")
+            except:
+                print('could not add to db:',obj['name'])
 
     try:
         checkPage(data)
