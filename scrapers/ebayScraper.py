@@ -18,5 +18,5 @@ cardLabel = []
 #print(html)
 soup = b(html, 'html.parser')
 
-s=soup.find('script')
-print(soup)
+results=soup.find_all('td',class_='s14')
+print(results)

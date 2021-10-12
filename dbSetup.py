@@ -87,6 +87,7 @@ try:
                 RESERVED text,
                 tcgplayer_id real,
                 cardmarket_id real,
+                boosterfun text,
                 PRIMARY KEY(ID),
                 UNIQUE(ID))''')
 
