@@ -21,9 +21,9 @@ def printDb():
         for row in c.execute('SELECT * FROM CARDS'):
                 print(row)
 
-def setGeneration(set):
-    print('the set is',set)
-    url = "https://api.scryfall.com/cards/search?q=set%3D" + set
+def setGeneration():
+    print('running scraper for boosterfun cards')
+    url = "https://api.scryfall.com/cards/search?q=is%3Aboosterfun"
     print('sleeping now')
     time.sleep(.600)
     print('the url is',url)
@@ -35,6 +35,7 @@ def setGeneration(set):
         print('something went wrong with set',set)
 
 def checkPage(data):
+    time.sleep(.600)
     # this api is paginated into 175 card objects
     try:
         if data['has_more'] == True:
@@ -120,12 +121,12 @@ def addCards(data):
             except:
                 print('could not complete dfc faces print')
         else:
-
+            print('adding ',obj['name'])
 
 
             # db command to write object to db
             try:
-                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
                 obj['id'],
                 str(obj['name']),
                 cmc,
@@ -142,7 +143,8 @@ def addCards(data):
                 rarity,
                 str(obj['reserved']),
                 tcg_id,
-                cm_id
+                cm_id,
+                "True"
                 ))
                 print("insert was a SUCCESS")
             except:
@@ -170,7 +172,7 @@ with open(csvPath, 'r') as csv_file:
         print('set scraping:',line[0])
         setGeneration(line[0])
 """
-setGeneration('mid')
+setGeneration()
 
 
 cardsDb.commit()

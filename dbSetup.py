@@ -1,6 +1,6 @@
 import sqlite3
 
-cardsDb = sqlite3.connect('CARDINFO_test.db')
+cardsDb = sqlite3.connect('CARDINFO.db')
 c = cardsDb.cursor()
 
 #cards: ID, NAME, CMC, COLOR, SET, PICTURE 
@@ -87,6 +87,7 @@ try:
                 RESERVED text,
                 tcgplayer_id real,
                 cardmarket_id real,
+                boosterfun text,
                 PRIMARY KEY(ID),
                 UNIQUE(ID))''')
 
