@@ -624,7 +624,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                 this_window = numbers[i : i + window_size]
 
                 window_average = sum(this_window) / window_size
-                moving_averages.append(window_average)
+                moving_averages.append(round(window_average,2))
                 i += 1
             print(moving_averages)
             for x in range(0,window_size-1):
@@ -849,7 +849,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
             this_window = numbers[i : i + window_size]
 
             window_average = sum(this_window) / window_size
-            moving_averages.append(window_average)
+            moving_averages.append(round(window_average,2))
             i += 1
         print(moving_averages)
         for x in range(0,window_size-1):
