@@ -65,9 +65,9 @@
 
 <a href = "/">Go back to home page</a>
 </div>
-    <div style="background:#f5f5f5" class="col-sm-6">
-         <div id={{ chartID|safe }} class="chart" style="height: 500px; width: 500px;"></div>
-
+    <div style="background:#f5f5f5;padding: 40pt;" class="col-sm-6">
+         <div id={{ chartID|safe }} class="chart" ></div>
+        <div id={{ chartID|safe }} class="chart" style="height: 500px; width: 500px;"></div>
                    <script>
                        var chart_id = {{ chartID|safe }}
                        var series = {{ series|safe }}
@@ -79,9 +79,11 @@
                        var legend = { "enabled":false }
                        var backgroundColor = 'f5f5f5'
                    </script>
+            <!---
             <div class="row justify-content-md-center mt-3">
             <button type="button" name="foil-switch" value = "foil-switch" class="btn btn-primary foil-switch">Switch to foil prices</button>
             </div>
+            --->
         </div>
     </div>
 </div>

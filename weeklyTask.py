@@ -6,7 +6,7 @@ It collects the data by running a craper that checks scryfall for new sets.
 It updates a sql database and a csv file.
 """
 import os 
-import final_project_flask
+#import final_project_flask
 import datetime
 import time
 

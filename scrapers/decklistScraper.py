@@ -83,6 +83,8 @@ def format_metas(url):
     html = urllib.request.urlopen(url).read()
     soup = b(html, 'html.parser')
     for x in soup.find_all('div',{'id':'metas_list'}):
+        # i should be making a list of the 'a' tags and then running my open_event loop after
+        # garbage collection
         for y in x.find_all('a'):
             print("https://mtgtop8.com/format" + y['href'], y.string)
             open_event("https://mtgtop8.com/format" + y['href'], y.string)

@@ -1,12 +1,12 @@
 $(document).ready(function() {
-	$(chart_id).Highcharts.stockChart({
-        rangeSelector: {selected: 1},
+	$(chart_id).highcharts({
 		chart: chart,
 		title: title,
 		xAxis: xAxis,
 		yAxis: yAxis,
         series: series,
         credits: credits,
-        legend: legend
+        legend: legend,
+        backgroundColor: backgroundColor
 	});
 });

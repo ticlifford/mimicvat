@@ -3,6 +3,8 @@ import sqlite3 as sql
 import cardAverage
 import datetime
 import time
+#from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 
 
 # This is my flask file which runs the application
@@ -12,10 +14,10 @@ app = Flask(__name__)
 # the location of the database, when running locally vs on server
 
 #website location
-#dbLoc = 'CARDINFO.db'
+dbLoc = 'CARDINFO.db'
 
 #windows local
-dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+#dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 #csv file upload location
 UPLOAD_FOLDER = 'static/files'
@@ -81,6 +83,7 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
         print('printing data')
     except:
         print('could not print data')
+    """
     # chart insertion
     try:
         # 7 day SMA
@@ -102,10 +105,12 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
 
     except:
         print('sma failed')
+    """
     try:
         chart = {"renderTo": chartID, "type": chart_type,
         "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
-        series = [{"name": 'series label', "data": data, "id":"normalprice"},{"name": 'series sma label', "data": smadata, "id":"sma","dashStyle":"Dot","color":"orange"}]
+        series = [{"name": 'series label', "data": data}]
+
         title = {"text": cardName}
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'dollars'}}
@@ -175,7 +180,7 @@ def setsPage():
         con = sql.connect(dbLoc)
         con.row_factory = sql.Row
         cur = con.cursor()
-        cur.execute("select name, code from cardset where substr(name,-6,6) != 'Tokens' and substr(name,-6,6) != 'Promos' and substr(name,-9,9) != 'Oversized'")
+        cur.execute("select name, code, releasedate from cardset where substr(name,-6,6) != 'Tokens' and substr(name,-6,6) != 'Promos' and substr(name,-9,9) != 'Oversized' order by releasedate desc")
         rows = cur.fetchall()
         con.close()
         setnames = rows
@@ -756,7 +761,26 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         #print('unique printing:', x)
     if not cardId:
         print('there is no card ID')
-        return render_template('frontPage.html', card_names=card_names)
+        #make a return template for fuzzy search with results
+        print('fuzz ratio')
+        fuzzed = process.extractBests(r,card_names,limit=10)
+        print(fuzzed)
+        fuzz_list = []
+        for x in fuzzed:
+            fuzzy_card = []
+            #print(cur.execute("select id, picurl from cards where upper(name)=upper((?))",(x[0],)).fetchone()[0])
+            res = cur.execute("select id, picurl from cards where upper(name)=upper((?))",(x[0],)).fetchone()
+            #print('res fetchone:',res)
+            for row in res:
+                print('res:',row)
+                fuzzy_card.append(row)
+                print('appending ',row)
+            fuzz_list.append(fuzzy_card)
+        
+        print('fuzzy_list: ',fuzz_list)
+        return render_template('fuzzyReturn.html', card_names=card_names, fuzz_list=fuzz_list)
+        #return render_template('frontPage.html', card_names=card_names)
+
     imageUrl = searchCard(cardId, cur, priceList, foilList, dateList, imageUrl,False)
     data = [list(x) for x in zip(dateList, priceList)]
     foildata = [list(x) for x in zip(dateList, foilList)]

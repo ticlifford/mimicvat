@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block nocontainer %}
+    <section>
+
+            {% for row in fuzz_list|batch(4) %}
+                <div class="row d-flex justify-content-center">
+
+                    {% for card in row %}
+                    <div style="padding: 5px 5px 5px;">
+                    <a href="/search/{{card[0]}}"><img src={{card[1]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45);width:300px;"></a>
+                </div>
+
+
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+    </section>
+{% endblock %}
+
+{% block bodyText %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+                       <script src="../static/graph.js"></script>
+{% endblock %}

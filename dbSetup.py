@@ -88,6 +88,8 @@ try:
                 tcgplayer_id real,
                 cardmarket_id real,
                 boosterfun text,
+                BACKURL text,
+                EDHRANK real,
                 PRIMARY KEY(ID),
                 UNIQUE(ID))''')
 

@@ -88,6 +88,14 @@ def addCards(data):
             None
         else:
             cm_id = obj['cardmarket_id']
+        
+        if 'edhrec_rank' not in obj.keys():
+            print('no edhrec rank')
+            None
+        else:
+            edhrec_rank = obj['edhrec_rank']
+        
+        if
 
         #dual face cards
 
@@ -98,7 +106,7 @@ def addCards(data):
                 #accessing each card face by calling [0] or [1]
                 #the sql insert should be called for both faces with their respective object indexes
                 print(obj['card_faces'][0]['name'],"DFC")
-                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
             obj['id'],
             str(obj['name']),
             obj['cmc'],
@@ -115,17 +123,53 @@ def addCards(data):
             rarity,
             str(obj['reserved']),
             tcg_id,
-            cm_id
+            cm_id,
+            None,
+            obj['card_faces'][1]['image_uris']['normal'], #check for back image url
+            edhrec_rank
             ))
             except:
                 print('could not complete dfc faces print')
+
+        if obj['layout'] == 'transform':
+            print('transform card found')
+            try:
+                #inside card_faces, theres a list of two dictionaries
+                #accessing each card face by calling [0] or [1]
+                #right now i'm setting the card image name as X//Y and showing the image of X
+                print(obj['card_faces'][0]['name'],"transform")
+                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+            obj['id'],
+            str(obj['name']),
+            obj['cmc'],
+            obj['card_faces'][0]['mana_cost'],
+            power,
+            toughness,
+            str(obj['card_faces'][0]['colors']),
+            obj['set'],
+            obj['card_faces'][0]['type_line'],
+            obj['card_faces'][0]['image_uris']['normal'],
+            str(obj['foil']),
+            str(obj['nonfoil']),
+            str(obj['digital']),
+            rarity,
+            str(obj['reserved']),
+            tcg_id,
+            cm_id,
+            None,
+            obj['card_faces'][1]['image_uris']['normal'], #check for back image url
+            edhrec_rank
+            ))
+            except:
+                print('could not complete transform faces print')
+
         else:
 
 
 
             # db command to write object to db
             try:
-                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
                 obj['id'],
                 str(obj['name']),
                 cmc,
@@ -142,7 +186,10 @@ def addCards(data):
                 rarity,
                 str(obj['reserved']),
                 tcg_id,
-                cm_id
+                cm_id,
+                None,
+                None, #check for back image url
+                edhrec_rank
                 ))
                 print("insert was a SUCCESS")
             except:
