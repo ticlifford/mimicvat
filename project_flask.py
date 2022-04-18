@@ -5,6 +5,9 @@ import datetime
 import time
 #from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
+#from flask_login import LoginManager
+#login_manager = LoginManager()
+
 
 
 # This is my flask file which runs the application
@@ -14,10 +17,10 @@ app = Flask(__name__)
 # the location of the database, when running locally vs on server
 
 #website location
-dbLoc = 'CARDINFO.db'
+#dbLoc = 'CARDINFO.db'
 
 #windows local
-#dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 #csv file upload location
 UPLOAD_FOLDER = 'static/files'
@@ -284,6 +287,79 @@ def change():
                         card_names=card_names
                         )
 
+
+@app.route('/decks')
+def decks():
+    try:
+        print('connecting to db')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db')
+    try:
+        cur.execute('select * from deck_meta;')
+        deck_meta = cur.fetchall()
+    except:
+        None
+    try:
+        return render_template('decks.html',card_names=card_names,deck_meta=deck_meta)
+    except:
+        print('decks.html issue')
+        return render_template('frontPage.html',card_names=card_names)
+
+@app.route('/decks/<deck_uuid>')
+def decksuuid(deck_uuid):
+    try:
+        print('connecting to db')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db')
+
+    """
+    try:
+        cur.execute('select * from main_deck where main_deck.uuid= ?;',(deck_uuid,))
+        deckList = cur.fetchall()
+    except:
+        print('could not fetchall main_deck')
+    """
+    try:
+        cur.execute('select distinct cards.PICURL, main_deck.cardname, cards.id from main_deck, cards where cards.NAME=main_deck.cardname and main_deck.uuid = ? group by main_deck.cardname;',
+        (deck_uuid,))
+        deckList = cur.fetchall()
+    except:
+        print('could not fetchall main_deck')
+#select distinct cards.PICURL, main_deck.cardname from main_deck, cards where cards.NAME=main_deck.cardname and main_deck.uuid = 'c1434c50-bebb-11ec-af4a-d8cb8a71a1eb' group by main_deck.cardname;
+
+    try:
+        return render_template('deckList.html',card_names=card_names,deckList=deckList)
+    except:
+        print('deckList.html issue')
+        return render_template('frontPage.html',card_names=card_names)
+
+@app.route('/monthly')
+def monthlyMovers():
+
+    try:
+        print('connecting to db')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db')
+
+    try:
+        cur.execute('select name, cards.picurl, pricetoday.normprice, pricechange.change, cards.id from cards, pricechange, pricetoday where cards.id=pricetoday.id and cards.id=pricechange.id and pricetoday.normprice>1.00 order by pricechange.change desc limit 10;')
+        top_10_sql = cur.fetchall()
+        top_10 = []
+        for x in top_10_sql:
+            top_10.append([x[1],x[0],x[3],x[4]])
+        return render_template('monthlyMovers.html',card_names=card_names,top_10=top_10)
+    except:
+        print('could not complete monthly')
+        return render_template('frontpage.html',card_names=card_names)
 @app.route('/reserveList')
 def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     # select all from reserve list sql table
@@ -611,6 +687,19 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         print('search value:', cardInfo['type'])
         print('power:', cardInfo['power'])
 
+        try:
+            #collecting top cards from the same set
+            setcards = cur.execute('select cards.id, picurl from cards, pricetoday where cardset = ? and cards.id=pricetoday.id and cards.id != ? order by pricetoday.normprice desc limit 4', (cardInfo['cardset'],cardId))
+            same_set_list = []
+        except:
+            print('cant sql sameset')
+        try:
+            for card in setcards:
+                print(' same set appending list')
+                print([card[0],card[1]])
+                same_set_list.append([card[0],card[1]])
+        except:
+            print('cant find same set cards')
         con.close()
     # supposed to change data input
 
@@ -662,7 +751,8 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                                 sameCardsCombo=duplicate_names,
                                 cardInfo=cardInfo,
                                 card_names=card_names,
-                                price_now = price_now)
+                                price_now = price_now,
+                                same_set_list=same_set_list)
 
     elif request.method == "POST":
         # post means i'm adding a card to the watchlist

@@ -31,7 +31,7 @@
           <header>
         <!-- Fixed navbar -->
 
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="box-shadow: 5px 0px 30px 0px black">
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="box-shadow: 5px 0px 30px 0px black">
           <a class="navbar-brand" href="#">{% block navbar_brand %}{% endblock %}</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -42,7 +42,7 @@
                 <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/pandas">Pandas Analysis</a>
+                <a class="nav-link text-nowrap" href="/pandas">Pandas Analysis</a>
               </li>
               <!--
               <li class="nav-item">
@@ -50,10 +50,14 @@
               </li>
               -->
               <li class="nav-item">
-                <a class="nav-link" href="/collection">My Collection</a>
+                <a class="nav-link text-nowrap" href="/monthly">Monthly Movers</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link text-nowrap" href="/collection">My Collection</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/watchlist">My Watchlist</a>
+                <a class="nav-link text-nowrap" href="/watchlist">My Watchlist</a>
                 </li>
             <!--
               <li class="nav-item">
@@ -61,18 +65,18 @@
                 </li>
             -->
                 <li class="nav-item">
-                <a class="nav-link" href="/reserveList">Reserved list</a>
+                <a class="nav-link text-nowrap" href="/reserveList">Reserved list</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/sets">Sets</a>
+                    <a class="nav-link text-nowrap" href="/sets">Sets</a>
                     </li>
               <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                <a class="nav-link disabled text-nowrap" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
               </li>
             </ul>
-            <form class="form-inline mt-2 mt-md-0" method="POST" action="/search">
-              <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="searchbar" list="card_names">
-              <button class="btn btn-outline-success my-2 my-sm-0 mr-5" type="submit">Search</button>
+            <form class="form-inline mt-2 mt-md-0 text-nowrap" method="POST" action="/search">
+              <input class="form-control mr-sm-2 text-nowrap" type="text" placeholder="Search" aria-label="Search" name="searchbar" list="card_names">
+              <button class="btn btn-outline-success my-2 my-sm-0 mr-5 text-nowrap" type="submit">Search</button>
             </form>
           </div>
         </nav>

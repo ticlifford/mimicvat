@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block paragraph %}
+Decklists.
+{% endblock %}
+
+{% block container %}
+    <section>
+
+            {% for row in deckList|batch(5) %}
+                <div class="row d-flex justify-content-left">
+
+                    {% for card in row %}
+                    <div style="padding: 5px 5px 5px;">
+                    <a href="/search/{{card[2]}}"><img src={{card[0]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45);width:200px;"></a>
+                </div>
+
+
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+    </section>
+{% endblock %}
+
+
+{% block bodyText %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+                       <script src="../static/graph.js"></script>
+{% endblock %}
