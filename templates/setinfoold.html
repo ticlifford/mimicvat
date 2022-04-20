@@ -1,27 +1,24 @@
 {% extends "layout.html" %}
+{% block head %}
+<link rel="stylesheet" href="/static/styles/filtertable.css">
+{% endblock %}
 
 {% block paragraph %}
 <h1>{{fullsetname}}<small>({{setcode}})</small></h1>
-<div class="card text-white bg-warning mb-3">
-    <div class="card-body">
-      <h2 class="card-title">A work in progress</h2>
-      <h6 class="card-subtitle mb-2 ">this isn't finished!</h6>
-      <p class="card-text">This page is designed to be a one page view on each set, showing a visual display of whats in the set and where the value is. I've only just started working on it.</p>
-    </div>
-  </div>
+
 
 <table>
 
     <tr>
-        <th>set logo:</th>
-        <th><img src="/static/images/set_symbols/{{setname}}.png" alt="set logo"></th>
+        <th><img src="/static/images/set_symbols/{{setname}}.png" onerror="this.onerror=null;this.src='/static/images/set_symbols/onslaught.png';" alt="set logo"></th>
         </tr>
 
+
     <tr>
-        <th>cards in set:</th>
+        <th>cards in set: </th>
         <th>{{numcards}}</th>
     </tr>
-
+<!--
     <tr>
     <th>average card price:</th>
     <th>{{setnorm}}</th>
@@ -36,28 +33,38 @@
     <th>average foil multiplier:</th>
     <th>{{ratio}}</th>
     </tr>
+-->
 </table>
 
 {% endblock %}
 
 {% block nocontainer %}
-    <section>
+<section>
+    <div class="container d-flex" style="padding: 2vw 2vw">
+        <div id="myBtnContainer">
+            <div class="row">
+                <button class="btn activefilter" onclick="filterSelection('all')"> Show all</button>
+                <button class="btn" onclick="filterSelection('common')"> common</button>
+                <button class="btn" onclick="filterSelection('uncommon')"> uncommon</button>
+                <button class="btn" onclick="filterSelection('rare')"> rare</button>
+                <button class="btn" onclick="filterSelection('mythic')"> mythic</button>
+            </div>
+        </div>
+    </div>
 
-            {% for row in carddeck|batch(4) %}
-                <div class="row d-flex justify-content-center">
+    <div class="container-md" style="padding: 0px 10vw;">
+    <div class="row justify-content-center">
+        {% for card in carddeck %}
+            <div class="filterDiv {{card[4]}}" style="padding: 0px 0.5vw;">
+                <a href="/search/{{card[0]}}"><img src={{card[2]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45); width: 15vw;"></a>
+                <p style="text-align: center; border:dotted">${%if card[3] is none%}{{card[5]}}{% else %}{{card[3]}}{% endif %}</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
-                    {% for card in row %}
-                    <div style="padding: 5px 5px 5px;">
-                    <a href="/search/{{card[0]}}"><img src={{card[2]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45);width:300px;"></a>
-                    <p style="text-align: center;">${{card[3]}}</p>
-                </div>
 
-
-                    {% endfor %}
-                </div>
-            {% endfor %}
-
-    </section>
+</section>
 {% endblock %}
 
 
@@ -67,7 +74,8 @@
 {% block graph %}
 {% endblock %}
 
-{% block bodyText %}
+{% block scripts %}
 <script src="https://code.highcharts.com/highcharts.js"></script>
                        <script src="../static/graph.js"></script>
+                       <script src="../static/filter.js"></script>
 {% endblock %}

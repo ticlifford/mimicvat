@@ -2,7 +2,7 @@
 {% block navbar_brand %}Mimicvat{% endblock %}
 {% block heading %}Mimicvat card analysis {% endblock %}
 {% block head %}<meta name="viewport" content = "width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="static/styles/speechbub.css">
+<link rel="stylesheet" href="/static/styles/speechbub.css">
 {% endblock %}
 {% block paragraph %}
 This application scrapes scryfall for Magic the Gathering card information and prices. It uses Flask, sqlite, highcarts, and bootstrap to display charts and tables of that data.</p>
@@ -12,6 +12,8 @@ calculate the average weekly price and standard deviation of cards to tell if th
 in value, as well as sell if the price is dropping.</p> <p>The languages I used for this application include: python, html, javascript, and sql.
 
 <center><p><a class="btn btn-primary" style=margin:20px href="https://github.com/ticlifford/mimicvat" role="button">Click here for the github link</a></p></center>
+
+
 {% endblock %}
 
 {% block graph %}
@@ -30,7 +32,7 @@ in value, as well as sell if the price is dropping.</p> <p>The languages I used 
         </div>
 
         <div class="col-md">
-            <div id={{ chartID|safe }} class="shadow chart" style="height: 500px; width: 500px; border-radius: 5px;"></div>
+            <div id={{ chartID|safe }} class="shadow chart" style=" border-radius: 5px;"></div>
 
             <script>
                 var chart_id = {{ chartID|safe }}

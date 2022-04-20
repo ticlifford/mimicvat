@@ -1,8 +1,14 @@
+from urllib.parse import _NetlocResultMixinBase
 from flask import Flask, render_template, request
 import sqlite3 as sql
 import cardAverage
 import datetime
 import time
+#from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+#from flask_login import LoginManager
+#login_manager = LoginManager()
+
 
 
 # This is my flask file which runs the application
@@ -81,6 +87,7 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
         print('printing data')
     except:
         print('could not print data')
+    """
     # chart insertion
     try:
         # 7 day SMA
@@ -102,13 +109,15 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
 
     except:
         print('sma failed')
+    """
     try:
         chart = {"renderTo": chartID, "type": chart_type,
         "height": chart_height, "zoomType": 'x', "backgroundColor":"#f5f5f5"}
-        series = [{"name": 'series label', "data": data, "id":"normalprice"},{"name": 'series sma label', "data": smadata, "id":"sma","dashStyle":"Dot","color":"orange"}]
+        series = [{"name": 'series label', "data": data}]
+
         title = {"text": cardName}
         xAxis = {"type":"datetime"}
-        yAxis = {"title": {"text": 'dollars'}}
+        yAxis = {"title": {"text": ''}}
         pageType = 'graph'
 
 
@@ -175,7 +184,7 @@ def setsPage():
         con = sql.connect(dbLoc)
         con.row_factory = sql.Row
         cur = con.cursor()
-        cur.execute("select name, code from cardset where substr(name,-6,6) != 'Tokens' and substr(name,-6,6) != 'Promos' and substr(name,-9,9) != 'Oversized'")
+        cur.execute("select name, code, releasedate from cardset where substr(name,-6,6) != 'Tokens' and substr(name,-6,6) != 'Promos' and substr(name,-9,9) != 'Oversized' order by releasedate desc")
         rows = cur.fetchall()
         con.close()
         setnames = rows
@@ -183,6 +192,10 @@ def setsPage():
         print('could not collect set data')
         setnames = []
     return render_template("sets.html", setnames = setnames,card_names=card_names)
+
+@app.route('/testfilter')
+def testfilter():
+    return render_template('testfilter.html')
 
 @app.route('/setinfo/<setid>', methods=['GET', 'POST'])
 def setinfo(setid):
@@ -217,10 +230,10 @@ def setinfo(setid):
         # this crashes the page because i don't even have a pricetoday table
 
         # cards collection, selects recent date, fetches recent_date
-        setcards = cur.execute('select cards.id, name, picurl, pricetoday.normprice from cards, pricetoday where cardset = ? and cards.id=pricetoday.id order by pricetoday.normprice desc', (setid,))
+        setcards = cur.execute('select cards.id, name, picurl, pricetoday.normprice, cards.rarity, pricetoday.foilprice from cards, pricetoday where cardset = ? and cards.id=pricetoday.id order by pricetoday.normprice desc', (setid,))
         return_list = []
         for card in setcards:
-            #print('appending return_list')
+
             return_list.append(list(card))
         #recent_date = cur.execute('select max(datetime) from prices')
         #recent_date = recent_date.fetchone()[0]
@@ -279,6 +292,79 @@ def change():
                         card_names=card_names
                         )
 
+
+@app.route('/decks')
+def decks():
+    try:
+        print('connecting to db')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db')
+    try:
+        cur.execute('select * from deck_meta;')
+        deck_meta = cur.fetchall()
+    except:
+        None
+    try:
+        return render_template('decks.html',card_names=card_names,deck_meta=deck_meta)
+    except:
+        print('decks.html issue')
+        return render_template('frontPage.html',card_names=card_names)
+
+@app.route('/decks/<deck_uuid>')
+def decksuuid(deck_uuid):
+    try:
+        print('connecting to db')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db')
+
+    """
+    try:
+        cur.execute('select * from main_deck where main_deck.uuid= ?;',(deck_uuid,))
+        deckList = cur.fetchall()
+    except:
+        print('could not fetchall main_deck')
+    """
+    try:
+        cur.execute('select distinct cards.PICURL, main_deck.cardname, cards.id from main_deck, cards where cards.NAME=main_deck.cardname and main_deck.uuid = ? group by main_deck.cardname;',
+        (deck_uuid,))
+        deckList = cur.fetchall()
+    except:
+        print('could not fetchall main_deck')
+#select distinct cards.PICURL, main_deck.cardname from main_deck, cards where cards.NAME=main_deck.cardname and main_deck.uuid = 'c1434c50-bebb-11ec-af4a-d8cb8a71a1eb' group by main_deck.cardname;
+
+    try:
+        return render_template('deckList.html',card_names=card_names,deckList=deckList)
+    except:
+        print('deckList.html issue')
+        return render_template('frontPage.html',card_names=card_names)
+
+@app.route('/monthly')
+def monthlyMovers():
+
+    try:
+        print('connecting to db')
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db')
+
+    try:
+        cur.execute('select name, cards.picurl, pricetoday.normprice, pricechange.change, cards.id from cards, pricechange, pricetoday where cards.id=pricetoday.id and cards.id=pricechange.id and pricetoday.normprice>1.00 order by pricechange.change desc limit 10;')
+        top_10_sql = cur.fetchall()
+        top_10 = []
+        for x in top_10_sql:
+            top_10.append([x[1],x[0],x[3],x[4]])
+        return render_template('monthlyMovers.html',card_names=card_names,top_10=top_10)
+    except:
+        print('could not complete monthly')
+        return render_template('frontpage.html',card_names=card_names)
 @app.route('/reserveList')
 def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     # select all from reserve list sql table
@@ -503,6 +589,7 @@ def watchlist():
 @app.route('/search/<cardId>', methods=['GET', 'POST'])
 def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
     # the search bar results for the layout html
+    
     if request.method == "GET":
         print('search cardID get request')
         con = sql.connect(dbLoc)
@@ -606,6 +693,31 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         print('search value:', cardInfo['type'])
         print('power:', cardInfo['power'])
 
+        try:
+            #collecting top cards from the same set
+            setcards = cur.execute('select cards.id, picurl from cards, pricetoday where cardset = ? and cards.id=pricetoday.id and cards.id != ? order by pricetoday.normprice desc limit 4', (cardInfo['cardset'],cardId))
+            same_set_list = []
+        except:
+            print('cant sql sameset')
+        try:
+            for card in setcards:
+                print(' same set appending list')
+                print([card[0],card[1]])
+                same_set_list.append([card[0],card[1]])
+        except:
+            print('cant find same set cards')
+        try:
+            cur.execute('select count(deck_meta.deckname) as count, deck_meta.deckname from deck_meta, main_deck where main_deck.cardname= ? and main_deck.uuid=deck_meta.uuid group by deck_meta.deckname order by count desc limit 3;',(cardInfo['cardname'],))
+            deck_rows =cur.fetchall()
+            deck_list = []
+            for row in deck_rows:
+                cur.execute('select deck_meta.uuid from deck_meta where upper(deck_meta.deckname) = upper(?) order by deck_meta.eventdate desc limit 1;',(row[1],))
+                deck_uuid = cur.fetchone()
+                #print('deck_uuid: ',deck_uuid[0])
+                deck_list.append([row[0],row[1],deck_uuid[0]])
+
+        except:
+            print('could not collect decks')
         con.close()
     # supposed to change data input
 
@@ -619,7 +731,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                 this_window = numbers[i : i + window_size]
 
                 window_average = sum(this_window) / window_size
-                moving_averages.append(window_average)
+                moving_averages.append(round(window_average,2))
                 i += 1
             print(moving_averages)
             for x in range(0,window_size-1):
@@ -636,7 +748,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         series = [{"name": 'nonfoil', "data": data},{"name":'foil', "data": foildata},{"name": 'series sma label', "data": smadata, "id":"sma","dashStyle":"Dot","color":"orange"}]
         title = {"text": ' '}
         xAxis = {"type":"datetime"}
-        yAxis = {"title": {"text": 'yax'}}
+        yAxis = {"title": {"text": ''}}
         pageType = 'graph'
 
 
@@ -657,7 +769,9 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                                 sameCardsCombo=duplicate_names,
                                 cardInfo=cardInfo,
                                 card_names=card_names,
-                                price_now = price_now)
+                                price_now = price_now,
+                                same_set_list=same_set_list,
+                                deck_list=deck_list)
 
     elif request.method == "POST":
         # post means i'm adding a card to the watchlist
@@ -756,7 +870,26 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         #print('unique printing:', x)
     if not cardId:
         print('there is no card ID')
-        return render_template('frontPage.html', card_names=card_names)
+        #make a return template for fuzzy search with results
+        print('fuzz ratio')
+        fuzzed = process.extractBests(r,card_names,limit=10)
+        print(fuzzed)
+        fuzz_list = []
+        for x in fuzzed:
+            fuzzy_card = []
+            #print(cur.execute("select id, picurl from cards where upper(name)=upper((?))",(x[0],)).fetchone()[0])
+            res = cur.execute("select id, picurl from cards where upper(name)=upper((?))",(x[0],)).fetchone()
+            #print('res fetchone:',res)
+            for row in res:
+                print('res:',row)
+                fuzzy_card.append(row)
+                print('appending ',row)
+            fuzz_list.append(fuzzy_card)
+        
+        print('fuzzy_list: ',fuzz_list)
+        return render_template('fuzzyReturn.html', card_names=card_names, fuzz_list=fuzz_list)
+        #return render_template('frontPage.html', card_names=card_names)
+
     imageUrl = searchCard(cardId, cur, priceList, foilList, dateList, imageUrl,False)
     data = [list(x) for x in zip(dateList, priceList)]
     foildata = [list(x) for x in zip(dateList, foilList)]
@@ -825,7 +958,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
             this_window = numbers[i : i + window_size]
 
             window_average = sum(this_window) / window_size
-            moving_averages.append(window_average)
+            moving_averages.append(round(window_average,2))
             i += 1
         print(moving_averages)
         for x in range(0,window_size-1):
@@ -1411,15 +1544,21 @@ def recent_price(cardID):
     #print('starting recent_price for ',cardID)
     con = sql.connect(dbLoc)
     cursor = con.cursor()
-    cursor.execute('''select normprice from prices where ID = (?) 
+    cursor.execute('''select normprice, foilprice from prices where ID = (?) 
     order by datetime desc''',
                    (cardID, ))
     price = cursor.fetchone()
-    price= price[0]
+    normalprice = price[0]
+    foilprice = price[1]
     con.close()
-    if price is None:
-        print('price is none')
-        price = 0
+    if normalprice is None:
+        print('normalprice is none checking for foil')
+        if foilprice is None:
+            price = 0
+        else:
+            price = foilprice
+    else:
+        price = normalprice
     #print('price:',price)
     #print('finished recent_price search')
     return price
