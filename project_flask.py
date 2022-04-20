@@ -1,3 +1,4 @@
+from urllib.parse import _NetlocResultMixinBase
 from flask import Flask, render_template, request
 import sqlite3 as sql
 import cardAverage
@@ -116,7 +117,7 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
 
         title = {"text": cardName}
         xAxis = {"type":"datetime"}
-        yAxis = {"title": {"text": 'dollars'}}
+        yAxis = {"title": {"text": ''}}
         pageType = 'graph'
 
 
@@ -192,6 +193,10 @@ def setsPage():
         setnames = []
     return render_template("sets.html", setnames = setnames,card_names=card_names)
 
+@app.route('/testfilter')
+def testfilter():
+    return render_template('testfilter.html')
+
 @app.route('/setinfo/<setid>', methods=['GET', 'POST'])
 def setinfo(setid):
     try:
@@ -225,10 +230,10 @@ def setinfo(setid):
         # this crashes the page because i don't even have a pricetoday table
 
         # cards collection, selects recent date, fetches recent_date
-        setcards = cur.execute('select cards.id, name, picurl, pricetoday.normprice from cards, pricetoday where cardset = ? and cards.id=pricetoday.id order by pricetoday.normprice desc', (setid,))
+        setcards = cur.execute('select cards.id, name, picurl, pricetoday.normprice, cards.rarity, pricetoday.foilprice from cards, pricetoday where cardset = ? and cards.id=pricetoday.id order by pricetoday.normprice desc', (setid,))
         return_list = []
         for card in setcards:
-            #print('appending return_list')
+
             return_list.append(list(card))
         #recent_date = cur.execute('select max(datetime) from prices')
         #recent_date = recent_date.fetchone()[0]
@@ -584,6 +589,7 @@ def watchlist():
 @app.route('/search/<cardId>', methods=['GET', 'POST'])
 def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
     # the search bar results for the layout html
+    
     if request.method == "GET":
         print('search cardID get request')
         con = sql.connect(dbLoc)
@@ -700,6 +706,18 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                 same_set_list.append([card[0],card[1]])
         except:
             print('cant find same set cards')
+        try:
+            cur.execute('select count(deck_meta.deckname) as count, deck_meta.deckname from deck_meta, main_deck where main_deck.cardname= ? and main_deck.uuid=deck_meta.uuid group by deck_meta.deckname order by count desc limit 3;',(cardInfo['cardname'],))
+            deck_rows =cur.fetchall()
+            deck_list = []
+            for row in deck_rows:
+                cur.execute('select deck_meta.uuid from deck_meta where upper(deck_meta.deckname) = upper(?) order by deck_meta.eventdate desc limit 1;',(row[1],))
+                deck_uuid = cur.fetchone()
+                #print('deck_uuid: ',deck_uuid[0])
+                deck_list.append([row[0],row[1],deck_uuid[0]])
+
+        except:
+            print('could not collect decks')
         con.close()
     # supposed to change data input
 
@@ -730,7 +748,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         series = [{"name": 'nonfoil', "data": data},{"name":'foil', "data": foildata},{"name": 'series sma label', "data": smadata, "id":"sma","dashStyle":"Dot","color":"orange"}]
         title = {"text": ' '}
         xAxis = {"type":"datetime"}
-        yAxis = {"title": {"text": 'yax'}}
+        yAxis = {"title": {"text": ''}}
         pageType = 'graph'
 
 
@@ -752,7 +770,8 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                                 cardInfo=cardInfo,
                                 card_names=card_names,
                                 price_now = price_now,
-                                same_set_list=same_set_list)
+                                same_set_list=same_set_list,
+                                deck_list=deck_list)
 
     elif request.method == "POST":
         # post means i'm adding a card to the watchlist
@@ -1525,15 +1544,21 @@ def recent_price(cardID):
     #print('starting recent_price for ',cardID)
     con = sql.connect(dbLoc)
     cursor = con.cursor()
-    cursor.execute('''select normprice from prices where ID = (?) 
+    cursor.execute('''select normprice, foilprice from prices where ID = (?) 
     order by datetime desc''',
                    (cardID, ))
     price = cursor.fetchone()
-    price= price[0]
+    normalprice = price[0]
+    foilprice = price[1]
     con.close()
-    if price is None:
-        print('price is none')
-        price = 0
+    if normalprice is None:
+        print('normalprice is none checking for foil')
+        if foilprice is None:
+            price = 0
+        else:
+            price = foilprice
+    else:
+        price = normalprice
     #print('price:',price)
     #print('finished recent_price search')
     return price

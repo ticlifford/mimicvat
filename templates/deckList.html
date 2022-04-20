@@ -4,23 +4,21 @@
 Decklists.
 {% endblock %}
 
-{% block container %}
-    <section>
+{% block nocontainer %}
 
-            {% for row in deckList|batch(5) %}
-                <div class="row d-flex justify-content-left">
+                <div class="container-md"style="padding: 0vw 10vw">
+                <div class="row justify-content-center">
 
-                    {% for card in row %}
-                    <div style="padding: 5px 5px 5px;">
-                    <a href="/search/{{card[2]}}"><img src={{card[0]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45);width:200px;"></a>
+                    {% for card in deckList %}
+                    <div style="padding: 0.2vw 0.2vw;">
+                    <a href="/search/{{card[2]}}"><img src={{card[0]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45);width:10vw;"></a>
                 </div>
 
 
                     {% endfor %}
                 </div>
-            {% endfor %}
+                </div>
 
-    </section>
 {% endblock %}
 
 

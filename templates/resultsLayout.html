@@ -52,7 +52,7 @@
       {% for card in sameCardsCombo %}
       <tr>
         <!--<td></td>-->
-         <td><a href="/search/{{card[0]}}"><img src={{card[2]}}  alt="card image goes here" width="250" class="portrait-crop" style="-webkit-border-top-left-radius: 17px;-webkit-border-top-right-radius: 17px;"></p></td></a>
+         <td><a href="/search/{{card[0]}}"><img src={{card[2]}}  alt="card image goes here" width="250" class="portrait-crop" style="-webkit-border-top-left-radius: 17px;-webkit-border-top-right-radius: 17px;"></p></a></td>
          <td>{{card[1]}}</td>
          <td>{{card[3]}}</td>
       </tr>
@@ -68,7 +68,7 @@
 </div>
     <div style="background:#f5f5f5;padding: 40pt; border: dotted;" class="col-sm-6">
          
-        <div id={{ chartID|safe }} class="chart" style="height: 500px; width: 500px;"></div>
+        <div id={{ chartID|safe }} class="chart"></div>
                    <script>
                        var chart_id = {{ chartID|safe }}
                        var series = {{ series|safe }}
@@ -87,10 +87,24 @@
             --->
 
             <div>
+                {% if same_set_list |length >0 %}
+                <h2>Expensive cards from this set</h2>
+                {% endif%}
                 {% for card in same_set_list %}
                 
-                <a href="/search/{{card[0]}}"><img src={{card[1]}}  alt="card image goes here" width="100" class="portrait-crop" style="-webkit-border-top-left-radius: 17px;-webkit-border-top-right-radius: 17px;">
+                <a href="/search/{{card[0]}}"><img src={{card[1]}}  alt="card image goes here" width="100" class="portrait-crop" style="-webkit-border-top-left-radius: 17px;-webkit-border-top-right-radius: 17px;"></a>
                 {% endfor %}
+            </div>
+            <div style="padding: 1vw 1vw;">
+                <table class="table" style="padding: 1vw 0vw;">
+                <thead>{% if deck_list |length >0 %}
+                    <h2>decks that use this card</h2>
+                    {% endif%}
+                </thead>
+                {% for deck in deck_list %}
+                <tr><td>{{deck[0]}}</td><td><a href="/decks/{{deck[2]}}">{{deck[1]}}</a></td></tr>
+                {% endfor %}
+                </table>
             </div>
         </div>
 

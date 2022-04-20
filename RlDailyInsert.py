@@ -29,7 +29,7 @@ def add_day(datetime):
     datetime = str(datetime)
     try:
         print('running sql')
-        collectionQuery = c.execute(f"select normprice from prices, cards where prices.id = cards.id and prices.datetime = '{datetime}' and cards.reserved = 'True' and cards.ONLINEONLY = 'False' ")
+        collectionQuery = c.execute(f"select normprice from prices, cards where prices.id = cards.id and prices.datetime = '{datetime}' and cards.reserved = 'True' and cards.ONLINEONLY = 'False' and cards.set not in ("cei","leb","lea") ")
     except:
         print('could not query')
     day_value = 0

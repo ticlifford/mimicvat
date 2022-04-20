@@ -13,8 +13,8 @@ import uuid
 import sqlite3
 
 
-#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+#dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 #from wget
 
@@ -76,8 +76,6 @@ create index sideboard_name on side_board(cardname);
 
 #legacy decks from top8
 legacy_url = "https://mtgtop8.com/format?f=LE"
-start_date = []
-end_date = []
 
 #open the meta time period dropdown on a format and run open_meta for each via for loop
 def format_metas(url):
@@ -219,20 +217,44 @@ def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place):
     #event_title
     #player_name
     #meta
-    c.execute('insert into deck_meta values (?,?,?,?,?,?,?,?)',(
-        str(event_title),
-        event_date,
-        #'date',
-        str(player_name),
-        'legacy',
-        str(deck_uuid),
-        str(deck_name),
-        #'place',
-        place,
-        meta
-    ))
+
+    try:
+        print(
+            str(event_title),
+            event_date,
+            str(player_name),
+        )
+    except:
+        print('could not print event title, date, or player name')
+
+    try:
+        print(str(deck_uuid),str(deck_name))
+    except:
+        print('could not print deck uuid or deck name')
+
+    try:
+        print(place, meta)
+    except:
+        print('could not print place or meta')
+
+    try:
+        c.execute('insert into deck_meta values (?,?,?,?,?,?,?,?)',(
+            str(event_title),
+            event_date,
+            #'date',
+            str(player_name),
+            'legacy',
+            str(deck_uuid),
+            str(deck_name),
+            #'place',
+            place,
+            meta
+        ))
+    except:
+        print('could not push deck_meta vals to sql')
 
     # finds the txt file for the decklist
+
     for x in soup.find_all(string=re.compile('Expor')):
         txt_file = x.parent.a['href']
         txt_url = "https://mtgtop8.com/" + txt_file
@@ -243,7 +265,7 @@ def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place):
             dec_line = line.decode('UTF-8')
             file_list.append(dec_line[:-2].split(" ",1))
             #print(line)
-        
+
         sb = 0
         main_board = []
         side_board = []
@@ -255,21 +277,28 @@ def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place):
             elif sb is 1:
                 # add to sideboard
                 #print('adding to side board')
-                c.execute('insert into side_board values (?,?,?)',(
-                    str(deck_uuid),
-                    str(slot[1]),
-                    slot[0]
-                ))
-                side_board.append(slot)
+                try:
+                    c.execute('insert into side_board values (?,?,?)',(
+                        str(deck_uuid),
+                        str(slot[1]),
+                        slot[0]
+                    ))
+                    side_board.append(slot)
+                except:
+                    print('could not push side_board to sql')
             else:
                 #print('adding to main board')
                 main_board.append(slot)
                 # add to mainboard
-                c.execute('insert into main_deck values (?,?,?)',(
-                    str(deck_uuid),
-                    str(slot[1]),
-                    slot[0]
-                ))
+                try:
+                    c.execute('insert into main_deck values (?,?,?)',(
+                        str(deck_uuid),
+                        str(slot[1]),
+                        slot[0]
+                    ))
+                except:
+                    print('could not push main_deck to sql')
+
         print('main board: ',main_board)
         print('side board: ',side_board)
 
@@ -296,6 +325,7 @@ def event_processor(event_url, meta, event_date):
         deck_list = []
         for y in deck_line:
             print('new y line')
+            #this means new deck, first y is place and second is both name and link
             S14 = y.find_all('div',class_='S14')
             new_deck=[]
             for a in S14:
@@ -311,12 +341,21 @@ def event_processor(event_url, meta, event_date):
         print(deck_list)
         for deck in deck_list:
             try:
+                print('deck details:',deck)
+            except:
+                print('could not print deck details')
+            try:
+                print('meta and event date:',meta,event_date)
+            except:
+                print('could not print meta or event date')
+            try:
                 print('deckscraping')
                 #print('url:',deck[2])
                 #deck_scrape(deck_scrape_url, meta, event_date, deck_name,place)
                 deck_scrape("https://mtgtop8.com/event" + deck[2],meta,event_date, deck[1],deck[0])
             except:
                 print('could not manage decklist')
+                break
         """
         for y in deck_line:
             #print('y: ',y.a)
