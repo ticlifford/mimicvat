@@ -6,6 +6,7 @@ import datetime
 import time
 #from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
+#from flask_paginate import Pagination, get_page_parameter
 #from flask_login import LoginManager
 #login_manager = LoginManager()
 
@@ -18,10 +19,12 @@ app = Flask(__name__)
 # the location of the database, when running locally vs on server
 
 #website location
-#dbLoc = 'CARDINFO.db'
+dbLoc = 'CARDINFO.db'
 
 #windows local
-dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+#dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+#recent db
+#dbLoc = 'D:/Documents/Misc/mimicvat backup db/CARDINFO.db'
 
 #csv file upload location
 UPLOAD_FOLDER = 'static/files'
@@ -74,6 +77,11 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
 
     imageUrl = 'https://img.scryfall.com/cards/normal/front/8/1/810a3792-a689-4849-bc14-fb3c71153aba.jpg?1562920975'
 
+    #ip request
+    try:
+        print('ip:',fetch_ip())
+    except:
+        print('could not do client_ip')
 
     # collects price and date vals of land tax to load up front page quickly
     try:
@@ -83,7 +91,7 @@ def index(chartID='chart_ID', chart_type='line', chart_height=500):
         print('could not connect to db for frontpage chart')
     con.close()
     try:
-        print(data)
+        #print(data)
         print('printing data')
     except:
         print('could not print data')
@@ -199,6 +207,12 @@ def testfilter():
 
 @app.route('/setinfo/<setid>', methods=['GET', 'POST'])
 def setinfo(setid):
+
+    #ip request
+    try:
+        print('ip:',fetch_ip())
+    except:
+        print('could not do client_ip')
     try:
         #db connection
         print('connecting to db')
@@ -305,10 +319,16 @@ def decks():
     try:
         cur.execute('select * from deck_meta;')
         deck_meta = cur.fetchall()
+        #print(len(deck_meta))
     except:
-        None
+        print('deck_meta issue')
+
+
+
     try:
-        return render_template('decks.html',card_names=card_names,deck_meta=deck_meta)
+        return render_template('decks.html', 
+                                card_names=card_names, 
+                                deck_meta=deck_meta)
     except:
         print('decks.html issue')
         return render_template('frontPage.html',card_names=card_names)
@@ -331,7 +351,7 @@ def decksuuid(deck_uuid):
         print('could not fetchall main_deck')
     """
     try:
-        cur.execute('select distinct cards.PICURL, main_deck.cardname, cards.id from main_deck, cards where cards.NAME=main_deck.cardname and main_deck.uuid = ? group by main_deck.cardname;',
+        cur.execute('select distinct cards.PICURL, main_deck.cardname, cards.id, main_deck.quantity from main_deck, cards where cards.NAME=main_deck.cardname and main_deck.uuid = ? group by main_deck.cardname;',
         (deck_uuid,))
         deckList = cur.fetchall()
     except:
@@ -356,11 +376,11 @@ def monthlyMovers():
         print('could not connect to db')
 
     try:
-        cur.execute('select name, cards.picurl, pricetoday.normprice, pricechange.change, cards.id from cards, pricechange, pricetoday where cards.id=pricetoday.id and cards.id=pricechange.id and pricetoday.normprice>1.00 order by pricechange.change desc limit 10;')
+        cur.execute('select name, cards.picurl, pricetoday.normprice, pricechange.change, cards.id from cards, pricechange, pricetoday where cards.id=pricetoday.id and cards.cardset not in ("pmps07","pmps08","pmps09","pmps10","pmps11","4bb","fbb","wc99","wc00","wc01","wc02","wc03","wc04","wc05") and cards.id=pricechange.id and pricetoday.normprice>1.00 order by pricechange.change desc limit 10;')
         top_10_sql = cur.fetchall()
         top_10 = []
         for x in top_10_sql:
-            top_10.append([x[1],x[0],x[3],x[4]])
+            top_10.append([x[1],x[0],round(x[3],2),x[4]])
         return render_template('monthlyMovers.html',card_names=card_names,top_10=top_10)
     except:
         print('could not complete monthly')
@@ -589,7 +609,14 @@ def watchlist():
 @app.route('/search/<cardId>', methods=['GET', 'POST'])
 def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
     # the search bar results for the layout html
-    
+
+    #ip request
+    try:
+        print('ip:',fetch_ip())
+    except:
+        print('could not do client_ip')
+
+
     if request.method == "GET":
         print('search cardID get request')
         con = sql.connect(dbLoc)
@@ -616,7 +643,6 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                 setCodes.append(x[1])
                 # does a nonfoil version exist?
                 nonfoil = x[2]
-            print('a nonfoil exists:',nonfoil)
         except:
             print('I couldnt get the card name')
 
@@ -635,7 +661,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
             picurl
             from cards 
             where name = (?) 
-            and cards.ONLINEONLY != 'True'""", (cardName,)):
+            and cards.ONLINEONLY != 'True' limit 10""", (cardName,)):
                 try:
                     sameCards.append(x[0])
                 except:
@@ -662,7 +688,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
         except:
             print('cant perform searchcard')
         try:
-            cur.execute("select cards.cmc, type, power, toughness, rarity, cardset from cards where cards.id == ((?))",
+            cur.execute("select cards.cmc, type, power, toughness, rarity, cardset, tcgplayer_id from cards where cards.id == ((?))",
                         (cardId, ))
             fetchInfo = cur.fetchone()
         except:
@@ -679,9 +705,14 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
             cardInfo['buylist'] = 'N/A'
             cardInfo['cardset'] = fetchInfo['cardset']
             cardInfo['cardname'] = cardName
+            cardInfo['tcgplayer_id'] = int(fetchInfo['tcgplayer_id'])
         except:
             print('could not add values to cardInfo dictionary')
 
+        try:
+            print('tcg id:',cardInfo['tcgplayer_id'])
+        except:
+            print('no tcgid')
         try:
             cur.execute('select name from cardset where code = (?)',(cardInfo['cardset'],))
             cardInfo['setname'] = cur.fetchone()[0]
@@ -733,7 +764,6 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
                 window_average = sum(this_window) / window_size
                 moving_averages.append(round(window_average,2))
                 i += 1
-            print(moving_averages)
             for x in range(0,window_size-1):
                 moving_averages.insert(x,priceList[x])
             smadata = [list(x) for x in zip(dateList, moving_averages)]
@@ -741,6 +771,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
 
         except:
             print('sma failed')
+            smadata = []
 
         # chart data routed to javascript
         chart = {"renderTo": chartID, "type": chart_type,
@@ -802,6 +833,12 @@ def page_not_found(e):
 def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     # search with the searchbar form result
 
+    #ip request
+    try:
+        print('ip:',fetch_ip())
+    except:
+        print('could not do client_ip')
+
     print('doing search post method')
     if request.form.get('searchbar') == None:
         print("request form searchbar is nothing:", request.form.get('addCard'))
@@ -821,19 +858,22 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
 
     try:
         r = (request.form['searchbar'])
-        #print('r result is:', r)
+        print('r result is:', r)
     except:
         print('the r request did not go through')
 
     try:
         q = request.form
-        #print("q:", q)
+        print("q:", q)
     except:
         print('cant print q')
 
-    con = sql.connect(dbLoc)
-    con.row_factory = sql.Row
-    cur = con.cursor()
+    try:
+        con = sql.connect(dbLoc)
+        con.row_factory = sql.Row
+        cur = con.cursor()
+    except:
+        print('could not connect to db in search')
 
     cardId = ""
     priceList = []
@@ -843,6 +883,8 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     cardInfo = {}
     sameCards = []
     duplicate_names = []
+
+
     # for the result of the name search, get the ID and put it in cardId
     try:
         for cardIdNum in cur.execute("""select ID, 
@@ -850,49 +892,56 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         where UPPER(NAME)=UPPER((?)) 
         and cards.ONLINEONLY != 'True' 
         and length(cardset)=3 
-        and cardset != 'mb1'""",
+        and cardset != 'mb1' limit 10""",
                                      (r, )):
             cardId = cardIdNum[0]
-            #print('cardId from execute:', cardId)
-            #print('card url:',cardIdNum[2])
+            print('cardId from execute:', cardId)
+            print('card url:',cardIdNum[2])
             # most cards have more than one printing, this compiles a list of each card
             # currently, I display the last card thats in my list I also filter to remove online cards and promos
             sameCards.append(cardIdNum[0])
             price = recent_price(cardIdNum[0])
             duplicate_names.append([cardIdNum[0], cardIdNum[1], cardIdNum[2], price])
+        #searchID(cardId)
 
     except:
-        print('I couldnt get the cardID')
+        print('I couldnt find an cardID')
 
-    # my test to print all the cards with the same name
-    for x in sameCards:
-        None
-        #print('unique printing:', x)
-    if not cardId:
-        print('there is no card ID')
-        #make a return template for fuzzy search with results
-        print('fuzz ratio')
-        fuzzed = process.extractBests(r,card_names,limit=10)
-        print(fuzzed)
-        fuzz_list = []
-        for x in fuzzed:
-            fuzzy_card = []
-            #print(cur.execute("select id, picurl from cards where upper(name)=upper((?))",(x[0],)).fetchone()[0])
-            res = cur.execute("select id, picurl from cards where upper(name)=upper((?))",(x[0],)).fetchone()
-            #print('res fetchone:',res)
-            for row in res:
-                print('res:',row)
-                fuzzy_card.append(row)
-                print('appending ',row)
-            fuzz_list.append(fuzzy_card)
-        
-        print('fuzzy_list: ',fuzz_list)
-        return render_template('fuzzyReturn.html', card_names=card_names, fuzz_list=fuzz_list)
-        #return render_template('frontPage.html', card_names=card_names)
+    try:
+        print("cardid:",cardId)
+    except:
+        print('could not printcardid')
 
-    imageUrl = searchCard(cardId, cur, priceList, foilList, dateList, imageUrl,False)
-    data = [list(x) for x in zip(dateList, priceList)]
-    foildata = [list(x) for x in zip(dateList, foilList)]
+    try:
+        if not cardId:
+            print('there is no card ID')
+            #make a return template for fuzzy search with results
+            print('fuzz ratio')
+            fuzzed = process.extractBests(r,card_names,limit=10)
+            print(fuzzed)
+            fuzz_list = []
+            for x in fuzzed:
+                fuzzy_card = []
+                #print(cur.execute("select id, picurl from cards where upper(name)=upper((?))",(x[0],)).fetchone()[0])
+                res = cur.execute("select id, picurl from cards where upper(name)=upper((?))",(x[0],)).fetchone()
+                #print('res fetchone:',res)
+                for row in res:
+                    print('res:',row)
+                    fuzzy_card.append(row)
+                    print('appending ',row)
+                fuzz_list.append(fuzzy_card)
+            print('fuzzy_list: ',fuzz_list)
+            return render_template('fuzzyReturn.html', card_names=card_names, fuzz_list=fuzz_list)
+            #return render_template('frontPage.html', card_names=card_names)
+    except:
+        print('could not process fuzzy with no cardId')
+
+    try:
+        imageUrl = searchCard(cardId, cur, priceList, foilList, dateList, imageUrl,False)
+        data = [list(x) for x in zip(dateList, priceList)]
+        foildata = [list(x) for x in zip(dateList, foilList)]
+    except:
+        print('could not collect imageurl,data,foildata')
 
     #print('imageUrl after searchcard:', imageUrl)
     #print('priceList to display:', priceList)
@@ -907,7 +956,8 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         toughness, 
         rarity,
         cardset,
-        name
+        name,
+        tcgplayer_id
         from cards 
         where id == ((?))""",
                     (cardId, ))
@@ -930,7 +980,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         cardInfo['rarity'] = fetchInfo[4]
         cardInfo['buylist'] = 'N/A'
         cardInfo['cardset'] = fetchInfo[5]
-        cardInfo['cardname'] = fetchInfo[6]
+        cardInfo['tcgplayer_id'] = fetchInfo[7]
         print('card set: ',cardInfo['cardset'])
     except:
         print('could not add values to cardInfo dictionary here')
@@ -942,10 +992,12 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
     except:
         print('could not grab set name')
 
-    print('the card cmc value:', cardInfo['cmc'])
-    print('search value:', cardInfo['type'])
-    print('power:', cardInfo['power'])
-
+    try:
+        print('the card cmc value:', cardInfo['cmc'])
+        print('search value:', cardInfo['type'])
+        print('power:', cardInfo['power'])
+    except:
+        print('could not print card vals')
     con.close()
 
     try:
@@ -960,7 +1012,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
             window_average = sum(this_window) / window_size
             moving_averages.append(round(window_average,2))
             i += 1
-        print(moving_averages)
+        print('moving_averages:',moving_averages)
         for x in range(0,window_size-1):
             moving_averages.insert(x,priceList[x])
         smadata = [list(x) for x in zip(dateList, moving_averages)]
@@ -968,6 +1020,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
 
     except:
         print('sma failed')
+        smadata = []
 
     # chart data
     try:
@@ -978,10 +1031,14 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
         xAxis = {"type":"datetime"}
         yAxis = {"title": {"text": 'dollars'}}
         pageType = 'graph'
-
-
     except:
         print('something went wrong with the highcart vars')
+        chart = []
+        series = []
+        title = []
+        xAxis = []
+        yAxis = []
+        pageType = ''
 
     return render_template("resultsLayout.html",
                            pageType=pageType,
@@ -1022,7 +1079,6 @@ def searchCard(cardId, cur, priceList, foilList, dateList, imageUrl, foil):
                 priceList.append(0)
             else:
                 priceList.append(priceN[1])
-    
             if priceN[2] is None:
                 foilList.append(0)
             else:
@@ -1046,7 +1102,6 @@ def searchCard(cardId, cur, priceList, foilList, dateList, imageUrl, foil):
             print(datetime.datetime.fromtimestamp(x).strftime('%Y-%m-%d %H:%M:%S'))
         """
     return imageUrl
-    print('dateList:')
 
 
 def updateTrend(cardId):
@@ -1565,6 +1620,20 @@ def recent_price(cardID):
 
 def parse_boolean(b):
     return b == "True"
+
+def fetch_ip():
+
+    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+        client_ip = request.environ['REMOTE_ADDR']
+    else:
+        client_ip = request.environ['HTTP_X_FORWARDED_FOR']
+
+    try:
+        user_agent = [request.user_agent.platform,request.user_agent.browser]
+    except:
+        print('no user_agent')
+        user_agent = 'empty'
+    return [client_ip,user_agent]
 
 if __name__ == "__main__":
     app.run(debug=True)

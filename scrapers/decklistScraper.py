@@ -1,4 +1,6 @@
 
+from operator import mod
+from turtle import st
 import urllib.request
 from bs4 import BeautifulSoup as b
 import json
@@ -76,6 +78,11 @@ create index sideboard_name on side_board(cardname);
 
 #legacy decks from top8
 legacy_url = "https://mtgtop8.com/format?f=LE"
+pioneer_url = "https://www.mtgtop8.com/format?f=PI"
+modern_url = "https://www.mtgtop8.com/format?f=MO"
+pauper_url = "https://www.mtgtop8.com/format?f=PAU"
+standard_url = "https://www.mtgtop8.com/format?f=ST"
+url_list = [legacy_url,pioneer_url,modern_url,pauper_url,standard_url]
 
 #open the meta time period dropdown on a format and run open_meta for each via for loop
 def format_metas(url):

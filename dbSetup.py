@@ -90,6 +90,7 @@ try:
                 boosterfun text,
                 BACKURL text,
                 EDHRANK real,
+                reprint integer,
                 PRIMARY KEY(ID),
                 UNIQUE(ID))''')
 

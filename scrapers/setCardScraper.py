@@ -1,3 +1,4 @@
+from readline import insert_text
 import urllib.request
 import json
 import requests
@@ -10,11 +11,14 @@ import sqlite3
 # the input is a csv with every card set as a code (example, 'aer' is aether revolt)
 #it scrapes each set for things like the name, power, toughness etc and inserts that into an sql table called cards
 
-#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
+
+
 #dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
-dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO_test.db'
-#csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
-csvPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/setNames.csv'
+#csvPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/setNames.csv'
+
+#dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO_test.db'
 
 def printDb():
         print('im printing the db here:')
@@ -27,12 +31,14 @@ def setGeneration(set):
     print('sleeping now')
     time.sleep(.600)
     print('the url is',url)
-    try:
-        jason_obj = urllib.request.urlopen(url)
-        data = json.load(jason_obj)
-        addCards(data)
-    except:
-        print('something went wrong with set',set)
+    #try:
+    jason_obj = urllib.request.urlopen(url)
+    data = json.load(jason_obj)
+    addCards(data)
+    #except:
+        #print('something went wrong with set',set)
+        #Exception as e:
+        #print(e)
 
 def checkPage(data):
     # this api is paginated into 175 card objects
@@ -88,17 +94,14 @@ def addCards(data):
             None
         else:
             cm_id = obj['cardmarket_id']
-        
+
         if 'edhrec_rank' not in obj.keys():
             print('no edhrec rank')
             None
         else:
             edhrec_rank = obj['edhrec_rank']
-        
-        if
 
         #dual face cards
-
         if obj['layout'] == 'modal_dfc':
             print('modal dfc card found')
             try:
@@ -106,27 +109,32 @@ def addCards(data):
                 #accessing each card face by calling [0] or [1]
                 #the sql insert should be called for both faces with their respective object indexes
                 print(obj['card_faces'][0]['name'],"DFC")
-                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+                c.execute('insert or replace into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
             obj['id'],
             str(obj['name']),
             obj['cmc'],
             obj['card_faces'][0]['mana_cost'],
             power,
+
             toughness,
             str(obj['card_faces'][0]['colors']),
             obj['set'],
             obj['card_faces'][0]['type_line'],
             obj['card_faces'][0]['image_uris']['normal'],
+
             str(obj['foil']),
             str(obj['nonfoil']),
             str(obj['digital']),
             rarity,
             str(obj['reserved']),
+
             tcg_id,
             cm_id,
             None,
-            obj['card_faces'][1]['image_uris']['normal'], #check for back image url
-            edhrec_rank
+            #obj['card_faces'][1]['image_uris']['normal'], #check for back image url
+            #edhrec_rank,
+
+            #reprint
             ))
             except:
                 print('could not complete dfc faces print')
@@ -138,7 +146,7 @@ def addCards(data):
                 #accessing each card face by calling [0] or [1]
                 #right now i'm setting the card image name as X//Y and showing the image of X
                 print(obj['card_faces'][0]['name'],"transform")
-                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+                c.execute('insert or replace into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
             obj['id'],
             str(obj['name']),
             obj['cmc'],
@@ -158,7 +166,8 @@ def addCards(data):
             cm_id,
             None,
             obj['card_faces'][1]['image_uris']['normal'], #check for back image url
-            edhrec_rank
+            edhrec_rank,
+            reprint
             ))
             except:
                 print('could not complete transform faces print')
@@ -169,7 +178,8 @@ def addCards(data):
 
             # db command to write object to db
             try:
-                c.execute('insert or ignore into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+                #insert_sql = 'insert or replace into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
+                c.execute('insert or replace into CARDS values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',(
                 obj['id'],
                 str(obj['name']),
                 cmc,
@@ -187,14 +197,28 @@ def addCards(data):
                 str(obj['reserved']),
                 tcg_id,
                 cm_id,
-                None,
-                None, #check for back image url
-                edhrec_rank
+                #None,
+                #None, #check for back image url
+                #edhrec_rank,
+                obj['reprint']
                 ))
-                print("insert was a SUCCESS")
+                print('insert success',obj['name'])
+                #print(insert_sql)
             except:
-                print('could not add to db:',obj['name'])
+                print('could not complete insert_sql')
 
+            try:
+                #c.execute(insert_sql)
+                #print("insert was a SUCCESS")
+                None
+            except:
+                print('could not add normal to db:',obj['name'])
+                try:
+                    None
+                except:
+                    None
+                #break
+                None
     try:
         checkPage(data)
     except:
@@ -210,14 +234,21 @@ except:
 
 
 
-"""
-with open(csvPath, 'r') as csv_file:
-    csv_reader = csv.reader(csv_file)
-    for line in csv_reader:
-        print('set scraping:',line[0])
-        setGeneration(line[0])
-"""
-setGeneration('mid')
+try:
+    with open(csvPath, 'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        for line in csv_reader:
+            try:
+                print('set scraping:',line[0])
+                setGeneration(line[0])
+            except:
+                print('could not run setGen for line')
+except:
+    print('could not run csv_reader')
+
+
+#printDb()
+#setGeneration('mid')
 
 
 cardsDb.commit()

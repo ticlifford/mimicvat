@@ -18,22 +18,29 @@ are auctioned through other platforms.
 <h1>Biggest price increases this week:</h1>
 {% endblock %}
 
-{% block graph %}
+{% block nocontainer %}
 
 
 <div class="container-md"style="padding: 0vw 10vw;">
-<div class="row p-5" >
-    
+<div class="row" >
         {%for card in top_10%}
-        <div class="col" style="padding:1vw 1vw">
+        <div style="padding:1vw 1vw">
             <div class="d-flex justify-content-center">
-                <img src={{card[4]}} alt="Card image cap" style="width: 10vw;">
+                <img src={{card[4]}} alt="Card image cap" style="width: 10vw;min-width: 150px;-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45);">
             </div>
-            <div class="d-flex justify-content-center" style="padding: .2vw .2vw;"><a href="/search/{{card[3]}}" class="btn btn-primary">{{card[1]}}</a></div>
+            <div class="d-flex justify-content-center" style="padding: .2vw .2vw;">
+                <a href="/search/{{card[3]}}" class="btn btn-primary">
+                    {{card[1]}}
+                </a>
+            </div>
         </div>
         {% endfor %}
 </div>
 </div>
+
+{% endblock %}
+
+{% block graph %}
 <div class="row justify-content-center">
     <div class="col-auto">
         <table class="table w-auto">

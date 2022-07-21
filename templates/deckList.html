@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 
+{% block head %}
+<link rel="stylesheet" href="/static/styles/pagination.css">
+{% endblock %}
 {% block paragraph %}
 Decklists.
 {% endblock %}
@@ -11,7 +14,10 @@ Decklists.
 
                     {% for card in deckList %}
                     <div style="padding: 0.2vw 0.2vw;">
-                    <a href="/search/{{card[2]}}"><img src={{card[0]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45);width:10vw;"></a>
+                    <a href="/search/{{card[2]}}"><img src={{card[0]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45);width:10vw;min-width: 100px;">
+                        <div style="background-color: rgba(20,20,20,0.75);border-radius: 5px; color: white; position:relative;top:-25px;right: 0px;align-content: center;display: flex; flex-direction: column;justify-content: center;text-align: center;">x{{card[3]|int}}</div>
+                    </a>
+                    
                 </div>
 
 
