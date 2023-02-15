@@ -4,6 +4,8 @@ import sqlite3 as sql
 import cardAverage
 import datetime
 import time
+from flask_paginate import Pagination, get_page_parameter, get_page_args
+
 #from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 #from flask_login import LoginManager
@@ -18,10 +20,10 @@ app = Flask(__name__)
 # the location of the database, when running locally vs on server
 
 #website location
-#dbLoc = 'CARDINFO.db'
+dbLoc = 'CARDINFO.db'
 
 #windows local
-dbLoc = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+#dbLoc = 'G:/Documents/Misc/mimicvat_backup_db/CARDINFO.db'
 
 #csv file upload location
 UPLOAD_FOLDER = 'static/files'
@@ -296,19 +298,64 @@ def change():
 @app.route('/decks')
 def decks():
     try:
+        print("accessing decks")
+    except:
+        print('could not access decks')
+    try:
         print('connecting to db')
         con = sql.connect(dbLoc)
         con.row_factory = sql.Row
         cur = con.cursor()
+
     except:
         print('could not connect to db')
     try:
         cur.execute('select * from deck_meta;')
         deck_meta = cur.fetchall()
+        #print(deck_meta)
+        deck_list = []
+        for row in deck_meta:
+            row_data = []
+            for line in row:
+                row_data.append(line)
+            deck_list.append(row_data)
+        #print(deck_list)
+        
+        #for row in deck_meta:
+        #    deck_list.append(row)
+        #print("deck list:",deck_list)
+
+    except:
+        print('something went wrong')
+    try:
+        #page = request.args.get(get_page_parameter(), type=int, default=1)
+        page, per_page, offset = get_page_args(page_parameter="page",per_page_parameter="per_page")
+        search = False
+        q = request.args.get('q')
+        if q:
+            search = True
+    except:
+        print('no page pagination')
+
+    try:
+        def get_users(offset=0,per_page = 20):
+            return deck_list[offset: offset+per_page]
+
+        deck_list_total = len(deck_list)
+        pagination_users = get_users(offset=offset,per_page = per_page)
     except:
         None
+
+
+
+
     try:
-        return render_template('decks.html',card_names=card_names,deck_meta=deck_meta)
+        #pagination = Pagination(page = page, total = len(deck_list), search = search, per_page = 20, record_name = "deck_list")
+        pagination = Pagination(page = page, total = deck_list_total, per_page = per_page)
+    except:
+        print('pagination error')
+    try:
+        return render_template('decks.html',card_names=card_names,deck_list=deck_list, pagination=pagination,page=page,per_page=per_page,users=pagination_users)
     except:
         print('decks.html issue')
         return render_template('frontPage.html',card_names=card_names)
@@ -1570,25 +1617,29 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
-#next line
-def duplicate_card(cur,r,duplicate_names):
-        try:
-            for cardIdNum in cur.execute("""select ID, 
-            CARDSET, PICURL from CARDS 
-            where UPPER(NAME)=UPPER((?)) 
-            and cards.ONLINEONLY != 'True' 
-            and length(cardset)=3 
-            and cardset != 'mb1'""",
-                                        (r, )):
-                cardId = cardIdNum[0]
-                print('cardId from execute:', cardId)
-                print('card url:',cardIdNum[2])
-                # most cards have more than one printing, this compiles a list of each card
-                # currently, I display the last card thats in my list I also filter to remove online cards and promos
-                sameCards.append(cardIdNum[0])
-                price = recent_price(cardIdNum[0])
-                duplicate_names.append([cardIdNum[0], cardIdNum[1], cardIdNum[2], price])
-                return duplicate_names
 
-        except:
-            print('I couldnt get the cardID')
+
+# at this point i have no idea what this is for
+#next line
+
+#def duplicate_card(cur,r,duplicate_names):
+#        try:
+#            for cardIdNum in cur.execute("""select ID, 
+#            CARDSET, PICURL from CARDS 
+#            where UPPER(NAME)=UPPER((?)) 
+#            and cards.ONLINEONLY != 'True' 
+#            and length(cardset)=3 
+#            and cardset != 'mb1'""",
+#                                        (r, )):
+#                cardId = cardIdNum[0]
+#                print('cardId from execute:', cardId)
+#                print('card url:',cardIdNum[2])
+#                # most cards have more than one printing, this compiles a list of each card
+#                # currently, I display the last card thats in my list I also filter to remove online cards and promos
+#                sameCards.append(cardIdNum[0])
+#                price = recent_price(cardIdNum[0])
+#                duplicate_names.append([cardIdNum[0], cardIdNum[1], cardIdNum[2], price])
+#                return duplicate_names
+#
+#        except:
+#            print('I couldnt get the cardID')

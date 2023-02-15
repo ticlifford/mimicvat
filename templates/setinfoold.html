@@ -10,13 +10,12 @@
 <table>
 
     <tr>
-        <th><img src="/static/images/set_symbols/{{setname}}.png" onerror="this.onerror=null;this.src='/static/images/set_symbols/onslaught.png';" alt="set logo"></th>
+        {# <th><img src="/static/images/set_symbols/{{setname}}.png" onerror="this.onerror=null;this.src='/static/images/set_symbols/onslaught.png';" alt="set logo"></th> #}
         </tr>
 
 
     <tr>
-        <th>cards in set: </th>
-        <th>{{numcards}}</th>
+        <th>{{numcards}} total cards in set</th>
     </tr>
 <!--
     <tr>
@@ -40,24 +39,25 @@
 
 {% block nocontainer %}
 <section>
-    <div class="container d-flex" style="padding: 2vw 2vw">
-        <div id="myBtnContainer">
-            <div class="row">
-                <button class="btn activefilter" onclick="filterSelection('all')"> Show all</button>
-                <button class="btn" onclick="filterSelection('common')"> common</button>
-                <button class="btn" onclick="filterSelection('uncommon')"> uncommon</button>
-                <button class="btn" onclick="filterSelection('rare')"> rare</button>
-                <button class="btn" onclick="filterSelection('mythic')"> mythic</button>
-            </div>
-        </div>
-    </div>
+
 
     <div class="container-md" style="padding: 0px 10vw;">
+        <div class="container d-flex" style="padding: 2vw 2vw">
+            <div id="myBtnContainer">
+                <div class="row">
+                    <button class="btn activefilter" onclick="filterSelection('all')"> Show all</button>
+                    <button class="btn" onclick="filterSelection('common')"> common</button>
+                    <button class="btn" onclick="filterSelection('uncommon')"> uncommon</button>
+                    <button class="btn" onclick="filterSelection('rare')"> rare</button>
+                    <button class="btn" onclick="filterSelection('mythic')"> mythic</button>
+                </div>
+            </div>
+        </div>
     <div class="row justify-content-center">
         {% for card in carddeck %}
             <div class="filterDiv {{card[4]}}" style="padding: 0px 0.5vw;">
                 <a href="/search/{{card[0]}}"><img src={{card[2]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45); width: 15vw;"></a>
-                <p style="text-align: center; border:dotted">${%if card[3] is none%}{{card[5]}}{% else %}{{card[3]}}{% endif %}</p>
+                <p style="text-align: center; {# border:dotted #}">${%if card[3] is none%}{{card[5]}}{% else %}{{card[3]}}{% endif %}</p>
             </div>
         {% endfor %}
     </div>

@@ -12,8 +12,13 @@ import re
 import uuid
 import sqlite3
 
+# this is a scraper for mtg deck lists that uses mtgtop8.com
+# It takes a format URL as input
+# It writes the decklist, sideboard, and deck information to a database file as output
 
-dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+
+#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+dbPath = 'G:/Documents/Misc/mimicvat_backup_db/CARDINFO.db'
 #dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 #from wget
@@ -77,7 +82,7 @@ create index sideboard_name on side_board(cardname);
 #legacy decks from top8
 legacy_url = "https://mtgtop8.com/format?f=LE"
 
-#open the meta time period dropdown on a format and run open_meta for each via for loop
+#open the meta time period dropdown on a format and run open_meta for each
 def format_metas(url):
     print('running format_metas')
     html = urllib.request.urlopen(url).read()
@@ -100,6 +105,8 @@ def format_metas(url):
 # produces a 'new url' for the next page
 
 #open_meta finds the next page on a meta until there isn't a next page
+#url is url for the selected dropdown
+# meta is the string tag of that dropdown, something like "last 2 months" or "all 2017 decks"
 
 def open_meta(url, meta):
     print('i am processing url in open_meta:',url)
@@ -139,7 +146,8 @@ def explore_event(event_url, meta):
     soup = b(html, 'html.parser')
     try:
         #all_tables = soup.find_all('tr',class_='hover_tr')
-        last_events = soup.find_all('table',class_='Stable')[1]
+        #last_events = soup.find_all('table',class_='Stable')[1]
+        last_events = soup.find_all('table',class_='Stable')[0]
         #print('last_events',last_events)
         #s14 = last_events.find_all('td',class_='S14')
         #print(s14[0])
@@ -389,18 +397,35 @@ def event_processor(event_url, meta, event_date):
 
 
 
+
+print('starting decklist scraper for legacy 2 weeks')
 print('connecting to db')
 cardsDb = sqlite3.connect(dbPath)
 c = cardsDb.cursor()
 #open_meta(legacy_url)
 #explore_event(legacy_url)
 #deck_scrape(leg_event)
-format_metas(legacy_url)
-
+#format_metas(legacy_url)
+last2weeks = "https://mtgtop8.com/format?f=LE&meta=34&a="
+open_meta(last2weeks, "Last 2 weeks")
 cardsDb.commit()
 print('im closing the db')
 cardsDb.close()
 
+
+
 # this script is mostly completed. You pass it a format link on mtgtop8, and need to hardcode the format.
 # it also needs tuning up around the open_meta stuff. the deck name is not always scraped correctly, and I think I still need to fix the ascii/utf-8 thing where accent marks crash the scraper
 # it also needs to delay at the deck scraping thing
+
+# to get it to scrape 'last 2 weeks' i needed to change this line in explore_event:
+# last_events = soup.find_all('table',class_='Stable')[1]
+# I needed to change [1] to [0] because the tables may have changed. i don't know why,
+# and i need to fix it
+# also when i ran it this time, the deck name did not save
+
+#last 2 weeks
+#https://www.mtgtop8.com/format?f=LE&meta=34&cp=1
+
+
+#open_meta("https://mtgtop8.com/format?f=LE&meta=34&a=","last 2 weeks")

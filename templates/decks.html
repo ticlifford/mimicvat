@@ -2,10 +2,12 @@
 
 {% block paragraph %}
 Decklists.
-{% endblock %}
 
+{% endblock %}
 {% block graph %}
 <div class="container">
+{{ pagination.info }}
+{{ pagination.links }}
 <table class="table">
     <tbody>
 <thead>
@@ -13,22 +15,19 @@ Decklists.
       <th scope="col">decks:</th>
     </tr>
   </thead>
-{% for row in deck_meta %}
+{% for row in users %}
 <tr>
-<!--<td></td>-->
+ <td>{{ loop.index + (page-1) * per_page }}</td>
  <td>{{row[0]}}</td>
  <td>{{row[1]}}</td>
  <td>{{row[2]}}</td>
  <td><a href="/decks/{{row[4]}}">{{row[5]}}</a></td>
  <td>{{row[6]}}</td>
-
 </tr>
 {% endfor %}
-
-
-
 </tbody>
 </table>
+{{ pagination.links }}
 </div>
 
 
@@ -38,23 +37,6 @@ Decklists.
 
 
 
-<!--- card version of images
-
-
-<div class="row p-5">
-
-    {%for card in top_10%}
-    <div class="col">
-        <div class="card" style="width:200px">
-            <img class="card-img-top" src={{card[0]}} alt="Card image cap">
-            <a href="/search/{{card[3]}}" class="btn btn-primary stretched-link">{{card[1]}}</a>
-            <div class="card-body">
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
---->
 
 
 

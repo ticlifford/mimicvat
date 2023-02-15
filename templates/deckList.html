@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 
 {% block paragraph %}
-Decklists.
 {% endblock %}
 
 {% block nocontainer %}
@@ -13,10 +12,11 @@ Decklists.
                     <div style="padding: 0.2vw 0.2vw;">
                     <a href="/search/{{card[2]}}"><img src={{card[0]}} alt="card image goes here" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 0px 0px 15px rgba(0,0,0,0.45);width:10vw;"></a>
                 </div>
-
-
                     {% endfor %}
                 </div>
+                </div>
+                <div class="container-md"style="padding: 0vw 10vw">
+                {# the table view should go here #}
                 </div>
 
 {% endblock %}
