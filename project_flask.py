@@ -20,10 +20,10 @@ app = Flask(__name__)
 # the location of the database, when running locally vs on server
 
 #website location
-dbLoc = 'CARDINFO.db'
+#dbLoc = 'CARDINFO.db'
 
 #windows local
-#dbLoc = 'G:/Documents/Misc/mimicvat_backup_db/CARDINFO.db'
+dbLoc = 'G:/Documents/Misc/mimicvat_backup_db/CARDINFO.db'
 
 #csv file upload location
 UPLOAD_FOLDER = 'static/files'
@@ -319,6 +319,7 @@ def decks():
             for line in row:
                 row_data.append(line)
             deck_list.append(row_data)
+        #deck_list.sort(key=lambda x: x[1])
         #print(deck_list)
         
         #for row in deck_meta:
@@ -327,6 +328,15 @@ def decks():
 
     except:
         print('something went wrong')
+    try:
+        for row in deck_list:
+            import pdb; pdb.set_trace()
+            row[1] = datetime.datetime.strptime(row[1], '%d/%m/%y').date()
+            #print(row[1])
+        deck_list.sort(reverse=True, key=lambda x: x[1])
+        
+    except:
+        print('date time issue')
     try:
         #page = request.args.get(get_page_parameter(), type=int, default=1)
         page, per_page, offset = get_page_args(page_parameter="page",per_page_parameter="per_page")
