@@ -330,7 +330,7 @@ def decks():
         print('something went wrong')
     try:
         for row in deck_list:
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             row[1] = datetime.datetime.strptime(row[1], '%d/%m/%y').date()
             #print(row[1])
         deck_list.sort(reverse=True, key=lambda x: x[1])
@@ -388,12 +388,14 @@ def decksuuid(deck_uuid):
         print('could not fetchall main_deck')
     """
     try:
-        cur.execute('select distinct cards.PICURL, main_deck.cardname, cards.id from main_deck, cards where cards.NAME=main_deck.cardname and main_deck.uuid = ? group by main_deck.cardname;',
+        cur.execute('''select distinct cards.PICURL, main_deck.cardname, cards.id, main_deck.quantity from main_deck, cards where 
+        cards.NAME=main_deck.cardname and main_deck.uuid = ? group by main_deck.cardname;''',
         (deck_uuid,))
         deckList = cur.fetchall()
     except:
         print('could not fetchall main_deck')
-#select distinct cards.PICURL, main_deck.cardname from main_deck, cards where cards.NAME=main_deck.cardname and main_deck.uuid = 'c1434c50-bebb-11ec-af4a-d8cb8a71a1eb' group by main_deck.cardname;
+#select distinct cards.PICURL, main_deck.cardname from main_deck, cards where cards.NAME=main_deck.cardname
+# and main_deck.uuid = 'c1434c50-bebb-11ec-af4a-d8cb8a71a1eb' group by main_deck.cardname;
 
     try:
         return render_template('deckList.html',card_names=card_names,deckList=deckList)

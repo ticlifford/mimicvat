@@ -19,6 +19,35 @@
                 {# the table view should go here #}
                 </div>
 
+                <div class="container-md"style="padding: 0vw 10vw">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Name
+                                </th>
+                                <th scope="col">
+                                    quantity
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for card in deckList %}
+                            <tr>
+                                <td>
+                                    {{card[1]}}
+                                </td>
+                                <td>
+                                    {{card[3]|int}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+
+
 {% endblock %}
 
 
