@@ -501,7 +501,7 @@ def reserveList(chartID='chart_ID', chart_type='line', chart_height=500):
     except:
         print('could not do last week 2')
     try:
-        cur.execute("select cards.name, RESERVEDCHANGE.change, cards.cardset, cards.id, cards.picurl from cards, RESERVEDCHANGE where cards.cardset not in ('cei','wc99') and length(cards.cardset)<4 and cards.ID=RESERVEDCHANGE.id order by RESERVEDCHANGE.change desc limit 10")
+        cur.execute("select cards.name, RESERVEDCHANGE.change, cards.cardset, cards.id, cards.picurl from cards, RESERVEDCHANGE where cards.cardset not in ('cei','wc99','30a','ced') and length(cards.cardset)<4 and cards.ID=RESERVEDCHANGE.id order by RESERVEDCHANGE.change desc limit 10")
         top_10 = cur.fetchall()
         top_10_list = []
         for x in top_10:
@@ -1628,30 +1628,3 @@ def parse_boolean(b):
 if __name__ == "__main__":
     app.run(debug=True)
 
-
-
-
-# at this point i have no idea what this is for
-#next line
-
-#def duplicate_card(cur,r,duplicate_names):
-#        try:
-#            for cardIdNum in cur.execute("""select ID, 
-#            CARDSET, PICURL from CARDS 
-#            where UPPER(NAME)=UPPER((?)) 
-#            and cards.ONLINEONLY != 'True' 
-#            and length(cardset)=3 
-#            and cardset != 'mb1'""",
-#                                        (r, )):
-#                cardId = cardIdNum[0]
-#                print('cardId from execute:', cardId)
-#                print('card url:',cardIdNum[2])
-#                # most cards have more than one printing, this compiles a list of each card
-#                # currently, I display the last card thats in my list I also filter to remove online cards and promos
-#                sameCards.append(cardIdNum[0])
-#                price = recent_price(cardIdNum[0])
-#                duplicate_names.append([cardIdNum[0], cardIdNum[1], cardIdNum[2], price])
-#                return duplicate_names
-#
-#        except:
-#            print('I couldnt get the cardID')
