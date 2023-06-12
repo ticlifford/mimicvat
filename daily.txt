@@ -62,3 +62,22 @@
  scraping:thb
  problem scraping set:thb
  scraping:pf20
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld

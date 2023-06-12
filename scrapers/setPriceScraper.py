@@ -8,15 +8,16 @@ import datetime
 import sqlite3
 import sys
 
-
+#'''
 fPath = '/home/timc/flask_project/flask_app/daily.txt'
 csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
 dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+#'''
 
 """
-fPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/daily.txt'
-csvPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/setNames.csv'
-dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+fPath = 'C:/Users/tim/Documents/github_projects/mimicvat/daily.txt'
+csvPath = 'C:/Users/tim/Documents/github_projects/mimicvat/setNames.csv'
+dbPath = 'C:/Users/tim/Documents/github_projects/mimicvat/CARDINFO.db'
 """
 
 with open(fPath, 'a') as f:

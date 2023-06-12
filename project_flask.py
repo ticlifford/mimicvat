@@ -20,10 +20,12 @@ app = Flask(__name__)
 # the location of the database, when running locally vs on server
 
 #website location
-#dbLoc = 'CARDINFO.db'
+dbLoc = 'CARDINFO.db'
 
 #windows local
-dbLoc = 'G:/Documents/Misc/mimicvat_backup_db/CARDINFO.db'
+#dbLoc = 'G:/Documents/coding files/mimicvat_db_2023/CARDINFO.db'
+#dbLoc = 'G:/Documents/coding files/mimicvat_db_2023/mini_db/CARDINFO.db'
+
 
 #csv file upload location
 UPLOAD_FOLDER = 'static/files'
@@ -777,6 +779,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
 
         except:
             print('could not collect decks')
+            deck_list=[0]
         con.close()
     # supposed to change data input
 
@@ -800,6 +803,7 @@ def searchID(cardId, chartID='chart_ID2', chart_type='line', chart_height=500):
 
         except:
             print('sma failed')
+            smadata=0
 
         # chart data routed to javascript
         chart = {"renderTo": chartID, "type": chart_type,

@@ -10,11 +10,13 @@ import sqlite3
 # the input is a csv with every card set as a code (example, 'aer' is aether revolt)
 #it scrapes each set for things like the name, power, toughness etc and inserts that into an sql table called cards
 
-#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-#dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
-dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO_test.db'
-#csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
-csvPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/setNames.csv'
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+
+#dbPath= 'C:/Users/tim/Documents/github_projects/mimicvat/CARDINFO.db'
+
+csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
+
+#csvPath = 'C:/Users/tim/Documents/github_projects/mimicvat/setNames.csv'
 
 def printDb():
         print('im printing the db here:')
@@ -95,7 +97,7 @@ def addCards(data):
         else:
             edhrec_rank = obj['edhrec_rank']
         
-        if
+        #if
 
         #dual face cards
 
@@ -210,14 +212,14 @@ except:
 
 
 
-"""
+#"""
 with open(csvPath, 'r') as csv_file:
     csv_reader = csv.reader(csv_file)
     for line in csv_reader:
         print('set scraping:',line[0])
         setGeneration(line[0])
-"""
-setGeneration('mid')
+#"""
+#setGeneration('mid')
 
 
 cardsDb.commit()
