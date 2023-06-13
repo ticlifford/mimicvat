@@ -7,11 +7,12 @@ import time
 import datetime
 import sqlite3
 import sys
+from db_location import dbLoc
 
 #'''
 fPath = '/home/timc/flask_project/flask_app/daily.txt'
 csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
-dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+dbPath = dbLoc
 #'''
 
 """

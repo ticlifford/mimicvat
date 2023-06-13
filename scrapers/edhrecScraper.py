@@ -5,6 +5,7 @@ import requests
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 import csv
 import sqlite3
+from db_location import dbLoc
 
 
 #This is a webscraper made with beautifulsoup that scrapes a website called edhrec.com, and grabs the json values I want
@@ -43,7 +44,7 @@ cardDic = cardDic[0]
 
 cardDic = cardDic['cardviews']
 
-cardsDb = sqlite3.connect('CARDINFO.db')
+cardsDb = sqlite3.connect(dbLoc)
 c = cardsDb.cursor()
 
 #this is the loop that's doing most of the work

@@ -8,6 +8,7 @@ import time
 import datetime
 import sqlite3
 import sys
+from db_location import dbLoc
 
 
 def getTime():
@@ -79,7 +80,7 @@ def dbPush():
 
 
 
-cardsDb = sqlite3.connect('CARDINFO.db')
+cardsDb = sqlite3.connect(dbLoc)
 c = cardsDb.cursor()
 
 time = getTime()

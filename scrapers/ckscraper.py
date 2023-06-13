@@ -2,6 +2,7 @@ from splinter import Browser
 import sqlite3
 import urllib.request
 from bs4 import BeautifulSoup as b
+from db_location import dbLoc
 
 
 # sets up an html soup parser for some URL
@@ -20,7 +21,7 @@ html = urllib.request.urlopen(url).read()
 soup = b(html, 'html.parser')
 """
 
-cardsDb = sqlite3.connect('CARDINFO.db')
+cardsDb = sqlite3.connect(dbLoc)
 c = cardsDb.cursor()
 
 # SQL search for all mythics and rares, and outputs them in a list called cList

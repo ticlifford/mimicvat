@@ -2,6 +2,8 @@ from urllib.parse import _NetlocResultMixinBase
 from flask import Flask, render_template, request
 import sqlite3 as sql
 import cardAverage
+#import db_location
+from db_location import dbLoc
 import dbSetup
 import os
 import datetime
@@ -12,7 +14,7 @@ from flask_paginate import Pagination, get_page_parameter, get_page_args
 from fuzzywuzzy import process
 #from flask_login import LoginManager
 #login_manager = LoginManager()
-
+"""
 
 
 # This is my flask file which runs the application
@@ -37,7 +39,6 @@ else:
 
 #windows local
 #dbLoc = 'G:/Documents/coding files/mimicvat_db_2023/CARDINFO.db'
-dbLoc = 'G:/Documents/coding files/mimicvat_db_2023/mini_db/CARDINFO.db'
 
 
 #csv file upload location

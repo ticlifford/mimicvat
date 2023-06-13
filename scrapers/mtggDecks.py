@@ -13,6 +13,7 @@ import requests
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 import csv
 import sqlite3
+from db_location import dbLoc
 
 addCards = {}
 

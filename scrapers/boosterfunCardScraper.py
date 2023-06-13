@@ -5,16 +5,13 @@ from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 import csv
 import time
 import sqlite3
+from db_location import dbLoc
 
 # this scrapes card information from scryfall for the "cards" table
 # the input is a csv with every card set as a code (example, 'aer' is aether revolt)
 #it scrapes each set for things like the name, power, toughness etc and inserts that into an sql table called cards
 
-#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-#dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
-dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO_test.db'
-#csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
-csvPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/setNames.csv'
+dbPath = dbloc
 
 def printDb():
         print('im printing the db here:')

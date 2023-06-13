@@ -11,9 +11,9 @@ import time
 import datetime
 import sqlite3
 import sys
+from db_location import dbLoc
 
-dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-#dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+dbPath = dbLoc
 
 #connect to db
 try:

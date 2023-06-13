@@ -8,6 +8,7 @@ import time
 import datetime
 import sqlite3
 import sys
+from db_location import dbLoc
 
 cardNames = []
 cardBuyPrices = []
@@ -123,7 +124,7 @@ def fullScrape(setLinks):
     for cardSet in setLinks:
         scrape(cardSet)
 
-cardsDb = sqlite3.connect('CARDINFO.db')
+cardsDb = sqlite3.connect(dbLoc)
 c = cardsDb.cursor()
 dateTime = getTime()
 getSets()

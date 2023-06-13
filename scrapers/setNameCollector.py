@@ -4,6 +4,7 @@ import requests
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 import csv
 import sqlite3
+from db_location import dbLoc
 
 
 
@@ -14,8 +15,7 @@ url = 'https://api.scryfall.com/sets'
 fullnamepath = 'C:\\Users\\Tim\\Documents\\pythonScripts\\mimicvat\\setFullNames.csv'
 #codenamepath = '/home/timc/flask_project/flask_app/setNames.csv'
 codenamepath = 'C:\\Users\\Tim\\Documents\\pythonScripts\\mimicvat\\setNames.csv'
-#dbpath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-dbpath = 'C:\\Users\\Tim\\Documents\\pythonScripts\\mimicvat\\CARDINFO.db'
+dbpath = dbLoc
 
 jason_obj = urllib.request.urlopen(url)
 data = json.load(jason_obj)

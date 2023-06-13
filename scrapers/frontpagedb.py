@@ -1,6 +1,6 @@
 import sqlite3
+from db_location import dbLoc
 
-dbpath = '/home/timc/flask_project/flask_app/CARDINFO.db'
 
 # collect all the prices for land tax and update db
 def collect_prices():
@@ -16,7 +16,7 @@ def collect_prices():
     except:
         print('could not collect prices')
 
-cardsDb = sqlite3.connect(dbpath)
+cardsDb = sqlite3.connect(dbLoc)
 c = cardsDb.cursor()
 
 collect_prices()

@@ -5,13 +5,12 @@ from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 import csv
 import time
 import sqlite3
+from db_location import dbLoc
 
 # this scrapes card information from scryfall for the "cards" table
 # the input is a csv with every card set. Then it runs through each card set code
 
-
-#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-dbPath = 'CARDINFO.db'
+dbPath = dbLoc
 #csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
 csvPath = 'setNames.csv'
 
