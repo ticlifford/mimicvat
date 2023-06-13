@@ -235,7 +235,7 @@ def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place,player_name):
     #import pdb; pdb.set_trace()
 
     try:
-        c.execute('insert into deck_meta values (?,?,?,?,?,?,?)',(
+        c.execute('insert or ignore into deck_meta values (?,?,?,?,?,?,?)',(
             str(event_title),
             str(event_date),
             str(player_name),
@@ -272,7 +272,7 @@ def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place,player_name):
                 # add to sideboard
                 #print('adding to side board')
                 try:
-                    c.execute('insert into side_board values (?,?,?)',(
+                    c.execute('insert or ignore into side_board values (?,?,?)',(
                         str(deck_uuid),
                         str(slot[1]),
                         slot[0]
@@ -285,7 +285,7 @@ def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place,player_name):
                 main_board.append(slot)
                 # add to mainboard
                 try:
-                    c.execute('insert into main_deck values (?,?,?)',(
+                    c.execute('insert or ignore into main_deck values (?,?,?)',(
                         str(deck_uuid),
                         str(slot[1]),
                         slot[0]
