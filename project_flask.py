@@ -2,6 +2,8 @@ from urllib.parse import _NetlocResultMixinBase
 from flask import Flask, render_template, request
 import sqlite3 as sql
 import cardAverage
+import dbSetup
+import os
 import datetime
 import time
 from flask_paginate import Pagination, get_page_parameter, get_page_args
@@ -20,11 +22,22 @@ app = Flask(__name__)
 # the location of the database, when running locally vs on server
 
 #website location
-dbLoc = 'CARDINFO.db'
+
+#i'm intending to search for the db, and create it with dbsetup if it isn't
+#i should then run weekly, then daily
+"""
+if os.path.isfile('CARDINFO.db'):
+    print('found db')
+    None
+else:
+    print('did not find db, creating now')
+"""
+
+#dbLoc = 'CARDINFO.db'
 
 #windows local
 #dbLoc = 'G:/Documents/coding files/mimicvat_db_2023/CARDINFO.db'
-#dbLoc = 'G:/Documents/coding files/mimicvat_db_2023/mini_db/CARDINFO.db'
+dbLoc = 'G:/Documents/coding files/mimicvat_db_2023/mini_db/CARDINFO.db'
 
 
 #csv file upload location
