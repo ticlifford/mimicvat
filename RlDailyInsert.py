@@ -16,7 +16,8 @@ import sqlite3
 # database connection setup
 
 #dbPath = 'CARDINFO.db'
-dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+dbPath = 'G:/Documents/coding files/mimicvat_db_2023/mini_db/CARDINFO.db'
 cardsDb = sqlite3.connect(dbPath)
 c = cardsDb.cursor()
 
@@ -29,7 +30,8 @@ def add_day(datetime):
     datetime = str(datetime)
     try:
         print('running sql')
-        collectionQuery = c.execute(f"select normprice from prices, cards where prices.id = cards.id and prices.datetime = '{datetime}' and cards.reserved = 'True' and cards.ONLINEONLY = 'False' and cards.set not in ("cei","leb","lea") ")
+        collectionQuery = c.execute(f"select normprice from prices, cards where prices.id = cards.id and prices.datetime = '{datetime}' and cards.reserved = 'True' and cards.ONLINEONLY = 'False' and cards.cardset not in ('cei','leb','lea','wc97','wc98','wc99','wc00','wc01','wc02','30a')")
+        #collectionQuery = c.execute(f"select normprice from prices, cards where prices.id = cards.id and prices.datetime = '{datetime}' and cards.reserved = 'True' and cards.ONLINEONLY = 'False' and cards.cardset not in ('cei','w01')")
     except:
         print('could not query')
     day_value = 0
@@ -44,24 +46,7 @@ def add_day(datetime):
 
 
 
-# batch operation
 
-# this is used to run a loop which adds up all previous values, from dates a to b
-# (if you need to rebuild the database)
-
-# these are date ranges to run the batch updater
-"""
-# start
-a = date(2020, 2, 10)
-# end
-b = date(2021, 5, 12)
-"""
-
-"""
-for dt in rrule(DAILY, dtstart=a, until=b):
-    datetime = dt.strftime("%Y-%m-%d")
-    add_day(datetime)
-"""
 
 #get time from time
 def getTime():
@@ -79,7 +64,41 @@ except:
     print('could not run getTime')
 
 
+# batch operation
 
+# this is used to run a loop which adds up all previous values, from dates a to b
+# (if you need to rebuild the database)
+
+# these are date ranges to run the batch updater
+
+
+def date_range_collection(a,b):
+    for dt in rrule(DAILY, dtstart=a, until=b):
+        datetime = dt.strftime("%Y-%m-%d")
+        add_day(datetime)
+
+    for key, value in compiled_dic.items():
+        c.execute("insert or ignore into reservedhistory values (?,?)",(key,value))
+    cardsDb.commit()
+    print('im closing the db')
+    cardsDb.close()
+    print('finished')
+
+
+#"""
+# start
+a = date(2023, 6, 3)
+# end
+b = date(2023, 6, 13)
+
+date_range_collection(a,b)
+
+#"""
+
+
+
+
+"""
 # daily script:
 try:
     print('running RLDailyInsert for today')
@@ -100,3 +119,4 @@ try:
     print('finished')
 except:
     print('could not run RLDailyInsert for today')
+"""

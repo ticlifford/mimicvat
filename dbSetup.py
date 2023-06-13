@@ -121,6 +121,11 @@ try:
                 UNIQUE(DATETIME),
                 PRIMARY KEY (USER_ID, DATETIME)
                 )''')
+    c.execute('''CREATE TABLE IF NOT EXISTS RESERVEDHISTORY
+                (DATETIME text,
+                NORMPRICE real,
+                PRIMARY KEY(DATETIME),
+                UNIQUE(DATETIME))''')
     cardsDb.close()
 
     print('database was created')
