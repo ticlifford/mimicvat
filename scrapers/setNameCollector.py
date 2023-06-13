@@ -4,17 +4,14 @@ import requests
 from requests.auth import HTTPBasicAuth, HTTPDigestAuth
 import csv
 import sqlite3
-from db_location import dbLoc
+from db_location import dbLoc,csvPath,fullnamepath
 
 
 
 #this small bit of code returns all the sets
 
 url = 'https://api.scryfall.com/sets'
-#fullnamepath =  '/home/timc/flask_project/flask_app/setFullNames.csv'
-fullnamepath = 'C:\\Users\\Tim\\Documents\\pythonScripts\\mimicvat\\setFullNames.csv'
-#codenamepath = '/home/timc/flask_project/flask_app/setNames.csv'
-codenamepath = 'C:\\Users\\Tim\\Documents\\pythonScripts\\mimicvat\\setNames.csv'
+codenamepath = csvPath
 dbpath = dbLoc
 
 jason_obj = urllib.request.urlopen(url)
