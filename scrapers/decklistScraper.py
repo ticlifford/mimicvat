@@ -11,16 +11,14 @@ import time
 import re
 import uuid
 import sqlite3
+from db_location import dbLoc
 
 # this is a scraper for mtg deck lists that uses mtgtop8.com
 # It takes a format URL as input
 # It writes the decklist, sideboard, and deck information to a database file as output
 
 
-dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-#dbPath = 'G:/Documents/Misc/mimicvat_backup_db/CARDINFO.db'
-#dbPath = 'G:/Documents/coding files/mimicvat_db_2023/mini_db/CARDINFO.db'
-#dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
+dbPath = dbLoc
 
 #from wget
 
