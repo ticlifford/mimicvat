@@ -18,7 +18,8 @@ import sqlite3
 
 
 #dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
-dbPath = 'G:/Documents/Misc/mimicvat_backup_db/CARDINFO.db'
+#dbPath = 'G:/Documents/Misc/mimicvat_backup_db/CARDINFO.db'
+dbPath = 'G:/Documents/coding files/mimicvat_db_2023/mini_db/CARDINFO.db'
 #dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 #from wget
@@ -141,31 +142,34 @@ def open_meta(url, meta):
 #passes url, meta, and date to event_processor
 
 def explore_event(event_url, meta):
+    #import pdb; pdb.set_trace()
     url = event_url
     html = urllib.request.urlopen(url).read()
     soup = b(html, 'html.parser')
     try:
         #all_tables = soup.find_all('tr',class_='hover_tr')
         #last_events = soup.find_all('table',class_='Stable')[1]
-        last_events = soup.find_all('table',class_='Stable')[0]
+        #selects the "last 20 events" table, which is the second on the page
+        last_events = soup.find_all('table',class_='Stable')[1]
         #print('last_events',last_events)
         #s14 = last_events.find_all('td',class_='S14')
         #print(s14[0])
     except:
         print('could not find_all table')
+
+    #create a list of the links for each deck in the table
     links = []
     try:
         rows = last_events.find_all('tr')
         for row in rows:
             cols = row.find_all('td')
-            #cols = [ele.text.strip() for ele in cols]
-            #links.append([ele for ele in cols if ele])
-            #cols = [cols[1].a[href]]
+
             col_list = []
             for item in cols:
                 col_list.append(item)
             a_href=col_list[1].a['href']
             col_date = col_list[3].text.strip()
+            # add the event url and date to a list called links
             links.append([a_href,col_date])
     except:
         print('could not comprehend table')
@@ -194,7 +198,7 @@ def explore_event(event_url, meta):
         print('failed to find, probably table comprehension issue')
 
 # this scrapes the deck that's on the page
-def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place):
+def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place,player_name):
     url=deck_scrape_url
     html = urllib.request.urlopen(url).read()
     soup = b(html, 'html.parser')
@@ -214,10 +218,8 @@ def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place):
     event_title = event_title[0].string
     print('event title: ',event_title)
     print('deck name: ',deck_name)
-    #player name is in class_="player_big"
-    name = soup.find_all(class_='player_big')
-    player_name = name[0].string
-    print('name: ',player_name)
+    print('player name: ',player_name)
+
 
     #deck_name
     #deck_uuid
@@ -227,36 +229,20 @@ def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place):
     #meta
 
     try:
-        print(
-            str(event_title),
-            event_date,
-            str(player_name),
-        )
-    except:
-        print('could not print event title, date, or player name')
-
-    try:
-        print(str(deck_uuid),str(deck_name))
-    except:
-        print('could not print deck uuid or deck name')
-
-    try:
-        print(place, meta)
+        print('place: ',place, 'meta: ',meta)
     except:
         print('could not print place or meta')
+    #import pdb; pdb.set_trace()
 
     try:
-        c.execute('insert into deck_meta values (?,?,?,?,?,?,?,?)',(
+        c.execute('insert into deck_meta values (?,?,?,?,?,?,?)',(
             str(event_title),
-            event_date,
-            #'date',
+            str(event_date),
             str(player_name),
-            'legacy',
+            str(meta),
             str(deck_uuid),
             str(deck_name),
-            #'place',
-            place,
-            meta
+            str(place),
         ))
     except:
         print('could not push deck_meta vals to sql')
@@ -319,9 +305,10 @@ def add_mainboard():
 def add_sideboard():
     None
 
-# event_processor checks the list of decks in the event
-# it creates a link to that deck's page
-# it should call the deck scraper
+# event_processor receives a list of events, their meta, and their date
+# checks the list of decks in the event
+# it creates a link to that deck's page, finds player name
+# it calls the deck scraper
 def event_processor(event_url, meta, event_date):
     #count the number of decks in the sidebar
     url=event_url
@@ -331,17 +318,27 @@ def event_processor(event_url, meta, event_date):
     for x in soup.find_all('div',attrs={'style':'margin:0px 4px 0px 4px;'}):
         deck_line = x.find_all('div',attrs={'style':'padding:3px 0px 3px 0px;'})
         deck_list = []
+        # deck_line is a list of decks pulled from the left hand sidebar
+        # each 'y' is a deck listing with place, deck name, and player name
         for y in deck_line:
+            #import pdb; pdb.set_trace()
             print('new y line')
             #this means new deck, first y is place and second is both name and link
             S14 = y.find_all('div',class_='S14')
+            deck_name = S14[1].text
+            print('deck_name; ',deck_name)
+            p_name = y.find_all('div',class_='G11')[0].string
+            print("player name: ",p_name)
+
             new_deck=[]
             for a in S14:
                 print('a string:',a.string)
+                # adding deck name to deck
                 new_deck.append(a.string)
                 link = a.find('a')
                 if link:
                     print('found link')
+                    #adding deck url to deck
                     new_deck.append(link['href'])
                 
             deck_list.append(new_deck)
@@ -360,54 +357,24 @@ def event_processor(event_url, meta, event_date):
                 print('deckscraping')
                 #print('url:',deck[2])
                 #deck_scrape(deck_scrape_url, meta, event_date, deck_name,place)
-                deck_scrape("https://mtgtop8.com/event" + deck[2],meta,event_date, deck[1],deck[0])
+                #import pdb; pdb.set_trace()
+                deck_scrape("https://mtgtop8.com/event" + deck[2],meta,event_date, deck_name,deck[0],p_name)
             except:
                 print('could not manage decklist')
                 break
-        """
-        for y in deck_line:
-            #print('y: ',y.a)
-            for z in y:
-                if z != '':
-                    print('z: ',z)
-        """
-"""
-        ats = x.find_all('a', href = True, class_=None,attrs={"src":False})
-        for y in ats:
-            #print(y)
-            #print(y.get('href'))
-            if y.get('href') != '':
-                hrefs.add("https://mtgtop8.com/event" + y.get('href'))
-                print('deckname:',y.string)
-    for x in hrefs:
-        try:
-            print('running deck_scrape for ',x)
-            deck_scrape(x, meta, event_date)
-        except:
-            print('did not run deck_scrape')
-"""
-    #a set of deck urls to process
-    #print('event_processor set: ',hrefs)
-
-#open_meta(legacy_url)
-#explore_event(legacy_url)
-#leg_event = 'https://mtgtop8.com/event?e=32512&f=LE'
-#event_processor(leg_event)
-#deck_scrape(leg_event)
-
-
 
 
 print('starting decklist scraper for legacy 2 weeks')
 print('connecting to db')
 cardsDb = sqlite3.connect(dbPath)
 c = cardsDb.cursor()
-#open_meta(legacy_url)
-#explore_event(legacy_url)
-#deck_scrape(leg_event)
-#format_metas(legacy_url)
+
+
+#"""
 last2weeks = "https://mtgtop8.com/format?f=LE&meta=34&a="
-open_meta(last2weeks, "Last 2 weeks")
+open_meta(last2weeks, "legacy")
+#"""
+
 cardsDb.commit()
 print('im closing the db')
 cardsDb.close()
@@ -415,14 +382,9 @@ cardsDb.close()
 
 
 # this script is mostly completed. You pass it a format link on mtgtop8, and need to hardcode the format.
-# it also needs tuning up around the open_meta stuff. the deck name is not always scraped correctly, and I think I still need to fix the ascii/utf-8 thing where accent marks crash the scraper
+# it also needs tuning up around the open_meta stuff. I think I still need to fix the ascii/utf-8 thing where accent marks crash the scraper
 # it also needs to delay at the deck scraping thing
 
-# to get it to scrape 'last 2 weeks' i needed to change this line in explore_event:
-# last_events = soup.find_all('table',class_='Stable')[1]
-# I needed to change [1] to [0] because the tables may have changed. i don't know why,
-# and i need to fix it
-# also when i ran it this time, the deck name did not save
 
 #last 2 weeks
 #https://www.mtgtop8.com/format?f=LE&meta=34&cp=1
