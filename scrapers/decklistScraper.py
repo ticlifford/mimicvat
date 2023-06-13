@@ -41,7 +41,7 @@ create table if not exists deck_meta
 eventdate text,
 playername text,
 format text,
-uuid text,
+uuid text primary key,
 deckname text,
 place text);
 """
