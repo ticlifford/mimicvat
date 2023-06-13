@@ -17,9 +17,9 @@ import sqlite3
 # It writes the decklist, sideboard, and deck information to a database file as output
 
 
-#dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
+dbPath = '/home/timc/flask_project/flask_app/CARDINFO.db'
 #dbPath = 'G:/Documents/Misc/mimicvat_backup_db/CARDINFO.db'
-dbPath = 'G:/Documents/coding files/mimicvat_db_2023/mini_db/CARDINFO.db'
+#dbPath = 'G:/Documents/coding files/mimicvat_db_2023/mini_db/CARDINFO.db'
 #dbPath = 'C:/Users/Tim/Documents/pythonScripts/mimicvat/CARDINFO.db'
 
 #from wget
@@ -201,6 +201,7 @@ def explore_event(event_url, meta):
 def deck_scrape(deck_scrape_url, meta, event_date, deck_name,place,player_name):
     url=deck_scrape_url
     html = urllib.request.urlopen(url).read()
+    time.sleep(.600)
     soup = b(html, 'html.parser')
     meta = meta
     #find the deck name, player name, date, event name
