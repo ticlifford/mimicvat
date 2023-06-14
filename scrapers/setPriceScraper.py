@@ -7,19 +7,11 @@ import time
 import datetime
 import sqlite3
 import sys
-from db_location import dbLoc
+from db_location import dbLoc,csvPath,fPath
 
-#'''
-fPath = '/home/timc/flask_project/flask_app/daily.txt'
-csvPath = '/home/timc/flask_project/flask_app/setNames.csv'
+
 dbPath = dbLoc
-#'''
 
-"""
-fPath = 'C:/Users/tim/Documents/github_projects/mimicvat/daily.txt'
-csvPath = 'C:/Users/tim/Documents/github_projects/mimicvat/setNames.csv'
-dbPath = 'C:/Users/tim/Documents/github_projects/mimicvat/CARDINFO.db'
-"""
 
 with open(fPath, 'a') as f:
     f.write('\n set price scraper crontab:')
