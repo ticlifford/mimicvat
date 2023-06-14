@@ -15,10 +15,14 @@
         <div class="col-sm-6 text-center">
             <p><img src={{imageUrl}}  alt="card image goes here" width="350" style="-webkit-border-radius: 4.75% / 3.5%; box-shadow: 1px 1px 6px rgba(0,0,0,0.45);"></p>
 
+
+<!--
 <form action="/search/{{cardId}}" method="POST">
     <input class="form-control mr-sm-2" type="hidden" placeholder="Search" aria-label="Search" name="addCard" value="remove this ID">
   <button class="btn btn-primary mb-2" type="submit">add this card to the watchlist</button>
 </form>
+-->
+
 <h2>{{cardInfo['cardname']}}</h2>
 <a href="/setinfo/{{cardInfo['cardset']}}">{{cardInfo['setname']}}</a>
         <table class="table">

@@ -14,7 +14,7 @@ from flask_paginate import Pagination, get_page_parameter, get_page_args
 from fuzzywuzzy import process
 #from flask_login import LoginManager
 #login_manager = LoginManager()
-"""
+
 
 
 # This is my flask file which runs the application
@@ -410,11 +410,20 @@ def decksuuid(deck_uuid):
         deckList = cur.fetchall()
     except:
         print('could not fetchall main_deck')
+    try:
+        cur.execute('''select * from deck_meta where deck_meta.uuid = ?;''',
+        (deck_uuid,))
+        deck_meta = cur.fetchone()
+        print('deck_meta:')
+        for x in deck_meta:
+            print(x)
+    except:
+        print('could not fetchall main_deck')
 #select distinct cards.PICURL, main_deck.cardname from main_deck, cards where cards.NAME=main_deck.cardname
 # and main_deck.uuid = 'c1434c50-bebb-11ec-af4a-d8cb8a71a1eb' group by main_deck.cardname;
 
     try:
-        return render_template('deckList.html',card_names=card_names,deckList=deckList)
+        return render_template('deckList.html',card_names=card_names,deckList=deckList,deck_meta=deck_meta)
     except:
         print('deckList.html issue')
         return render_template('frontPage.html',card_names=card_names)
@@ -1045,6 +1054,7 @@ def searchResults(chartID='chart_ID2', chart_type='line', chart_height=500):
 
     except:
         print('sma failed')
+        smadata = []
 
     # chart data
     try:

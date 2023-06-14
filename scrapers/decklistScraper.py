@@ -319,45 +319,25 @@ def event_processor(event_url, meta, event_date):
         deck_list = []
         # deck_line is a list of decks pulled from the left hand sidebar
         # each 'y' is a deck listing with place, deck name, and player name
-        for y in deck_line:
+        for deck_listing in deck_line:
             #import pdb; pdb.set_trace()
             print('new y line')
             #this means new deck, first y is place and second is both name and link
-            S14 = y.find_all('div',class_='S14')
+            S14 = deck_listing.find_all('div',class_='S14')
+            placement = S14[0].text
             deck_name = S14[1].text
+            deck_link = S14[1].find('a').get('href')
+            print('deck_link: ',deck_link)
             print('deck_name; ',deck_name)
-            p_name = y.find_all('div',class_='G11')[0].string
-            print("player name: ",p_name)
+            player_name = deck_listing.find_all('div',class_='G11')[0].string
+            print("player name: ",player_name)
 
-            new_deck=[]
-            for a in S14:
-                print('a string:',a.string)
-                # adding deck name to deck
-                new_deck.append(a.string)
-                link = a.find('a')
-                if link:
-                    print('found link')
-                    #adding deck url to deck
-                    new_deck.append(link['href'])
-                
-            deck_list.append(new_deck)
-        print('deck list:')
-        print(deck_list)
-        for deck in deck_list:
-            try:
-                print('deck details:',deck)
-            except:
-                print('could not print deck details')
-            try:
-                print('meta and event date:',meta,event_date)
-            except:
-                print('could not print meta or event date')
             try:
                 print('deckscraping')
                 #print('url:',deck[2])
                 #deck_scrape(deck_scrape_url, meta, event_date, deck_name,place)
                 #import pdb; pdb.set_trace()
-                deck_scrape("https://mtgtop8.com/event" + deck[2],meta,event_date, deck_name,deck[0],p_name)
+                deck_scrape("https://mtgtop8.com/event" + deck_link,meta,event_date, deck_name,placement,player_name)
             except:
                 print('could not manage decklist')
                 break
