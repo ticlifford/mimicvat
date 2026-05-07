@@ -14,7 +14,16 @@ url = 'https://api.scryfall.com/sets'
 codenamepath = csvPath
 dbpath = dbLoc
 
-jason_obj = urllib.request.urlopen(url)
+#scryfall now requires user agent header in api request
+request_header = {
+    "User-Agent": "MimicVatCharts/1.0",
+    "Accept": "application/json"
+}
+#jason_obj = urllib.request.urlopen(url)
+req = urllib.request.Request(url, headers=request_header)
+jason_obj = urllib.request.urlopen(req)
+
+#jason_obj = urllib.request.urlopen(url)
 data = json.load(jason_obj)
 
 try:

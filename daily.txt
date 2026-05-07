@@ -81,3 +81,82 @@
  scraping:psld
  problem scraping set:psld
  scraping:sld
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ correctly scraping set:sld
+ scraping:ha1
+ correctly scraping set:ha1
+ scraping:tgn2
+ correctly scraping set:tgn2
+ scraping:gn2
+ correctly scraping set:gn2
+ scraping:cmb1
+ correctly scraping set:cmb1
+ scraping:mb1
+ correctly scraping set:mb1
+ scraping:ptg
+ correctly scraping set:ptg
+ scraping:peld
+ correctly scraping set:peld
+ scraping:eld
+ correctly scraping set:eld
+ scraping:teld
+ correctly scraping set:teld
+ scraping:oc19
+ correctly scraping set:oc19
+ scraping:c19
+ correctly scraping set:c19
+ scraping:tc19
+ correctly scraping set:tc19
+ scraping:htr18
+ problem scraping set:htr18
+ scraping:ps19
+ correctly scraping set:ps19
+ scraping:ppp1
+ correctly scraping set:ppp1
+ scraping:tm20
+ correctly scraping set:tm20
+ scraping:pm20
+ correctly scraping set:pm20
+ scraping:m20
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ problem scraping set:tund
+ scraping:und
+ problem scraping set:und
+ scraping:pthb
+ problem scraping set:pthb
+ scraping:tthb
+ problem scraping set:tthb
+ scraping:thb
+ problem scraping set:thb
+ scraping:pf20
+ problem scraping set:pf20
+ scraping:j20
+ problem scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ problem scraping set:sld
+ scraping:ha1
+ problem scraping set:ha1
+ scraping:tgn2
+ finished running set price scraper

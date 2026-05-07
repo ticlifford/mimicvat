@@ -26,7 +26,15 @@ def setGeneration(set):
     time.sleep(.600)
     print('the url is',url)
     try:
-        jason_obj = urllib.request.urlopen(url)
+        #import pdb; pdb.set_trace()
+        #scryfall now requires user agent header in api request
+        request_header = {
+            "User-Agent": "MimicVatCharts/1.0",
+            "Accept": "application/json"
+        }
+        #jason_obj = urllib.request.urlopen(url)
+        req = urllib.request.Request(url, headers=request_header)
+        jason_obj = urllib.request.urlopen(req)
         data = json.load(jason_obj)
         addCards(data)
     except:
@@ -38,7 +46,17 @@ def checkPage(data):
         if data['has_more'] == True:
             #print(obj['has_more'])
                 print('I found another page of cards')
-                jason_obj = urllib.request.urlopen(data['next_page'])
+
+                #scryfall now requires user agent header in api request
+                request_header = {
+                    "User-Agent": "MimicVatCharts/1.0",
+                    "Accept": "application/json"
+                }
+                #jason_obj = urllib.request.urlopen(url)
+                req = urllib.request.Request(url, headers=request_header)
+                jason_obj = urllib.request.urlopen(req['next_page'])
+
+                #jason_obj = urllib.request.urlopen(data['next_page'])
                 data = json.load(jason_obj)
                 addCards(data)
     except:
