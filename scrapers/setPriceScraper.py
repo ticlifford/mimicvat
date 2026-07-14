@@ -25,16 +25,27 @@ def checkPage(data):
         if data['has_more'] == True:
                 print('I found another page of cards')
 
-                #scryfall now requires user agent header in api request
+                
+                #import pdb; pdb.set_trace()
+                #scryfall header in api request
                 request_header = {
                     "User-Agent": "MimicVatCharts/1.0",
                     "Accept": "application/json"
                 }
-                req = urllib.request.Request(url, headers=request_header)
-                jason_obj = urllib.request.urlopen(req['next_page'])
-                
-                #jason_obj = urllib.request.urlopen(data['next_page'])
-                data = json.load(jason_obj)
+
+                print('data next_page: ',data['next_page'])
+
+                req = urllib.request.Request(data['next_page'],headers=request_header)
+                with urllib.request.urlopen(req) as response:
+                     
+
+                    try:
+                        #json load my result
+                        data = json.loads(response.read().decode())
+
+                    except:
+                        print('urllib open failure')
+
                 dailyPrice(data)
     except:
         print('check page could not perform loop')

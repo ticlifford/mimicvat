@@ -160,3 +160,1203 @@
  problem scraping set:ha1
  scraping:tgn2
  finished running set price scraper
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ correctly scraping set:sld
+ scraping:ha1
+ correctly scraping set:ha1
+ scraping:tgn2
+ correctly scraping set:tgn2
+ scraping:gn2
+ correctly scraping set:gn2
+ scraping:cmb1
+ correctly scraping set:cmb1
+ scraping:mb1
+ correctly scraping set:mb1
+ scraping:ptg
+ correctly scraping set:ptg
+ scraping:peld
+ correctly scraping set:peld
+ scraping:eld
+ correctly scraping set:eld
+ scraping:teld
+ correctly scraping set:teld
+ scraping:oc19
+ correctly scraping set:oc19
+ scraping:c19
+ correctly scraping set:c19
+ scraping:tc19
+ correctly scraping set:tc19
+ scraping:htr18
+ problem scraping set:htr18
+ scraping:ps19
+ correctly scraping set:ps19
+ scraping:ppp1
+ correctly scraping set:ppp1
+ scraping:tm20
+ correctly scraping set:tm20
+ scraping:pm20
+ correctly scraping set:pm20
+ scraping:m20
+ correctly scraping set:m20
+ scraping:ss2
+ correctly scraping set:ss2
+ scraping:pmh1
+ correctly scraping set:pmh1
+ scraping:mh1
+ correctly scraping set:mh1
+ scraping:amh1
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ correctly scraping set:sld
+ scraping:ha1
+ correctly scraping set:ha1
+ scraping:tgn2
+ correctly scraping set:tgn2
+ scraping:gn2
+ correctly scraping set:gn2
+ scraping:cmb1
+ correctly scraping set:cmb1
+ scraping:mb1
+ correctly scraping set:mb1
+ scraping:ptg
+ correctly scraping set:ptg
+ scraping:peld
+ correctly scraping set:peld
+ scraping:eld
+ correctly scraping set:eld
+ scraping:teld
+ correctly scraping set:teld
+ scraping:oc19
+ correctly scraping set:oc19
+ scraping:c19
+ correctly scraping set:c19
+ scraping:tc19
+ correctly scraping set:tc19
+ scraping:htr18
+ problem scraping set:htr18
+ scraping:ps19
+ correctly scraping set:ps19
+ scraping:ppp1
+ correctly scraping set:ppp1
+ scraping:tm20
+ correctly scraping set:tm20
+ scraping:pm20
+ correctly scraping set:pm20
+ scraping:m20
+ correctly scraping set:m20
+ scraping:ss2
+ correctly scraping set:ss2
+ scraping:pmh1
+ correctly scraping set:pmh1
+ scraping:mh1
+ correctly scraping set:mh1
+ scraping:amh1
+ correctly scraping set:amh1
+ scraping:tmh1
+ correctly scraping set:tmh1
+ scraping:pwar
+ correctly scraping set:pwar
+ scraping:twar
+ correctly scraping set:twar
+ scraping:war
+ correctly scraping set:war
+ scraping:j19
+ correctly scraping set:j19
+ scraping:prw2
+ correctly scraping set:prw2
+ scraping:gk2
+ correctly scraping set:gk2
+ scraping:tgk2
+ correctly scraping set:tgk2
+ scraping:prna
+ correctly scraping set:prna
+ scraping:rna
+ correctly scraping set:rna
+ scraping:trna
+ correctly scraping set:trna
+ scraping:pf19
+ correctly scraping set:pf19
+ scraping:opca
+ correctly scraping set:opca
+ scraping:puma
+ correctly scraping set:puma
+ scraping:tuma
+ correctly scraping set:tuma
+ scraping:uma
+ correctly scraping set:uma
+ scraping:g18
+ correctly scraping set:g18
+ scraping:gnt
+ correctly scraping set:gnt
+ scraping:tgk1
+ correctly scraping set:tgk1
+ scraping:gk1
+ correctly scraping set:gk1
+ scraping:pgrn
+ correctly scraping set:pgrn
+ scraping:tgrn
+ correctly scraping set:tgrn
+ scraping:grn
+ correctly scraping set:grn
+ scraping:prwk
+ correctly scraping set:prwk
+ scraping:med
+ correctly scraping set:med
+ scraping:tmed
+ correctly scraping set:tmed
+ scraping:oc18
+ correctly scraping set:oc18
+ scraping:tc18
+ correctly scraping set:tc18
+ scraping:c18
+ correctly scraping set:c18
+ scraping:htr17
+ problem scraping set:htr17
+ scraping:ps18
+ correctly scraping set:ps18
+ scraping:ana
+ correctly scraping set:ana
+ scraping:pana
+ correctly scraping set:pana
+ scraping:pm19
+ correctly scraping set:pm19
+ scraping:tm19
+ correctly scraping set:tm19
+ scraping:m19
+ correctly scraping set:m19
+ scraping:pss3
+ correctly scraping set:pss3
+ scraping:gs1
+ correctly scraping set:gs1
+ scraping:ss1
+ correctly scraping set:ss1
+ scraping:pbbd
+ correctly scraping set:pbbd
+ scraping:bbd
+ correctly scraping set:bbd
+ scraping:cm2
+ correctly scraping set:cm2
+ scraping:tbbd
+ correctly scraping set:tbbd
+ scraping:tcm2
+ correctly scraping set:tcm2
+ scraping:pdom
+ correctly scraping set:pdom
+ scraping:tdom
+ correctly scraping set:tdom
+ scraping:dom
+ correctly scraping set:dom
+ scraping:tddu
+ correctly scraping set:tddu
+ scraping:ddu
+ correctly scraping set:ddu
+ scraping:a25
+ correctly scraping set:a25
+ scraping:ta25
+ correctly scraping set:ta25
+ scraping:plny
+ correctly scraping set:plny
+ scraping:pnat
+ correctly scraping set:pnat
+ scraping:trix
+ correctly scraping set:trix
+ scraping:prix
+ correctly scraping set:prix
+ scraping:rix
+ correctly scraping set:rix
+ scraping:j18
+ correctly scraping set:j18
+ scraping:f18
+ correctly scraping set:f18
+ scraping:ust
+ correctly scraping set:ust
+ scraping:tima
+ correctly scraping set:tima
+ scraping:e02
+ correctly scraping set:e02
+ scraping:v17
+ correctly scraping set:v17
+ scraping:pxtc
+ correctly scraping set:pxtc
+ scraping:ima
+ correctly scraping set:ima
+ scraping:tust
+ correctly scraping set:tust
+ scraping:pust
+ correctly scraping set:pust
+ scraping:ddt
+ correctly scraping set:ddt
+ scraping:tddt
+ correctly scraping set:tddt
+ scraping:g17
+ correctly scraping set:g17
+ scraping:pxln
+ correctly scraping set:pxln
+ scraping:xln
+ correctly scraping set:xln
+ scraping:txln
+ correctly scraping set:txln
+ scraping:pss2
+ correctly scraping set:pss2
+ scraping:h17
+ correctly scraping set:h17
+ scraping:htr
+ problem scraping set:htr
+ scraping:te01
+ correctly scraping set:te01
+ scraping:oc17
+ correctly scraping set:oc17
+ scraping:tc17
+ correctly scraping set:tc17
+ scraping:c17
+ correctly scraping set:c17
+ scraping:ps17
+ correctly scraping set:ps17
+ scraping:phou
+ correctly scraping set:phou
+ scraping:hou
+ correctly scraping set:hou
+ scraping:thou
+ correctly scraping set:thou
+ scraping:oe01
+ correctly scraping set:oe01
+ scraping:e01
+ correctly scraping set:e01
+ scraping:tcma
+ correctly scraping set:tcma
+ scraping:cma
+ correctly scraping set:cma
+ scraping:pakh
+ correctly scraping set:pakh
+ scraping:akh
+ correctly scraping set:akh
+ scraping:takh
+ correctly scraping set:takh
+ scraping:mp2
+ correctly scraping set:mp2
+ scraping:w17
+ correctly scraping set:w17
+ scraping:dds
+ correctly scraping set:dds
+ scraping:tdds
+ correctly scraping set:tdds
+ scraping:mm3
+ correctly scraping set:mm3
+ scraping:tmm3
+ correctly scraping set:tmm3
+ scraping:paer
+ correctly scraping set:paer
+ scraping:taer
+ correctly scraping set:taer
+ scraping:aer
+ correctly scraping set:aer
+ scraping:l17
+ correctly scraping set:l17
+ scraping:j17
+ correctly scraping set:j17
+ scraping:f17
+ correctly scraping set:f17
+ scraping:tpca
+ correctly scraping set:tpca
+ scraping:pca
+ correctly scraping set:pca
+ scraping:pz2
+ correctly scraping set:pz2
+ scraping:oc16
+ correctly scraping set:oc16
+ scraping:c16
+ correctly scraping set:c16
+ scraping:tc16
+ correctly scraping set:tc16
+ scraping:ps16
+ correctly scraping set:ps16
+ scraping:pkld
+ correctly scraping set:pkld
+ scraping:kld
+ correctly scraping set:kld
+ scraping:tkld
+ correctly scraping set:tkld
+ scraping:mps
+ correctly scraping set:mps
+ scraping:ddr
+ correctly scraping set:ddr
+ scraping:tcn2
+ correctly scraping set:tcn2
+ scraping:cn2
+ correctly scraping set:cn2
+ scraping:v16
+ correctly scraping set:v16
+ scraping:pemn
+ correctly scraping set:pemn
+ scraping:emn
+ correctly scraping set:emn
+ scraping:temn
+ correctly scraping set:temn
+ scraping:ema
+ correctly scraping set:ema
+ scraping:tema
+ correctly scraping set:tema
+ scraping:psoi
+ correctly scraping set:psoi
+ scraping:tsoi
+ correctly scraping set:tsoi
+ scraping:soi
+ correctly scraping set:soi
+ scraping:w16
+ correctly scraping set:w16
+ scraping:ddq
+ correctly scraping set:ddq
+ scraping:pogw
+ correctly scraping set:pogw
+ scraping:ogw
+ correctly scraping set:ogw
+ scraping:togw
+ correctly scraping set:togw
+ scraping:l16
+ correctly scraping set:l16
+ scraping:f16
+ correctly scraping set:f16
+ scraping:j16
+ correctly scraping set:j16
+ scraping:pz1
+ correctly scraping set:pz1
+ scraping:c15
+ correctly scraping set:c15
+ scraping:oc15
+ correctly scraping set:oc15
+ scraping:tc15
+ correctly scraping set:tc15
+ scraping:pbfz
+ correctly scraping set:pbfz
+ scraping:tbfz
+ correctly scraping set:tbfz
+ scraping:bfz
+ correctly scraping set:bfz
+ scraping:pss1
+ correctly scraping set:pss1
+ scraping:exp
+ correctly scraping set:exp
+ scraping:ddp
+ correctly scraping set:ddp
+ scraping:v15
+ correctly scraping set:v15
+ scraping:cp3
+ correctly scraping set:cp3
+ scraping:pori
+ correctly scraping set:pori
+ scraping:tori
+ correctly scraping set:tori
+ scraping:ori
+ correctly scraping set:ori
+ scraping:ps15
+ correctly scraping set:ps15
+ scraping:mm2
+ correctly scraping set:mm2
+ scraping:tmm2
+ correctly scraping set:tmm2
+ scraping:tpr
+ correctly scraping set:tpr
+ scraping:ptkdf
+ correctly scraping set:ptkdf
+ scraping:pdtk
+ correctly scraping set:pdtk
+ scraping:tdtk
+ correctly scraping set:tdtk
+ scraping:dtk
+ correctly scraping set:dtk
+ scraping:ddo
+ correctly scraping set:ddo
+ scraping:pfrf
+ correctly scraping set:pfrf
+ scraping:cp2
+ correctly scraping set:cp2
+ scraping:tfrf
+ correctly scraping set:tfrf
+ scraping:frf
+ correctly scraping set:frf
+ scraping:ugin
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ correctly scraping set:sld
+ scraping:ha1
+ correctly scraping set:ha1
+ scraping:tgn2
+ correctly scraping set:tgn2
+ scraping:gn2
+ correctly scraping set:gn2
+ scraping:cmb1
+ correctly scraping set:cmb1
+ scraping:mb1
+ correctly scraping set:mb1
+ scraping:ptg
+ correctly scraping set:ptg
+ scraping:peld
+ correctly scraping set:peld
+ scraping:eld
+ correctly scraping set:eld
+ scraping:teld
+ correctly scraping set:teld
+ scraping:oc19
+ correctly scraping set:oc19
+ scraping:c19
+ correctly scraping set:c19
+ scraping:tc19
+ correctly scraping set:tc19
+ scraping:htr18
+ problem scraping set:htr18
+ scraping:ps19
+ correctly scraping set:ps19
+ scraping:ppp1
+ correctly scraping set:ppp1
+ scraping:tm20
+ correctly scraping set:tm20
+ scraping:pm20
+ correctly scraping set:pm20
+ scraping:m20
+ correctly scraping set:m20
+ scraping:ss2
+ correctly scraping set:ss2
+ scraping:pmh1
+ correctly scraping set:pmh1
+ scraping:mh1
+ correctly scraping set:mh1
+ scraping:amh1
+ correctly scraping set:amh1
+ scraping:tmh1
+ correctly scraping set:tmh1
+ scraping:pwar
+ correctly scraping set:pwar
+ scraping:twar
+ correctly scraping set:twar
+ scraping:war
+ correctly scraping set:war
+ scraping:j19
+ correctly scraping set:j19
+ scraping:prw2
+ correctly scraping set:prw2
+ scraping:gk2
+ correctly scraping set:gk2
+ scraping:tgk2
+ correctly scraping set:tgk2
+ scraping:prna
+ correctly scraping set:prna
+ scraping:rna
+ correctly scraping set:rna
+ scraping:trna
+ correctly scraping set:trna
+ scraping:pf19
+ correctly scraping set:pf19
+ scraping:opca
+ correctly scraping set:opca
+ scraping:puma
+ correctly scraping set:puma
+ scraping:tuma
+ correctly scraping set:tuma
+ scraping:uma
+ correctly scraping set:uma
+ scraping:g18
+ correctly scraping set:g18
+ scraping:gnt
+ correctly scraping set:gnt
+ scraping:tgk1
+ correctly scraping set:tgk1
+ scraping:gk1
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ correctly scraping set:sld
+ scraping:ha1
+ correctly scraping set:ha1
+ scraping:tgn2
+ correctly scraping set:tgn2
+ scraping:gn2
+ correctly scraping set:gn2
+ scraping:cmb1
+ correctly scraping set:cmb1
+ scraping:mb1
+ correctly scraping set:mb1
+ scraping:ptg
+ correctly scraping set:ptg
+ scraping:peld
+ correctly scraping set:peld
+ scraping:eld
+ correctly scraping set:eld
+ scraping:teld
+ correctly scraping set:teld
+ scraping:oc19
+ correctly scraping set:oc19
+ scraping:c19
+ correctly scraping set:c19
+ scraping:tc19
+ correctly scraping set:tc19
+ scraping:htr18
+ problem scraping set:htr18
+ scraping:ps19
+ correctly scraping set:ps19
+ scraping:ppp1
+ correctly scraping set:ppp1
+ scraping:tm20
+ correctly scraping set:tm20
+ scraping:pm20
+ correctly scraping set:pm20
+ scraping:m20
+ correctly scraping set:m20
+ scraping:ss2
+ correctly scraping set:ss2
+ scraping:pmh1
+ correctly scraping set:pmh1
+ scraping:mh1
+ correctly scraping set:mh1
+ scraping:amh1
+ correctly scraping set:amh1
+ scraping:tmh1
+ correctly scraping set:tmh1
+ scraping:pwar
+ correctly scraping set:pwar
+ scraping:twar
+ correctly scraping set:twar
+ scraping:war
+ correctly scraping set:war
+ scraping:j19
+ correctly scraping set:j19
+ scraping:prw2
+ correctly scraping set:prw2
+ scraping:gk2
+ correctly scraping set:gk2
+ scraping:tgk2
+ correctly scraping set:tgk2
+ scraping:prna
+ correctly scraping set:prna
+ scraping:rna
+ correctly scraping set:rna
+ scraping:trna
+ correctly scraping set:trna
+ scraping:pf19
+ correctly scraping set:pf19
+ scraping:opca
+ correctly scraping set:opca
+ scraping:puma
+ correctly scraping set:puma
+ scraping:tuma
+ correctly scraping set:tuma
+ scraping:uma
+ correctly scraping set:uma
+ scraping:g18
+ correctly scraping set:g18
+ scraping:gnt
+ correctly scraping set:gnt
+ scraping:tgk1
+ correctly scraping set:tgk1
+ scraping:gk1
+ correctly scraping set:gk1
+ scraping:pgrn
+ correctly scraping set:pgrn
+ scraping:tgrn
+ correctly scraping set:tgrn
+ scraping:grn
+ correctly scraping set:grn
+ scraping:prwk
+ correctly scraping set:prwk
+ scraping:med
+ correctly scraping set:med
+ scraping:tmed
+ correctly scraping set:tmed
+ scraping:oc18
+ correctly scraping set:oc18
+ scraping:tc18
+ correctly scraping set:tc18
+ scraping:c18
+ correctly scraping set:c18
+ scraping:htr17
+ problem scraping set:htr17
+ scraping:ps18
+ correctly scraping set:ps18
+ scraping:ana
+ correctly scraping set:ana
+ scraping:pana
+ correctly scraping set:pana
+ scraping:pm19
+ correctly scraping set:pm19
+ scraping:tm19
+ correctly scraping set:tm19
+ scraping:m19
+ correctly scraping set:m19
+ scraping:pss3
+ correctly scraping set:pss3
+ scraping:gs1
+ correctly scraping set:gs1
+ scraping:ss1
+ correctly scraping set:ss1
+ scraping:pbbd
+ correctly scraping set:pbbd
+ scraping:bbd
+ correctly scraping set:bbd
+ scraping:cm2
+ correctly scraping set:cm2
+ scraping:tbbd
+ correctly scraping set:tbbd
+ scraping:tcm2
+ correctly scraping set:tcm2
+ scraping:pdom
+ correctly scraping set:pdom
+ scraping:tdom
+ correctly scraping set:tdom
+ scraping:dom
+ correctly scraping set:dom
+ scraping:tddu
+ correctly scraping set:tddu
+ scraping:ddu
+ correctly scraping set:ddu
+ scraping:a25
+ correctly scraping set:a25
+ scraping:ta25
+ correctly scraping set:ta25
+ scraping:plny
+ correctly scraping set:plny
+ scraping:pnat
+ correctly scraping set:pnat
+ scraping:trix
+ correctly scraping set:trix
+ scraping:prix
+ correctly scraping set:prix
+ scraping:rix
+ correctly scraping set:rix
+ scraping:j18
+ correctly scraping set:j18
+ scraping:f18
+ correctly scraping set:f18
+ scraping:ust
+ correctly scraping set:ust
+ scraping:tima
+ correctly scraping set:tima
+ scraping:e02
+ correctly scraping set:e02
+ scraping:v17
+ correctly scraping set:v17
+ scraping:pxtc
+ correctly scraping set:pxtc
+ scraping:ima
+ correctly scraping set:ima
+ scraping:tust
+ correctly scraping set:tust
+ scraping:pust
+ correctly scraping set:pust
+ scraping:ddt
+ correctly scraping set:ddt
+ scraping:tddt
+ correctly scraping set:tddt
+ scraping:g17
+ correctly scraping set:g17
+ scraping:pxln
+ correctly scraping set:pxln
+ scraping:xln
+ correctly scraping set:xln
+ scraping:txln
+ correctly scraping set:txln
+ scraping:pss2
+ correctly scraping set:pss2
+ scraping:h17
+ correctly scraping set:h17
+ scraping:htr
+ problem scraping set:htr
+ scraping:te01
+ correctly scraping set:te01
+ scraping:oc17
+ correctly scraping set:oc17
+ scraping:tc17
+ correctly scraping set:tc17
+ scraping:c17
+ correctly scraping set:c17
+ scraping:ps17
+ correctly scraping set:ps17
+ scraping:phou
+ correctly scraping set:phou
+ scraping:hou
+ correctly scraping set:hou
+ scraping:thou
+ correctly scraping set:thou
+ scraping:oe01
+ correctly scraping set:oe01
+ scraping:e01
+ correctly scraping set:e01
+ scraping:tcma
+ correctly scraping set:tcma
+ scraping:cma
+ correctly scraping set:cma
+ scraping:pakh
+ correctly scraping set:pakh
+ scraping:akh
+ correctly scraping set:akh
+ scraping:takh
+ correctly scraping set:takh
+ scraping:mp2
+ correctly scraping set:mp2
+ scraping:w17
+ correctly scraping set:w17
+ scraping:dds
+ correctly scraping set:dds
+ scraping:tdds
+ correctly scraping set:tdds
+ scraping:mm3
+ correctly scraping set:mm3
+ scraping:tmm3
+ correctly scraping set:tmm3
+ scraping:paer
+ correctly scraping set:paer
+ scraping:taer
+ correctly scraping set:taer
+ scraping:aer
+ correctly scraping set:aer
+ scraping:l17
+ correctly scraping set:l17
+ scraping:j17
+ correctly scraping set:j17
+ scraping:f17
+ correctly scraping set:f17
+ scraping:tpca
+ correctly scraping set:tpca
+ scraping:pca
+ correctly scraping set:pca
+ scraping:pz2
+ correctly scraping set:pz2
+ scraping:oc16
+ correctly scraping set:oc16
+ scraping:c16
+ correctly scraping set:c16
+ scraping:tc16
+ correctly scraping set:tc16
+ scraping:ps16
+ correctly scraping set:ps16
+ scraping:pkld
+ correctly scraping set:pkld
+ scraping:kld
+ correctly scraping set:kld
+ scraping:tkld
+ correctly scraping set:tkld
+ scraping:mps
+ correctly scraping set:mps
+ scraping:ddr
+ correctly scraping set:ddr
+ scraping:tcn2
+ correctly scraping set:tcn2
+ scraping:cn2
+ correctly scraping set:cn2
+ scraping:v16
+ correctly scraping set:v16
+ scraping:pemn
+ correctly scraping set:pemn
+ scraping:emn
+ correctly scraping set:emn
+ scraping:temn
+ correctly scraping set:temn
+ scraping:ema
+ correctly scraping set:ema
+ scraping:tema
+ correctly scraping set:tema
+ scraping:psoi
+ correctly scraping set:psoi
+ scraping:tsoi
+ correctly scraping set:tsoi
+ scraping:soi
+ correctly scraping set:soi
+ scraping:w16
+ correctly scraping set:w16
+ scraping:ddq
+ correctly scraping set:ddq
+ scraping:pogw
+ correctly scraping set:pogw
+ scraping:ogw
+ correctly scraping set:ogw
+ scraping:togw
+ correctly scraping set:togw
+ scraping:l16
+ correctly scraping set:l16
+ scraping:f16
+ correctly scraping set:f16
+ scraping:j16
+ correctly scraping set:j16
+ scraping:pz1
+ correctly scraping set:pz1
+ scraping:c15
+ correctly scraping set:c15
+ scraping:oc15
+ correctly scraping set:oc15
+ scraping:tc15
+ correctly scraping set:tc15
+ scraping:pbfz
+ correctly scraping set:pbfz
+ scraping:tbfz
+ correctly scraping set:tbfz
+ scraping:bfz
+ correctly scraping set:bfz
+ scraping:pss1
+ correctly scraping set:pss1
+ scraping:exp
+ correctly scraping set:exp
+ scraping:ddp
+ correctly scraping set:ddp
+ scraping:v15
+ correctly scraping set:v15
+ scraping:cp3
+ correctly scraping set:cp3
+ scraping:pori
+ correctly scraping set:pori
+ scraping:tori
+ correctly scraping set:tori
+ scraping:ori
+ correctly scraping set:ori
+ scraping:ps15
+ correctly scraping set:ps15
+ scraping:mm2
+ correctly scraping set:mm2
+ scraping:tmm2
+ correctly scraping set:tmm2
+ scraping:tpr
+ correctly scraping set:tpr
+ scraping:ptkdf
+ correctly scraping set:ptkdf
+ scraping:pdtk
+ correctly scraping set:pdtk
+ scraping:tdtk
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ correctly scraping set:sld
+ scraping:ha1
+ correctly scraping set:ha1
+ scraping:tgn2
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ correctly scraping set:sld
+ scraping:ha1
+ correctly scraping set:ha1
+ scraping:tgn2
+ correctly scraping set:tgn2
+ scraping:gn2
+ correctly scraping set:gn2
+ scraping:cmb1
+ correctly scraping set:cmb1
+ scraping:mb1
+ correctly scraping set:mb1
+ scraping:ptg
+ correctly scraping set:ptg
+ scraping:peld
+ correctly scraping set:peld
+ scraping:eld
+ correctly scraping set:eld
+ scraping:teld
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ correctly scraping set:sld
+ scraping:ha1
+ correctly scraping set:ha1
+ scraping:tgn2
+ correctly scraping set:tgn2
+ scraping:gn2
+ correctly scraping set:gn2
+ scraping:cmb1
+ correctly scraping set:cmb1
+ scraping:mb1
+ correctly scraping set:mb1
+ scraping:ptg
+ correctly scraping set:ptg
+ scraping:peld
+ correctly scraping set:peld
+ scraping:eld
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ set price scraper crontab:
+ setPricescraper connecting to db
+ scraping:tund
+ correctly scraping set:tund
+ scraping:und
+ correctly scraping set:und
+ scraping:pthb
+ correctly scraping set:pthb
+ scraping:tthb
+ correctly scraping set:tthb
+ scraping:thb
+ correctly scraping set:thb
+ scraping:pf20
+ correctly scraping set:pf20
+ scraping:j20
+ correctly scraping set:j20
+ scraping:psld
+ problem scraping set:psld
+ scraping:sld
+ correctly scraping set:sld
+ scraping:ha1
+ correctly scraping set:ha1
+ scraping:tgn2
+ correctly scraping set:tgn2
+ scraping:gn2
+ correctly scraping set:gn2
+ scraping:cmb1
+ correctly scraping set:cmb1
+ scraping:mb1
+ correctly scraping set:mb1
+ scraping:ptg
+ correctly scraping set:ptg
+ scraping:peld
+ correctly scraping set:peld
+ scraping:eld
+ correctly scraping set:eld
+ scraping:teld
+ correctly scraping set:teld
+ scraping:oc19
+ correctly scraping set:oc19
+ scraping:c19
+ correctly scraping set:c19
+ scraping:tc19
+ correctly scraping set:tc19
+ scraping:htr18
+ problem scraping set:htr18
+ scraping:ps19
+ correctly scraping set:ps19
+ scraping:ppp1
+ correctly scraping set:ppp1
+ scraping:tm20
+ correctly scraping set:tm20
+ scraping:pm20
+ correctly scraping set:pm20
+ scraping:m20
+ correctly scraping set:m20
+ scraping:ss2
+ correctly scraping set:ss2
+ scraping:pmh1
+ correctly scraping set:pmh1
+ scraping:mh1
+ correctly scraping set:mh1
+ scraping:amh1
+ correctly scraping set:amh1
+ scraping:tmh1
+ correctly scraping set:tmh1
+ scraping:pwar
+ correctly scraping set:pwar
+ scraping:twar
+ correctly scraping set:twar
+ scraping:war
+ correctly scraping set:war
+ scraping:j19
+ correctly scraping set:j19
+ scraping:prw2
+ correctly scraping set:prw2
+ scraping:gk2
+ correctly scraping set:gk2
+ scraping:tgk2
+ correctly scraping set:tgk2
+ scraping:prna
+ correctly scraping set:prna
+ scraping:rna
+ correctly scraping set:rna
+ scraping:trna
+ correctly scraping set:trna
+ scraping:pf19
+ correctly scraping set:pf19
+ scraping:opca
+ correctly scraping set:opca
+ scraping:puma
+ correctly scraping set:puma
+ scraping:tuma
+ correctly scraping set:tuma
+ scraping:uma
+ correctly scraping set:uma
+ scraping:g18
+ correctly scraping set:g18
+ scraping:gnt
+ correctly scraping set:gnt
+ scraping:tgk1
+ correctly scraping set:tgk1
+ scraping:gk1
+ correctly scraping set:gk1
+ scraping:pgrn
+ correctly scraping set:pgrn
+ scraping:tgrn
+ correctly scraping set:tgrn
+ scraping:grn
+ correctly scraping set:grn
+ scraping:prwk
+ correctly scraping set:prwk
+ scraping:med
